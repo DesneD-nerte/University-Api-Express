@@ -7,11 +7,11 @@ const {secret} = require('../config/config');
 module.exports = function (req: Request, res: Response, next: any) {
     try {
         //const token: string | undefined = req.headers.authorization?.split(' ')[1];
-        const token: string | undefined = req.headers.Authorization?.toString();
+        const token: string | undefined = req.headers.authorization?.toString();
         if(!token) {
             throw ApiError.UnauthorizedError();
         }
-
+        
         const decodedData: JwtPayload = verify(token, secret);
         req.body.user = decodedData;
 
