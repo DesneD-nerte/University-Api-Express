@@ -9,7 +9,7 @@ import bcryptjs from 'bcryptjs';
 import jwt from "jsonwebtoken";
 const {secret} = require ("../config/config");
 
-import getDocRole from "../services/dbGetDocRole";
+import getDocRole from "../helpers/dbGetDocRole";
 import { ObjectId } from "mongoose";
 
 const generateAccessToken = (id: ObjectId, username: string, roles: Array<string>) => {

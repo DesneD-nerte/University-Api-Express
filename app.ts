@@ -1,6 +1,7 @@
 import express, {Application} from "express";
 import mongoose from 'mongoose';
 import cors from 'cors';
+import userController from "./controllers/userController";
 
 const config = require('./config/config');
 
@@ -26,9 +27,9 @@ app.use(cors(corsOptions));
 
 //app.use('/', authMiddleware);
 app.use('/api/lessons', authMiddleware);
-app.use('/api/students', authMiddleware);
+app.use('/api/users', authMiddleware, userRoutes);
 //app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
-app.use('/myprofile', authMiddleware, userRoutes)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
+app.use('/myprofile', authMiddleware, userController.getMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
 
 app.use('/api/auth', authRoutes);
 app.use(errorMiddleware);
