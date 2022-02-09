@@ -7,6 +7,7 @@ const config = require('./config/config');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const lessonRoutes = require('./routes/lessonRoutes');
 
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -26,7 +27,7 @@ app.use(cors(corsOptions));
 
 
 //app.use('/', authMiddleware);
-app.use('/api/lessons', authMiddleware);
+app.use('/api/lessons', authMiddleware, lessonRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
 //app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
 app.use('/myprofile', authMiddleware, userController.getMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
