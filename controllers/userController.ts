@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtPayload } from 'jsonwebtoken';
 import User from '../models/User';
+import Lesson from "../models/Lesson";
+import UserRepository from "../repositories/userRepository";
 
 class UserController {
     async getMyData (req: Request, res: Response, next: NextFunction) {//Здесь мы получаем наш токен
@@ -15,7 +17,7 @@ class UserController {
         return res.json({username, name, roles});
     }
 
-    async getStudents(req: Request, res: Response, next: NextFunction) {
+    async getStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)
         console.log("getStudents method.");
 
         const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
@@ -26,6 +28,21 @@ class UserController {
         .skip(limit * page);//Если хотим показывать 11-20, нужно скипать первый показанных и переходить на нужную страницу
 
         return res.json(massiveStudents);
+    }
+
+    async getStudentsWithSkippedLessons(req: Request, res: Response, next: NextFunction) {
+        console.log("getStudentsWithSkippedLessons method.");
+
+        const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
+        const page = Number.parseInt(req.query.page?.toString()!) || 0; 
+
+        const studentsWithCountedLessons = await UserRepository.getMissedLessons(limit, page);
+
+        const countStudents = await UserRepository.getCountStudents();
+
+        res.setHeader('maxStudents', countStudents[0].count);//Так как всегда возвращается массив нужно поставить нулевой индекс
+
+        return res.json(studentsWithCountedLessons);
     }
 
     async getStudentById(req: Request, res: Response, next: NextFunction) {

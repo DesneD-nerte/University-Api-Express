@@ -11,6 +11,7 @@ const {secret} = require ("../config/config");
 
 import getDocRole from "../helpers/dbGetDocRole";
 import { ObjectId } from "mongoose";
+import AuthRepository from "../repositories/authRepository";
 
 const generateAccessToken = (id: ObjectId, username: string, roles: Array<string>) => {
     const payload = {
@@ -50,14 +51,14 @@ class AuthControllers {
     async login(req: Request, res: Response, next: NextFunction) {
         const {username, password} = req.body;
 
-        const user = await User.findOne({username: username}); 
+        const user = await AuthRepository.login(username, password);//Пока убрал в repository, но там пока мало функций
         if(!user) {
-            next(ApiError.BadRequest("Пользователь отсутствует"));
+            return next(ApiError.BadRequest("Пользователь отсутствует"));//Раньше тут не было return, но тогда после next идет выполнение дальше
         }
         
         const validPassword: boolean = bcryptjs.compareSync(password, user.password);
         if(validPassword === false) {
-            next(ApiError.BadRequest("Введен неверный пароль"));
+            return next(ApiError.BadRequest("Введен неверный пароль"));//Раньше тут не было return, но тогда после next идет выполнение дальше
         }
 
         const token = generateAccessToken(user._id, user.username, user.roles);
