@@ -2,6 +2,7 @@ import ApiError from "../exceptions/apiError";
 import {check} from "express-validator";
 import userController from "../controllers/userController";
 import Router from "express";
+import fileController from "../controllers/fileController";
 
 const router = Router();
 
@@ -13,9 +14,10 @@ const router = Router();
 //     ], authController.registration);
 
 router.get('/students/:id', userController.getStudentById)
-
 router.get('/students', userController.getStudents);
 router.get('/studentslessons', userController.getStudentsWithSkippedLessons);
+
+router.get('/:id/avatar/:avatarName', fileController.LoadImage);
 
 //router.get('', UserController.getNameAndRoles)
 

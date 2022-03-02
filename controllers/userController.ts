@@ -3,6 +3,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import User from '../models/User';
 import Lesson from "../models/Lesson";
 import UserRepository from "../repositories/userRepository";
+import fs from 'fs';
+import path from "path";
 
 class UserController {
     async getMyData (req: Request, res: Response, next: NextFunction) {//Здесь мы получаем наш токен
@@ -12,9 +14,17 @@ class UserController {
         
         const myProfileMongo = await User.findOne({username: usernameFromToken});
         
-        const {username, name, roles} = myProfileMongo;
+        const {id, username, name, roles} = myProfileMongo;
 
-        return res.json({username, name, roles});
+        // let uriImagePath;
+        // const files = fs.readdirSync('./images/usersAvatar');
+        // files.forEach(oneFile => {
+        //     if(oneFile === `${id}.jpeg`) {
+        //         uriImagePath = path.join(__dirname, '/../images/usersAvatar/', oneFile);
+        //     }
+        // });
+
+        return res.json({id, username, name, roles});
     }
 
     async getStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)

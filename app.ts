@@ -2,7 +2,8 @@ import express, {Application} from "express";
 import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
-import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "./types";
+import fileController from "./controllers/fileController";
+//import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "./types";
 
 const config = require('./config/config');
 
@@ -21,8 +22,16 @@ const io = new Server(httpServer);
 
 io.on('connection', (socket: any) => {
     console.log('a user connected');
+
+    socket.on("chat message", (msg: string) => {
+        console.log(msg);
+        io.emit("chat message", msg);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
 });
-//const ioe = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>();
 
 const corsOptions = {
     origin: ["http://localhost:3000",
@@ -31,19 +40,24 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 
-
-app.use(express.json());
 //app.use(cors(corsOptions));
 app.use(cors());
 
+const fileUpload = require('express-fileupload');
+app.use(fileUpload({}));
+
+app.use(express.json());
+
 //app.use('/', authMiddleware);
 app.use('/api/lessons', authMiddleware, lessonRoutes);
-app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/users', userRoutes);//authMiddleware
 //app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
 app.use('/myprofile', authMiddleware, userController.getMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
 
 app.use('/api/auth', authRoutes);
 app.use(errorMiddleware);
+
+app.post('/upload', fileController.SaveImage);
 
 
 const start = async () => { 
