@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
 import fileController from "./controllers/fileController";
+import messagesController from "./controllers/messagesController";
 //import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "./types";
 
 const config = require('./config/config');
@@ -50,14 +51,17 @@ app.use(express.json());
 
 //app.use('/', authMiddleware);
 app.use('/api/lessons', authMiddleware, lessonRoutes);
-app.use('/api/users', userRoutes);//authMiddleware
+app.use('/api/users', userRoutes);//аватарки тут
 //app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
 app.use('/myprofile', authMiddleware, userController.getMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
 
 app.use('/api/auth', authRoutes);
-app.use(errorMiddleware);
+
+app.use('/messages', authMiddleware, messagesController.GetMessages);
 
 app.post('/upload', fileController.SaveImage);
+
+app.use(errorMiddleware);
 
 
 const start = async () => { 
