@@ -13,9 +13,23 @@ class MessagesController {
 
         const myChatMessages = await MessagesRepository.getMessages(myId, id);
         
-        console.log(myChatMessages);
+        //console.log(myChatMessages);
         return res.json(myChatMessages);
     }
+
+    async GetLastMessage(req: Request, res: Response, next: NextFunction) {
+
+        const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
+
+        const myLastMessages = await MessagesRepository.getLastMessage(myId);
+
+        console.log(myLastMessages);
+        return res.json(myLastMessages);
+    }
+
+    // async AddMessage(req: Request, res: Response, next: NextFunction) {
+    //     await MessagesRepository.addMessage(req.)
+    // }
 }
 
 export default new MessagesController();

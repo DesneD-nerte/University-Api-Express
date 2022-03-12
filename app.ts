@@ -3,14 +3,16 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
 import fileController from "./controllers/fileController";
-import messagesController from "./controllers/messagesController";
-//import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "./types";
 
 const config = require('./config/config');
+
+//const formData = require('express-form-data');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const lessonRoutes = require('./routes/lessonRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const newsRoutes = require('./routes/newsRoutes');
 
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -21,18 +23,29 @@ const httpServer = require('http').createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(httpServer);
 
+
+// получаем обработчики событий
+//const registerMessageHandlers = require('./services/messageHandlers')
+//const registerUserHandlers = require('./services/userHandlers')
+
 io.on('connection', (socket: any) => {
     console.log('a user connected');
 
-    socket.on("chat message", (msg: string) => {
-        console.log(msg);
-        io.emit("chat message", msg);
-    });
+    //const { idMessages } = socket.handshake.query;
+    //socket.idMessages = idMessages;
+
+    //socket.join(idMessages);
+
+    //registerMessageHandlers(io, socket);
+    //registerUserHandlers(io, socket);
+
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        //socket.leave(idMessages);
     });
 });
+
 
 const corsOptions = {
     origin: ["http://localhost:3000",
@@ -47,7 +60,9 @@ app.use(cors());
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({}));
 
-app.use(express.json());
+//app.use(formData.parse());
+
+app.use(express.json());;
 
 //app.use('/', authMiddleware);
 app.use('/api/lessons', authMiddleware, lessonRoutes);
@@ -57,7 +72,9 @@ app.use('/myprofile', authMiddleware, userController.getMyData)//Что если
 
 app.use('/api/auth', authRoutes);
 
-app.use('/messages', authMiddleware, messagesController.GetMessages);
+app.use('/messages', authMiddleware, messageRoutes);
+
+app.use('/news', authMiddleware, newsRoutes)
 
 app.post('/upload', fileController.SaveImage);
 

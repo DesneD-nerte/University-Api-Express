@@ -10,10 +10,17 @@ class FileController {
         let idUserImage;
 
         if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
+            if(!req.body.file) {
+                return res.status(400).send('No files were uploaded.');
+            }
         }
         
-        sampleFile = req.files.file as UploadedFile;
+        if(req.files) {
+            sampleFile = req.files.file as UploadedFile;
+        } else {
+            sampleFile = req.body.file as UploadedFile;
+        }
+
         idUserImage = req.body.id + '.jpeg';
         uploadPath = path.join(__dirname, '/../images/usersAvatar/', idUserImage);
 
@@ -36,7 +43,7 @@ class FileController {
         if(files.includes(`${fileName}`)) {
             const uriImagePath = path.join(__dirname, '/../images/usersAvatar/', `${fileName}`);
             
-            console.log(uriImagePath);
+            //console.log(uriImagePath);
             res.sendFile(uriImagePath);//Отправка всего пути изображения с сервера
         } else {
             res.sendStatus(400);

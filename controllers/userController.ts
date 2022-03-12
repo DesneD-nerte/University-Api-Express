@@ -12,9 +12,9 @@ class UserController {
         
         const myProfileMongo = await User.findOne({username: usernameFromToken});
         
-        const {id, username, name, roles} = myProfileMongo;
-
-        return res.json({id, username, name, roles});
+        const {id, username, name, roles, imageUri} = myProfileMongo;
+        console.log(imageUri);
+        return res.json({id, username, name, roles, imageUri});
     }
 
     async getStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)
@@ -51,6 +51,14 @@ class UserController {
         const student = await User.findOne({_id: req.params.id});
 
         return res.json(student);
+    }
+
+    async getAll(req: Request, res: Response, next: NextFunction) {
+        console.log('getall Method');
+
+        const users = await User.find({});
+
+        res.json(users);
     }
 }
 

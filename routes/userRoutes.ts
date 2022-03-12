@@ -17,6 +17,8 @@ router.get('/students/:id', userController.getStudentById)
 router.get('/students', userController.getStudents);
 router.get('/studentslessons', userController.getStudentsWithSkippedLessons);
 
+router.get('/all', userController.getAll);
+
 router.get('/:id/avatar/:avatarName', fileController.LoadImage);
 
 //router.get('', UserController.getNameAndRoles)
