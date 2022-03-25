@@ -50,4 +50,8 @@ export default class UserRepository {
             }
         ])
     }
+
+    static async getUserById(id: string) {
+        return await User.findById(id);
+    }
 }

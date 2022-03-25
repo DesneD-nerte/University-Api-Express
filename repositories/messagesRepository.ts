@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Chat from "../models/Chat";
+import User from "../models/User";
 import { Message } from "../types";
 //import { Message } from '../models/Message';
 
@@ -103,7 +104,14 @@ export default class MessagesRepository {
         ])
     }
 
-    static async addMessage(message: Message) {
+    static async addMessage(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, message: Message) {
+        console.log(message);
 
+        return await Chat.updateOne({
+                users: {$all: [new mongoose.Types.ObjectId(myId), new mongoose.Types.ObjectId(id)]}},
+            {
+                $push: {messages: {content: message.content, createdAt: new Date (message.createdAt), user: new User(message.user)}}
+            }
+        )
     }
 }

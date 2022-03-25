@@ -6,6 +6,6 @@ const router = Router();
 //messages
 router.get('/getChatRoomMessages', messagesController.GetMessages);
 router.get('/getLastMessages', messagesController.GetLastMessage);
-//router.post('/addMessage', messagesController.AddMessage);
+router.post('/addMessage', messagesController.AddMessage);
 
 module.exports = router;

@@ -6,7 +6,9 @@ const {Router} = require('express');
 const router = Router();
 
 //  '/news'
-router.get('/getnews', newsController.GetAllNews)
+router.get('/getnews', newsController.GetNews);
+router.get('/getallnews', newsController.GetAllNews);
+router.post('/postnews', newsController.PostNewNews);
 
 
 module.exports = router;

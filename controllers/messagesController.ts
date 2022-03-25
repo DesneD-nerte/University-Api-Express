@@ -11,25 +11,34 @@ class MessagesController {
         const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
         const id = new mongoose.Types.ObjectId(req.query.id?.toString());
 
-        const myChatMessages = await MessagesRepository.getMessages(myId, id);
-        
-        //console.log(myChatMessages);
-        return res.json(myChatMessages);
+        const myChatMessages = await MessagesRepository.getMessages(myId, id); //:Array
+        const myChatMessagesObject = myChatMessages[0];
+
+        // console.log(myChatMessagesObject);
+        return res.json(myChatMessagesObject);
     }
 
     async GetLastMessage(req: Request, res: Response, next: NextFunction) {
 
         const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-
         const myLastMessages = await MessagesRepository.getLastMessage(myId);
 
-        console.log(myLastMessages);
+        // console.log(myLastMessages);
         return res.json(myLastMessages);
     }
 
-    // async AddMessage(req: Request, res: Response, next: NextFunction) {
-    //     await MessagesRepository.addMessage(req.)
-    // }
+    async AddMessage(req: Request, res: Response, next: NextFunction) {
+
+        const myId = new mongoose.Types.ObjectId(req.body.myId?.toString());
+        const id = new mongoose.Types.ObjectId(req.body.id?.toString());
+        const message = req.body.message;
+
+        MessagesRepository.addMessage(myId, id, message)
+        .then(result => res.sendStatus(200))
+        .catch(error => res.send(error));
+
+        //return res.sendStatus(200);
+    }
 }
 
 export default new MessagesController();

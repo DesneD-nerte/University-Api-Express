@@ -64,7 +64,9 @@ class AuthControllers {
         const token = generateAccessToken(user._id, user.username, user.roles);
         //Токен - просто строка (string)
         
-        return res.json({token});
+        const { _id, name, email, roles, imageUri } = user;
+
+        return res.json({token, _id, username, name, email, roles, imageUri});
     }
 
     async logout (req: Request, res: Response, next: NextFunction) {

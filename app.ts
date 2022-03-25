@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
 import fileController from "./controllers/fileController";
+import UserRepository from "./repositories/userRepository";
+import { Message } from "./types";
+import MessagesRepository from "./repositories/messagesRepository";
 
 const config = require('./config/config');
 
@@ -24,27 +27,38 @@ const { Server } = require("socket.io");
 const io = new Server(httpServer);
 
 
-// получаем обработчики событий
-//const registerMessageHandlers = require('./services/messageHandlers')
-//const registerUserHandlers = require('./services/userHandlers')
+type connectedUsersType = {
+    [key: string]: string
+}
+let connectedUsers: connectedUsersType = {};
 
 io.on('connection', (socket: any) => {
-    console.log('a user connected');
+    console.log('a user connected ' + socket.id);
 
-    //const { idMessages } = socket.handshake.query;
-    //socket.idMessages = idMessages;
+    socket.on('logged-in', (myId: string) => {
+        console.log('logged-in server');
+        connectedUsers[myId] = socket.id;
+        console.log(connectedUsers);
+    })
 
-    //socket.join(idMessages);
+    socket.on('sendMessage', (result: any) => {
+        console.log('sendMessage server');
+        console.log(connectedUsers);
+        const {content, createdAt, user} = result.message;
+        const mainMessage = {content, createdAt, user};
 
-    //registerMessageHandlers(io, socket);
-    //registerUserHandlers(io, socket);
-
+        MessagesRepository.addMessage(result.message.user._id, result.receiverId, mainMessage)
+        .then(resRepos => {
+           io.to(connectedUsers[result.message.user._id]).emit('updateMessages');
+           io.to(connectedUsers[result.receiverId]).emit('updateMessages');
+        });
+    });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        //socket.leave(idMessages);
     });
 });
+
 
 
 const corsOptions = {
