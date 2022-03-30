@@ -58,7 +58,7 @@ class AuthControllers {
         
         const validPassword: boolean = bcryptjs.compareSync(password, user.password);
         if(validPassword === false) {
-            return next(ApiError.BadRequest("Введен неверный пароль"));//Раньше тут не было return, но тогда после next идет выполнение дальше
+            return next(ApiError.BadRequest("Введен неверный логин или пароль"));//Раньше тут не было return, но тогда после next идет выполнение дальше
         }
 
         const token = generateAccessToken(user._id, user.username, user.roles);

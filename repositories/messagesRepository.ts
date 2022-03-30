@@ -61,6 +61,19 @@ export default class MessagesRepository {
         )
     }
 
+    static async checkExistingChatRoomMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId) {
+        return await Chat.aggregate([
+            {
+                $match: {
+                    $and: [
+                      {users: myId},
+                      {users: id}
+                    ]
+                }
+            },
+        ])
+    }
+
     static async getLastMessage(myId: mongoose.Types.ObjectId) {
         //return await Chat.find({'users': myId}, {'lastMessage': {$slice: ['$messages', -1]}, 'users': 1 });
         return await Chat.aggregate([

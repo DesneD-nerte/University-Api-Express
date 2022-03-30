@@ -24,7 +24,7 @@ class NewsController {
     }
 
     async PostNewNews (req: Request, res: Response, next: NextFunction) {
-        const newNews = req.body.newNews;
+        const newNews = req.body.data.newNews;
 
         News.create(newNews)
         .then(response => {
@@ -32,8 +32,17 @@ class NewsController {
         })
         .catch(error => {
             res.sendStatus(400);
-        })
-       
+        })  
+    }
+
+    async DeleteNews(req: Request, res: Response, next: NextFunction) {
+        const arrayToDelete: Array<typeof News> = req.body.oldNews;
+
+        for (let i = 0; i < arrayToDelete.length; i++) {
+            await News.deleteOne(arrayToDelete[i]);
+        }
+
+        return res.sendStatus(200);
     }
 }
 

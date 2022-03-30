@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import ApiError from "../exceptions/apiError";
 
 import {JwtPayload, verify} from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 const {secret} = require('../config/config');
 
 module.exports = function (req: Request, res: Response, next: any) {
@@ -12,8 +13,13 @@ module.exports = function (req: Request, res: Response, next: any) {
             throw ApiError.UnauthorizedError();
         }
         
-        const decodedData: JwtPayload = verify(token, secret);
-        req.body.user = decodedData;
+        jwt.verify(token, secret, function(err: Error, decoded: JwtPayload) {
+            if(err) {
+                throw ApiError.TokenExpired();
+            }
+
+            req.body.user = decoded;
+        });
 
         next();
     } catch (error) {
@@ -21,7 +27,7 @@ module.exports = function (req: Request, res: Response, next: any) {
             next(error);
         } else {
             console.log(error);
-            return res.status(400).json({message: "Возможно был исправлен токен"});
+            return res.status(400).json({message: "Необходима повторная авторизация"});
         }
     }
 }

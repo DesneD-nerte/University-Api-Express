@@ -55,8 +55,7 @@ class UserController {
 
     async getAll(req: Request, res: Response, next: NextFunction) {
         console.log('getall Method');
-
-        const users = await User.find({});
+        const users = await User.find({_id: {$nin: [req.query._id]}});
 
         res.json(users);
     }

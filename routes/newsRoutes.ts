@@ -9,6 +9,6 @@ const router = Router();
 router.get('/getnews', newsController.GetNews);
 router.get('/getallnews', newsController.GetAllNews);
 router.post('/postnews', newsController.PostNewNews);
-
+router.delete('/deletenews', newsController.DeleteNews);
 
 module.exports = router;

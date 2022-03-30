@@ -18,6 +18,17 @@ class MessagesController {
         return res.json(myChatMessagesObject);
     }
 
+    async CheckExistingChatRoomMessages (req: Request, res: Response, next: NextFunction) {
+
+        const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
+        const id = new mongoose.Types.ObjectId(req.query.id?.toString());
+
+        const myChatMessages = await MessagesRepository.checkExistingChatRoomMessages(myId, id); //:Array
+        const myChatMessagesObject = myChatMessages[0];
+
+        return res.json(myChatMessagesObject);
+    }
+
     async GetLastMessage(req: Request, res: Response, next: NextFunction) {
 
         const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
@@ -38,6 +49,13 @@ class MessagesController {
         .catch(error => res.send(error));
 
         //return res.sendStatus(200);
+    }
+
+    async AddRoom(req: Request, res: Response, next: NextFunction) {
+        const firstUser = req.body.chatRoom.users[0]
+        const secondUser = req.body.chatRoom.users[1];
+
+        return await new Chat({users: [firstUser, secondUser], messages: []}).save();
     }
 }
 
