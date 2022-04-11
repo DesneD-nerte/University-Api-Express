@@ -9,7 +9,12 @@ const {secret} = require ("../config/config");
 export default class AuthRepository {
 
     static async login(username: string, password: string) {
-        const user = await User.findOne({username: username}); 
+        const user = await User.findOne({username: username})
+            .populate('roles')
+            .populate('faculties')
+            .populate('departments')
+            .populate('groups')
+            .exec(); 
         
         return user;
     }

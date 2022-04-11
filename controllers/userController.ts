@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtPayload } from 'jsonwebtoken';
+import Role from "../models/Role";
 import User from '../models/User';
-import Lesson from "../models/Lesson";
 import UserRepository from "../repositories/userRepository";
+import {roleTeacherObjectId} from '../databaseLinks';
 
 class UserController {
     async getMyData (req: Request, res: Response, next: NextFunction) {//Здесь мы получаем наш токен
@@ -10,11 +11,11 @@ class UserController {
 
         const usernameFromToken = req.body.user.username;
         
-        const myProfileMongo = await User.findOne({username: usernameFromToken});
+        const myProfileMongo = await UserRepository.getMyData(usernameFromToken);
         
-        const {id, username, name, roles, imageUri} = myProfileMongo;
-        console.log(imageUri);
-        return res.json({id, username, name, roles, imageUri});
+        const {id, username, name, roles, imageUri, faculties, departments, groups} = myProfileMongo;
+
+        return res.json({id, username, name, roles, imageUri, faculties, departments, groups});
     }
 
     async getStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)
@@ -30,20 +31,20 @@ class UserController {
         return res.json(massiveStudents);
     }
 
-    async getStudentsWithSkippedLessons(req: Request, res: Response, next: NextFunction) {
-        console.log("getStudentsWithSkippedLessons method.");
+    // async getStudentsWithSkippedLessons(req: Request, res: Response, next: NextFunction) {
+    //     console.log("getStudentsWithSkippedLessons method.");
 
-        const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
-        const page = Number.parseInt(req.query.page?.toString()!) || 0; 
+    //     const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
+    //     const page = Number.parseInt(req.query.page?.toString()!) || 0; 
 
-        const studentsWithCountedLessons = await UserRepository.getMissedLessons(limit, page);
+    //     const studentsWithCountedLessons = await UserRepository.getMissedLessons(limit, page);
 
-        const countStudents = await UserRepository.getCountStudents();
+    //     const countStudents = await UserRepository.getCountStudents();
 
-        res.setHeader('maxStudents', countStudents[0].count);//Так как всегда возвращается массив нужно поставить нулевой индекс
+    //     res.setHeader('maxStudents', countStudents[0].count);//Так как всегда возвращается массив нужно поставить нулевой индекс
 
-        return res.json(studentsWithCountedLessons);
-    }
+    //     return res.json(studentsWithCountedLessons);
+    // }
 
     async getStudentById(req: Request, res: Response, next: NextFunction) {
         console.log("getStudentById method.");
@@ -51,6 +52,20 @@ class UserController {
         const student = await User.findOne({_id: req.params.id});
 
         return res.json(student);
+    }
+
+    async getTeachers(req: Request, res: Response, next: NextFunction) {
+        console.log("getTeachers method.");
+
+        let massiveTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
+            .populate({
+                path: 'roles',
+                // match: {value: 'TEACHER'}
+            })
+            .exec()
+            console.log(massiveTeachers);
+
+            return res.json(massiveTeachers);
     }
 
     async getAll(req: Request, res: Response, next: NextFunction) {

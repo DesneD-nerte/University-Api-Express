@@ -7,15 +7,31 @@ import UserRepository from "./repositories/userRepository";
 import { Message } from "./types";
 import MessagesRepository from "./repositories/messagesRepository";
 
+require('./models/Faculty');
+require('./models/Department');
+require('./models/Group');
+require('./models/Audience');
+require('./models/CurrentLessons');
+require('./models/Lesson');
+
+
 const config = require('./config/config');
 
 //const formData = require('express-form-data');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-const lessonRoutes = require('./routes/lessonRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const newsRoutes = require('./routes/newsRoutes');
+const currentLessonRoutes = require('./routes/currentLessonRoutes');
+
+const lessonRoutes = require('./routes/additionalRoutes.ts/lessonRoutes');
+const audienceRoutes = require('./routes/additionalRoutes.ts/audienceRoutes');
+const departmentRoutes = require('./routes/additionalRoutes.ts/departmentRoutes');
+const facultyRoutes = require('./routes/additionalRoutes.ts/facultyRoutes');
+const groupRoutes = require('./routes/additionalRoutes.ts/groupRoutes');
+const roleRoutes = require('./routes/additionalRoutes.ts/roleRoutes');
+
 
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -79,7 +95,17 @@ app.use(fileUpload({}));
 app.use(express.json());;
 
 //app.use('/', authMiddleware);
-app.use('/api/lessons', authMiddleware, lessonRoutes);
+
+//app.use('/api/lessons', authMiddleware, lessonRoutes);
+app.use('/api/currentlessons', currentLessonRoutes);
+
+app.use('/api/lessons', lessonRoutes);
+app.use('/api/audiences', audienceRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/departments', departmentRoutes);
+app.use('/api/faculties', facultyRoutes);
+
 app.use('/api/users', userRoutes);//аватарки тут
 //app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
 app.use('/myprofile', authMiddleware, userController.getMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 

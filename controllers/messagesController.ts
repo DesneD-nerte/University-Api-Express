@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtPayload } from 'jsonwebtoken';
-import Lesson from "../models/Lesson";
 import MessagesRepository from "../repositories/messagesRepository";
 import mongoose from "mongoose";
 import Chat from "../models/Chat";

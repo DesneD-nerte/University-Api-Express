@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
-const Lesson = new Schema({
+const Faculty = new Schema({
     name: {type: String, unique: true, required: true}
 });
 
-export = model('Lesson', Lesson);
+export = model('Faculty', Faculty);
