@@ -15,6 +15,7 @@ const router = Router();
 
 router.get('/students/:id', userController.getStudentById)
 router.get('/students', userController.getStudents);
+router.get('/:groupId/students', userController.getStudentsByGroupId);
 //router.get('/studentslessons', userController.getStudentsWithSkippedLessons);
 
 router.get('/teachers', userController.getTeachers);

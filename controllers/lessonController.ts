@@ -6,7 +6,6 @@ class LessonController {
     async getCurrentLessons (req: Request, res: Response, next: NextFunction) {
         try {
             const lessons = await LessonRepository.getCurrentLessons();
-            console.log(lessons);
 
             return res.json(lessons);
 
@@ -19,10 +18,18 @@ class LessonController {
 
     async saveNewCurrentLesson (req: Request, res: Response, next: NextFunction) {
         const body = req.body;
-        console.log(body);
+
         const currentLesson = new CurrentLessons({name: body.lessonNameId, teacher: body.teacherId, classroom: body.classRoomId, beginDate: body.startDate, endDate: body.endDate, group: body.groupId})
         await currentLesson.save();
+        
+        return res.json(currentLesson);
+    }
 
+    async saveNewArrayCurrentLessons (req: Request, res: Response, next: NextFunction) {
+        const arrayCurrentLessons = req.body;
+        console.log(arrayCurrentLessons);
+        
+        
         return res.sendStatus(200);
     }
 

@@ -24,6 +24,7 @@ const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const currentLessonRoutes = require('./routes/currentLessonRoutes');
+const markRoutes = require('./routes/markRoutes');
 
 const lessonRoutes = require('./routes/additionalRoutes.ts/lessonRoutes');
 const audienceRoutes = require('./routes/additionalRoutes.ts/audienceRoutes');
@@ -98,6 +99,7 @@ app.use(express.json());;
 
 //app.use('/api/lessons', authMiddleware, lessonRoutes);
 app.use('/api/currentlessons', currentLessonRoutes);
+app.use('/api/marks', markRoutes);
 
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/audiences', audienceRoutes);

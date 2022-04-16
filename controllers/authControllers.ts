@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, response } from "express";
 import { validationResult } from "express-validator";
 import ApiError from "../exceptions/apiError";
 
@@ -9,9 +9,13 @@ import bcryptjs from 'bcryptjs';
 import jwt from "jsonwebtoken";
 const {secret} = require ("../config/config");
 
-import getDocRole from "../helpers/dbGetDocRole";
+import {getDocRole, getDocDepartment, getDocGroup, getDocFaculty} from "../helpers/dbGetDocEntities";
 import { ObjectId } from "mongoose";
 import AuthRepository from "../repositories/authRepository";
+import AuthGenerator from '../services/authGenerator';
+import Faculty from "../models/Faculty";
+import Group from "../models/Group";
+import Department from "../models/Department";
 
 const generateAccessToken = (id: ObjectId, username: string, roles: Array<string>) => {
     const payload = {
@@ -69,7 +73,7 @@ class AuthControllers {
             return next(ApiError.BadRequest("Введен неверный логин или пароль"));//Раньше тут не было return, но тогда после next идет выполнение дальше
         }
 
-        console.log(user);
+        console.log('Login', user);
 
         const token = generateAccessToken(user._id, user.username, user.roles);
         
@@ -78,8 +82,34 @@ class AuthControllers {
         return res.json({token, _id, username, name, email, roles, imageUri, faculties, departments, groups});
     }
 
-    async logout (req: Request, res: Response, next: NextFunction) {
-        
+    async registrationArray(req: Request, res: Response, next: NextFunction) {
+        const arrayUsers = req.body;
+        const arrayUsersDataBase: Array<typeof User> = []; 
+        const arrayUsersClientResponse: Array<any> = [];
+
+        for (const oneUser of arrayUsers) {
+            const generatedUsername = AuthGenerator.generateLogin(oneUser.name);
+            const generatedPassword = AuthGenerator.generatePassword(8)////////////Длина пароля
+            const hashPassword: string = bcryptjs.hashSync(generatedPassword, 7);
+
+            const userRolesDocs = await getDocRole(Role, oneUser.roles);
+            const userFacultiesDocs = await getDocFaculty(Faculty, oneUser.faculties);
+            const userGroupsDocs = await getDocGroup(Group, oneUser.groups);
+            const userDepartmentsDocs = await getDocDepartment(Department, oneUser.departments);
+
+            const user = new User({username: generatedUsername, name: oneUser.name, password: hashPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs});
+            const userClientResponse = {username: generatedUsername, name: oneUser.name, password: generatedPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs};
+         
+            console.log(userRolesDocs);
+
+            arrayUsersDataBase.push(user);
+            arrayUsersClientResponse.push(userClientResponse);
+        }
+        console.log(arrayUsersClientResponse);
+
+        User.insertMany(arrayUsersDataBase)
+            .then(docs => res.json(arrayUsersClientResponse))
+            .catch(error => console.log('AuthController', error));
     }
 }
 

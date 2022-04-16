@@ -9,6 +9,7 @@ const router = Router();
 //  /api/currentlessons
 router.get('/', lessonController.getCurrentLessons)
 router.post('/savenewcurrentlesson', lessonController.saveNewCurrentLesson);
+router.post('/savenewcurrentlessonsarray', lessonController.saveNewArrayCurrentLessons);
 router.get('/lessongroup', lessonController.getCurrentLessons)
 
 

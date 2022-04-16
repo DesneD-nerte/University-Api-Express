@@ -31,6 +31,15 @@ class UserController {
         return res.json(massiveStudents);
     }
 
+    async getStudentsByGroupId(req: Request, res: Response, next: NextFunction) {
+        console.log('getStudentsByGroupId');
+
+        const {groupId} = req.params;
+
+        const arrayStudents = await User.find({groups: [groupId]})
+
+        return res.json(arrayStudents);
+    }
     // async getStudentsWithSkippedLessons(req: Request, res: Response, next: NextFunction) {
     //     console.log("getStudentsWithSkippedLessons method.");
 

@@ -31,6 +31,7 @@ class UnitedAdditionalController {
         return res.json(arrayGroup);
     }
     
+    
     async getDepartments (req: Request, res: Response, next: NextFunction) {
         const arrayDepartment = await Department.find({});
         console.log(arrayDepartment);

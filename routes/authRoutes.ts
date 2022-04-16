@@ -13,6 +13,8 @@ router.post('/registration', [
         check('email', "").isEmail()
     ], authController.registration);
 
+router.post('/registration/arrayusers', authController.registrationArray)
+
 router.post('/login', authController.login)
 
 
