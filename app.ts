@@ -6,7 +6,7 @@ import fileController from "./controllers/fileController";
 import UserRepository from "./repositories/userRepository";
 import { Message } from "./types";
 import MessagesRepository from "./repositories/messagesRepository";
-
+import * as ios from 'socket.io';
 require('./models/Faculty');
 require('./models/Department');
 require('./models/Group');
@@ -41,8 +41,8 @@ const authMiddleware = require('./middlewares/authMiddleware');
 const app: Application = express();
 const httpServer = require('http').createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(httpServer);
-
+var io: ios.Server = new Server(httpServer);
+global.io = io;
 
 type connectedUsersType = {
     [key: string]: string
@@ -61,8 +61,8 @@ io.on('connection', (socket: any) => {
     socket.on('sendMessage', (result: any) => {
         console.log('sendMessage server');
         console.log(connectedUsers);
-        const {content, createdAt, user} = result.message;
-        const mainMessage = {content, createdAt, user};
+        const {content, createdAt, user, isVisible} = result.message;
+        const mainMessage = {content, createdAt, user, isVisible};
 
         MessagesRepository.addMessage(result.message.user._id, result.receiverId, mainMessage)
         .then(resRepos => {

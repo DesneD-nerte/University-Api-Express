@@ -1,3 +1,6 @@
+import { HydratedDocument, Query } from 'mongoose';
+import User from '../models/User';
+
 export default class AuthGenerator {
 
     static #characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&()';
@@ -65,5 +68,45 @@ function separateName (stringTranslit: string) {
         }
     }
 
-    return generatedUsername;
+    return correctLoginNumbers(generatedUsername)
+}
+
+async function correctLoginNumbers (login: string) {
+    const loginNumbers = await getLastExistingLoginNumbers(login);
+    let intNumbers: number = 0;
+
+    if(Number.isInteger(parseInt(loginNumbers))) {
+        intNumbers = parseInt(loginNumbers);
+        console.log('intNumbers', intNumbers);
+    }  
+
+    intNumbers += 1;
+
+    const newLogin = login + intNumbers;
+    console.log('newLogin', newLogin);
+
+    return newLogin;
+}
+
+async function getLastExistingLoginNumbers (login: string) {
+    const userDocs = await User.find({username: {$regex: login}});
+    const emptyNumbers = '';
+    console.log(userDocs);
+    if(userDocs.length !== 0) { 
+        const lastLoginNumber = userDocs.pop();
+        const {username} = lastLoginNumber; 
+
+        for (let i = 0; i < username.length; i++) {
+            const oneLetter = username[i];
+            console.log(oneLetter);
+            if(Number.isInteger(parseInt(oneLetter))) {
+                console.log('qwe');
+                return username.slice(i);
+            }
+        }
+        
+        return emptyNumbers;
+    }
+
+    return emptyNumbers;
 }

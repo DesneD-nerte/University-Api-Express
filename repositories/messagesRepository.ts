@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaTypes, Types } from "mongoose";
 import Chat from "../models/Chat";
 import User from "../models/User";
 import { Message } from "../types";
@@ -74,6 +74,28 @@ export default class MessagesRepository {
         ])
     }
 
+    static async getCountBadge(myId: mongoose.Types.ObjectId, other: mongoose.Types.ObjectId) {
+        return await Chat.aggregate([
+            {
+                $unwind: '$messages'
+            },
+            {
+                $match: {
+                    'users': {$in: [myId]}, //Пользователь который запрашивает
+                    'messages.user': other  //Другой пользователь
+                },
+            },
+            {
+                $sortByCount: '$messages.isVisible'
+            },
+            {
+                $match: {
+                    '_id': false
+                }
+            }
+        ])
+    }
+
     static async getLastMessage(myId: mongoose.Types.ObjectId) {
         //return await Chat.find({'users': myId}, {'lastMessage': {$slice: ['$messages', -1]}, 'users': 1 });
         return await Chat.aggregate([
@@ -118,12 +140,12 @@ export default class MessagesRepository {
     }
 
     static async addMessage(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, message: Message) {
-        console.log(message);
+        console.log('new message', message);
 
         return await Chat.updateOne({
                 users: {$all: [new mongoose.Types.ObjectId(myId), new mongoose.Types.ObjectId(id)]}},
             {
-                $push: {messages: {content: message.content, createdAt: new Date (message.createdAt), user: new User(message.user)}}
+                $push: {messages: {content: message.content, createdAt: new Date (message.createdAt), user: new User(message.user), isVisible: message.isVisible}}
             }
         )
     }

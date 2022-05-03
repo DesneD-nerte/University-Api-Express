@@ -4,5 +4,6 @@ export type Message = {
     _id?: Schema.Types.ObjectId,/////?
     content: String,
     createdAt: Date,
-    user: Schema.Types.ObjectId
+    user: Schema.Types.ObjectId,
+    isVisible: Boolean/////////////////!!!!!!
 }

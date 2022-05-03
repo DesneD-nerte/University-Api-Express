@@ -88,7 +88,15 @@ class AuthControllers {
         const arrayUsersClientResponse: Array<any> = [];
 
         for (const oneUser of arrayUsers) {
-            const generatedUsername = AuthGenerator.generateLogin(oneUser.name);
+            const existingUser = await User.findOne({email: oneUser.email});
+            if(existingUser) {
+                const userClientResponse = {username: '—', name: oneUser.name, password: '—', roles: ['STUDENT'], email: 'Пользователь уже зарегистрирован'};
+                arrayUsersClientResponse.push(userClientResponse);
+                
+                continue;
+            }
+            const generatedUsername = await AuthGenerator.generateLogin(oneUser.name);
+            console.log('generated', generatedUsername);
             const generatedPassword = AuthGenerator.generatePassword(8)////////////Длина пароля
             const hashPassword: string = bcryptjs.hashSync(generatedPassword, 7);
 
@@ -96,11 +104,9 @@ class AuthControllers {
             const userFacultiesDocs = await getDocFaculty(Faculty, oneUser.faculties);
             const userGroupsDocs = await getDocGroup(Group, oneUser.groups);
             const userDepartmentsDocs = await getDocDepartment(Department, oneUser.departments);
-
+            
             const user = new User({username: generatedUsername, name: oneUser.name, password: hashPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs});
             const userClientResponse = {username: generatedUsername, name: oneUser.name, password: generatedPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs};
-         
-            console.log(userRolesDocs);
 
             arrayUsersDataBase.push(user);
             arrayUsersClientResponse.push(userClientResponse);
