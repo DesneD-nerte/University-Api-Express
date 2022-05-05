@@ -47,15 +47,16 @@ global.io = io;
 type connectedUsersType = {
     [key: string]: string
 }
-let connectedUsers: connectedUsersType = {};
+var connectedUsers: connectedUsersType = {};
+
 
 io.on('connection', (socket: any) => {
     console.log('a user connected ' + socket.id);
 
     socket.on('logged-in', (myId: string) => {
-        console.log('logged-in server');
         connectedUsers[myId] = socket.id;
-        console.log(connectedUsers);
+
+        global.connectedUsers = connectedUsers;
     })
 
     socket.on('sendMessage', (result: any) => {

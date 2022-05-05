@@ -6,11 +6,16 @@ import Chat from "../models/Chat";
 
 class MessagesController {
     async GetMessages (req: Request, res: Response, next: NextFunction) {
-
         const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
         const id = new mongoose.Types.ObjectId(req.query.id?.toString());
-
-        const myChatMessages = await MessagesRepository.getMessages(myId, id); //:Array
+        
+        let skip = 0;
+        if(req.query.skip) {
+            skip = parseInt(req.query.skip?.toString());
+        }
+        
+        // const myChatMessages = await MessagesRepository.getMessages(myId, id); //:Array
+        const myChatMessages = await MessagesRepository.testgetMessages(myId, id, skip);
         const myChatMessagesObject = myChatMessages[0];
 
         // console.log(myChatMessagesObject);
@@ -82,23 +87,18 @@ class MessagesController {
     //     return res.sendStatus(200);
     // }
     async UpdateVisibleAllMessages(req: Request, res: Response, next: NextFunction) {
-        const {chatMessages, id} = req.body;
-        console.log('chat', chatMessages);
-        console.log('id', id);
+        const {chatMessages, id, myId} = req.body;
 
         const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
         const objectId = new mongoose.Types.ObjectId(id);
-        console.log('chat', chatObjectId);
-        console.log('user', objectId);
 
-        // await Chat.updateOne({_id: chatMessage._id, 'messages.isVisible': false}, {$set: {'messages.$[].isVisible': true}}, {upsert: true})
-        const lol = await Chat.updateOne(
+        await Chat.updateOne(
             {_id: chatObjectId},
             {$set: {'messages.$[oneMessage].isVisible': true}},
             {arrayFilters: [{'oneMessage.user': objectId}]}
         )
-        console.log(lol);
-        global.io.emit('updateMessages');
+        
+        global.io.to(global.connectedUsers[myId]).emit('updateMessages');
 
         return res.sendStatus(200);
     }

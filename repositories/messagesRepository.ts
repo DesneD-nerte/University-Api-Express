@@ -61,6 +61,77 @@ export default class MessagesRepository {
         )
     }
 
+    static async testgetMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, skip: number) {
+        return await Chat.aggregate([
+            {
+                $match: {
+                    $and: [
+                      {users: myId},
+                      {users: id}
+                    ]
+                }
+             },
+            {    
+                $lookup: {
+                    from: 'users',
+                    localField: 'users',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            },
+            {
+                $unwind: {
+                    path: "$messages"
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'messages.user',
+                    foreignField: '_id',
+                    as: 'messages.user'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$messages.user'
+                }
+            },
+            {
+                $sort: {
+                    "messages._id": -1
+                }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: 20
+            },
+            {
+                $sort: {
+                    "messages._id": 1
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    root: { $mergeObjects: '$$ROOT' },
+                    messages: { $push: '$messages' }
+                }
+            },
+            {
+                $replaceRoot: {
+                    newRoot: { $mergeObjects: ['$root', '$$ROOT'] }
+                }
+            },
+            {
+                $project: { root: 0 }
+            }
+        ]
+        )
+    }
+
     static async checkExistingChatRoomMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId) {
         return await Chat.aggregate([
             {
