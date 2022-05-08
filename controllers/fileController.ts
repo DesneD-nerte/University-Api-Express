@@ -37,14 +37,24 @@ class FileController {
         const idUser = req.params.id;
         const fileName = req.params.avatarName;
 
-        //const uriImagePath
-
         const files = fs.readdirSync('./images/usersAvatar');
         if(files.includes(`${fileName}`)) {
             const uriImagePath = path.join(__dirname, '/../images/usersAvatar/', `${fileName}`);
             
-            //console.log(uriImagePath);
             res.sendFile(uriImagePath);//Отправка всего пути изображения с сервера
+        } else {
+            res.sendStatus(400);
+        }
+    }
+
+    async LoadLoginImage (req: Request, res: Response, next: NextFunction) {
+        const fileName = req.params.imageName;
+
+        const files = fs.readdirSync('./images/loginPage');
+        if(files.includes(`${fileName}`)) {
+            const uriImagePath = path.join(__dirname, '/../images/loginPage/', `${fileName}`);
+            
+            res.sendFile(uriImagePath);
         } else {
             res.sendStatus(400);
         }

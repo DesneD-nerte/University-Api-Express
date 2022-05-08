@@ -24,13 +24,13 @@ class MarkController {
 
         const arrayOneGroupStudents = await User.find({groups: [appointmentData.groupId]});
         
-        const arrayMarks: Array<typeof Mark> = []
+        // const arrayMarks: Array<typeof Mark> = []
         for (const oneStudent of arrayOneGroupStudents) {
             const markOneStudent = await Mark.findOne({user: oneStudent._id, lesson: appointmentData.lessonNameId})
             if(markOneStudent) {
                 markOneStudent.allCurrentLessons.push({currentLesson: newCurrentLesson._id, mark: ''});
                 await markOneStudent.save();
-                arrayMarks.push(markOneStudent);
+                // arrayMarks.push(markOneStudent);
             } else {
                 const newMark = new Mark({
                     user: oneStudent._id,
@@ -39,8 +39,40 @@ class MarkController {
                 })
 
                 await newMark.save();
-                arrayMarks.push(markOneStudent);
+                // arrayMarks.push(markOneStudent);
             }
+        }
+
+        return res.sendStatus(200);
+    }
+
+    async saveNewArrayCurrentLessons(req: Request, res: Response, next: NextFunction) {
+        const {appointmentData, newCurrentLessonsArray} = req.body;
+
+        const arrayOneGroupStudents = await User.find({groups: [appointmentData.groupId]});
+        
+        // const arrayMarks: Array<typeof Mark> = []
+
+        for (const oneStudent of arrayOneGroupStudents) {
+            let markOneStudent = await Mark.findOne({user: oneStudent._id, lesson: appointmentData.lessonNameId})
+
+            for (const newCurrentLesson of newCurrentLessonsArray) {
+                if(markOneStudent) {
+                    markOneStudent.allCurrentLessons.push({currentLesson: newCurrentLesson._id, mark: ''});
+                    await markOneStudent.save();
+                    // arrayMarks.push(markOneStudent);
+                } else {
+                    markOneStudent = new Mark({
+                        user: oneStudent._id,
+                        lesson: appointmentData.lessonNameId,
+                        allCurrentLessons: [{currentLesson: newCurrentLesson._id, mark: ''}]
+                    })
+    
+                    await markOneStudent.save();
+                    // arrayMarks.push(markOneStudent);
+                }   
+            }
+
         }
 
         return res.sendStatus(200);

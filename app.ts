@@ -119,6 +119,8 @@ app.use('/messages', authMiddleware, messageRoutes);
 
 app.use('/news', authMiddleware, newsRoutes)
 
+app.use('/images/:imageName', fileController.LoadLoginImage);
+
 app.post('/upload', fileController.SaveImage);
 
 app.use(errorMiddleware);
