@@ -47,7 +47,7 @@ class FileController {
         }
     }
 
-    async LoadLoginImage (req: Request, res: Response, next: NextFunction) {
+    async LoadLoginImages (req: Request, res: Response, next: NextFunction) {
         const fileName = req.params.imageName;
 
         const files = fs.readdirSync('./images/loginPage');
@@ -58,6 +58,10 @@ class FileController {
         } else {
             res.sendStatus(400);
         }
+    }
+
+    async LoadExcelTemplate (req: Request, res: Response, next: NextFunction) {
+        res.download('./files/Шаблон_для_добавления_пользователей.xlsx');
     }
 }
 

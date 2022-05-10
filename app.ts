@@ -111,15 +111,17 @@ app.use('/api/faculties', facultyRoutes);
 
 app.use('/api/users', userRoutes);//аватарки тут
 //app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
-app.use('/myprofile', authMiddleware, userController.getMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
+app.use('/myprofile', authMiddleware, userController.GetMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
 
 app.use('/api/auth', authRoutes);
 
 app.use('/messages', authMiddleware, messageRoutes);
 
-app.use('/news', authMiddleware, newsRoutes)
+app.use('/news', authMiddleware, newsRoutes);
 
-app.use('/images/:imageName', fileController.LoadLoginImage);
+app.get('/files/getExcelTemplate', authMiddleware, fileController.LoadExcelTemplate);
+
+app.get('/images/:imageName', fileController.LoadLoginImages);
 
 app.post('/upload', fileController.SaveImage);
 

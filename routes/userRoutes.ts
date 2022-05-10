@@ -13,14 +13,14 @@ const router = Router();
 //         check('email', "").isEmail()
 //     ], authController.registration);
 
-router.get('/students/:id', userController.getStudentById)
-router.get('/students', userController.getStudents);
-router.get('/:groupId/students', userController.getStudentsByGroupId);
+router.get('/students/:id', userController.GetStudentById)
+router.get('/students', userController.GetStudents);
+router.get('/:groupId/students', userController.GetStudentsByGroupId);
 //router.get('/studentslessons', userController.getStudentsWithSkippedLessons);
 
-router.get('/teachers', userController.getTeachers);
+router.get('/teachers', userController.GetTeachers);
 
-router.get('/all', userController.getAll);
+router.get('/all', userController.GetAll);
 
 router.get('/:id/avatar/:avatarName', fileController.LoadImage);
 

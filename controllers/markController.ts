@@ -5,7 +5,7 @@ import User from "../models/User";
 import MarkRepository from "../repositories/markRepository";
 
 class MarkController {
-    async getMarks (req: Request, res: Response, next: NextFunction) {
+    async GetMarks (req: Request, res: Response, next: NextFunction) {
         try {
             const marks = await MarkRepository.getMarks();
             console.log(marks);
@@ -19,18 +19,30 @@ class MarkController {
         }
     }
 
-    async saveNewCurrentLesson (req: Request, res: Response, next: NextFunction) {
+    async SaveNewCurrentLesson (req: Request, res: Response, next: NextFunction) {
         const {appointmentData, newCurrentLesson} = req.body;
 
         const arrayOneGroupStudents = await User.find({groups: [appointmentData.groupId]});
         
-        // const arrayMarks: Array<typeof Mark> = []
         for (const oneStudent of arrayOneGroupStudents) {
-            const markOneStudent = await Mark.findOne({user: oneStudent._id, lesson: appointmentData.lessonNameId})
+            const markOneStudent = await MarkRepository.getAdditionalDataMarksOfOneStudent(oneStudent._id, appointmentData.lessonNameId);
             if(markOneStudent) {
-                markOneStudent.allCurrentLessons.push({currentLesson: newCurrentLesson._id, mark: ''});
+                //
+                const currentLessons = markOneStudent.allCurrentLessons;
+                for (let i = currentLessons.length - 1; i >= 0; i--) {
+                    if(currentLessons[i].currentLesson.beginDate < new Date(newCurrentLesson.beginDate)) {
+                        markOneStudent.allCurrentLessons.splice(i + 1, 0, {currentLesson: newCurrentLesson._id, mark: ''}); 
+                        
+                        break;    
+                    } 
+
+                    if(i === 0) {
+                        markOneStudent.allCurrentLessons.unshift({currentLesson: newCurrentLesson._id, mark: ''}); 
+                    }
+                }
+                //
+                // markOneStudent.allCurrentLessons.push({currentLesson: newCurrentLesson._id, mark: ''});
                 await markOneStudent.save();
-                // arrayMarks.push(markOneStudent);
             } else {
                 const newMark = new Mark({
                     user: oneStudent._id,
@@ -39,14 +51,13 @@ class MarkController {
                 })
 
                 await newMark.save();
-                // arrayMarks.push(markOneStudent);
             }
         }
 
         return res.sendStatus(200);
     }
 
-    async saveNewArrayCurrentLessons(req: Request, res: Response, next: NextFunction) {
+    async SaveNewArrayCurrentLessons(req: Request, res: Response, next: NextFunction) {
         const {appointmentData, newCurrentLessonsArray} = req.body;
 
         const arrayOneGroupStudents = await User.find({groups: [appointmentData.groupId]});
@@ -80,6 +91,7 @@ class MarkController {
 
     async UpdateCurrentLesson(req: Request, res: Response, next: NextFunction) {
         const existedMark = req.body;
+
         await Mark.findOneAndUpdate({_id: existedMark._id}, existedMark);
 
         return res.sendStatus(200);

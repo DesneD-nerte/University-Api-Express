@@ -28,7 +28,7 @@ const generateAccessToken = (id: ObjectId, username: string, roles: Array<string
 }
 
 class AuthControllers {
-    async registration (req: Request, res: Response, next: NextFunction) {//roles приходит как ["STUDENT", "TEACHER"]
+    async Registration (req: Request, res: Response, next: NextFunction) {//roles приходит как ["STUDENT", "TEACHER"]
         const errors = validationResult(req);
 
         if(!errors.isEmpty()) {
@@ -60,7 +60,7 @@ class AuthControllers {
         return res.json({message: `hello ${username}`});
     }
 
-    async login(req: Request, res: Response, next: NextFunction) {
+    async Login(req: Request, res: Response, next: NextFunction) {
         const {username, password} = req.body;
 
         const user = await AuthRepository.login(username, password);
@@ -82,7 +82,7 @@ class AuthControllers {
         return res.json({token, _id, username, name, email, roles, imageUri, faculties, departments, groups});
     }
 
-    async registrationArray(req: Request, res: Response, next: NextFunction) {
+    async RegistrationArray(req: Request, res: Response, next: NextFunction) {
         const arrayUsers = req.body;
         const arrayUsersDataBase: Array<typeof User> = []; 
         const arrayUsersClientResponse: Array<any> = [];

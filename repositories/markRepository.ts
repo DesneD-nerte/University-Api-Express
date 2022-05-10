@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import ApiError from "../exceptions/apiError";
 import CurrentLessons from '../models/CurrentLessons';
 import Mark from "../models/Mark";
@@ -22,7 +23,11 @@ export default class MarkRepository {
         return marks;
     }
 
-    static async saveNewCurrentLesson () {
-        
+    static async getAdditionalDataMarksOfOneStudent (_id: ObjectId | string, lessonId: ObjectId | string) {
+        const oneStudentMarks = await Mark.findOne({user: _id, lesson: lessonId})
+            .populate('allCurrentLessons.currentLesson')
+            .exec()
+
+        return oneStudentMarks;
     }
 }

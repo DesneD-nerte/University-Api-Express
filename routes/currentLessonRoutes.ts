@@ -7,10 +7,11 @@ const {Router} = require('express');
 const router = Router();
 
 //  /api/currentlessons
-router.get('/', lessonController.getCurrentLessons)
-router.post('/savenewcurrentlesson', lessonController.saveNewCurrentLesson);
-router.post('/savenewcurrentlessonsarray', lessonController.saveNewArrayCurrentLessons);
-router.get('/lessongroup', lessonController.getCurrentLessons)
+router.get('/', lessonController.GetCurrentLessons)
+router.post('/savenewcurrentlesson', lessonController.SaveNewCurrentLesson);
+router.post('/savenewcurrentlessonsarray', lessonController.SaveNewArrayCurrentLessons);
+router.get('/lessongroup', lessonController.GetCurrentLessons)
+router.put('/updateCurrentLesson', lessonController.UpdateCurrentLesson)
 
 
 module.exports = router;

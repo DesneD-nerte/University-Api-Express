@@ -6,8 +6,7 @@ import UserRepository from "../repositories/userRepository";
 import {roleTeacherObjectId} from '../databaseLinks';
 
 class UserController {
-    async getMyData (req: Request, res: Response, next: NextFunction) {//Здесь мы получаем наш токен
-        console.log(req.body.user);
+    async GetMyData (req: Request, res: Response, next: NextFunction) {//Здесь мы получаем наш токен
 
         const usernameFromToken = req.body.user.username;
         
@@ -18,7 +17,7 @@ class UserController {
         return res.json({id, username, name, roles, imageUri, faculties, departments, groups});
     }
 
-    async getStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)
+    async GetStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)
         console.log("getStudents method.");
 
         const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
@@ -31,8 +30,7 @@ class UserController {
         return res.json(massiveStudents);
     }
 
-    async getStudentsByGroupId(req: Request, res: Response, next: NextFunction) {
-        console.log('getStudentsByGroupId');
+    async GetStudentsByGroupId(req: Request, res: Response, next: NextFunction) {
 
         const {groupId} = req.params;
 
@@ -55,30 +53,24 @@ class UserController {
     //     return res.json(studentsWithCountedLessons);
     // }
 
-    async getStudentById(req: Request, res: Response, next: NextFunction) {
-        console.log("getStudentById method.");
-
+    async GetStudentById(req: Request, res: Response, next: NextFunction) {
         const student = await User.findOne({_id: req.params.id});
 
         return res.json(student);
     }
 
-    async getTeachers(req: Request, res: Response, next: NextFunction) {
-        console.log("getTeachers method.");
-
+    async GetTeachers(req: Request, res: Response, next: NextFunction) {
         let massiveTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
             .populate({
                 path: 'roles',
                 // match: {value: 'TEACHER'}
             })
             .exec()
-            console.log(massiveTeachers);
 
-            return res.json(massiveTeachers);
+        return res.json(massiveTeachers);
     }
 
-    async getAll(req: Request, res: Response, next: NextFunction) {
-        console.log('getall Method');
+    async GetAll(req: Request, res: Response, next: NextFunction) {
         const users = await User.find({_id: {$nin: [req.query._id]}});
 
         res.json(users);

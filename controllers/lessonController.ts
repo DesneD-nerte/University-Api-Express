@@ -3,7 +3,7 @@ import CurrentLessons from "../models/CurrentLessons";
 import LessonRepository from "../repositories/lessonRepository";
 
 class LessonController {
-    async getCurrentLessons (req: Request, res: Response, next: NextFunction) {
+    async GetCurrentLessons (req: Request, res: Response, next: NextFunction) {
         try {
             const lessons = await LessonRepository.getCurrentLessons();
 
@@ -16,7 +16,7 @@ class LessonController {
         }
     }
 
-    async saveNewCurrentLesson (req: Request, res: Response, next: NextFunction) {
+    async SaveNewCurrentLesson (req: Request, res: Response, next: NextFunction) {
         const body = req.body;
 
         const currentLesson = new CurrentLessons({
@@ -27,13 +27,13 @@ class LessonController {
             endDate: body.endDate, 
             group: body.groupId
         })
-        
+
         await currentLesson.save();
         
         return res.json(currentLesson);
     }
 
-    async saveNewArrayCurrentLessons (req: Request, res: Response, next: NextFunction) {
+    async SaveNewArrayCurrentLessons (req: Request, res: Response, next: NextFunction) {
         const arrayBody = req.body;
 
         const arrayCurrentLessons = [];
@@ -51,18 +51,27 @@ class LessonController {
             arrayCurrentLessons.push(currentLesson);
         }
 
-        console.log(arrayBody);
         await CurrentLessons.insertMany(arrayCurrentLessons)
         
         return res.json(arrayCurrentLessons);
     }
 
-    // async getLessonGroup (req: Request, res: Response, next: NextFunction) {
-        
-    //     const lessons = await Lesson.find({})
-    //     console.log(lessons);
-    //     return res.json(lessons);
-    // }
+    async UpdateCurrentLesson (req: Request, res: Response, next: NextFunction) {
+        const updatedCurrentLesson = req.body;
+
+        const newCurrentLessons = new CurrentLessons({
+            _id: updatedCurrentLesson._id,
+            name: updatedCurrentLesson.lessonNameId,
+            teacher: updatedCurrentLesson.teacherId,
+            classroom: updatedCurrentLesson.classRoomId,
+            beginDate: updatedCurrentLesson.startDate,
+            endDate: updatedCurrentLesson.endDate,
+            group: updatedCurrentLesson.groupId
+        })
+        await CurrentLessons.findOneAndUpdate({_id: newCurrentLessons._id}, newCurrentLessons);
+
+        return res.json(updatedCurrentLesson);
+    }
 }
 
 export default new LessonController();

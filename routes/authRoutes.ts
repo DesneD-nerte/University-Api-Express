@@ -11,11 +11,11 @@ router.post('/registration', [
         check('username', "Имя пользователя не может быть пустым").notEmpty(),
         check('password', "Пароль должен быть больше 4 символов").isLength({min: 4}),
         check('email', "").isEmail()
-    ], authController.registration);
+    ], authController.Registration);
 
-router.post('/registration/arrayusers', authController.registrationArray)
+router.post('/registration/arrayusers', authController.RegistrationArray)
 
-router.post('/login', authController.login)
+router.post('/login', authController.Login)
 
 
 module.exports = router;
