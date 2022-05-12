@@ -6,7 +6,7 @@ export default class LessonRepository {
     static async getCurrentLessons () {
         const currentLessons = await CurrentLessons.find({})
             .populate('name')
-            .populate('teacher', {password: 0})
+            .populate('teachers', {password: 0})
             .populate('classroom')
             .populate('group')
             .exec(); 

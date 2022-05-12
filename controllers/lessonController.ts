@@ -21,7 +21,7 @@ class LessonController {
 
         const currentLesson = new CurrentLessons({
             name: body.lessonNameId,
-            teacher: body.teacherId,
+            teachers: body.teacherId,
             classroom: body.classRoomId,
             beginDate: body.startDate,
             endDate: body.endDate, 
@@ -41,7 +41,7 @@ class LessonController {
         for (const oneCurrentLesson of arrayBody) {
             const currentLesson = new CurrentLessons({
                 name: oneCurrentLesson.lessonNameId,
-                teacher: oneCurrentLesson.teacherId,
+                teachers: oneCurrentLesson.teacherId,
                 classroom: oneCurrentLesson.classRoomId,
                 beginDate: oneCurrentLesson.startDate,
                 endDate: oneCurrentLesson.endDate,
@@ -62,7 +62,7 @@ class LessonController {
         const newCurrentLessons = new CurrentLessons({
             _id: updatedCurrentLesson._id,
             name: updatedCurrentLesson.lessonNameId,
-            teacher: updatedCurrentLesson.teacherId,
+            teachers: updatedCurrentLesson.teacherId,
             classroom: updatedCurrentLesson.classRoomId,
             beginDate: updatedCurrentLesson.startDate,
             endDate: updatedCurrentLesson.endDate,
