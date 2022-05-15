@@ -6,6 +6,8 @@ import authController from '../controllers/authControllers';
 const {Router} = require('express');
 const router = Router();
 
+const authMiddleware = require('../middlewares/authMiddleware');
+
 //  /api/auth
 router.post('/registration', [
         check('username', "Имя пользователя не может быть пустым").notEmpty(),
@@ -13,7 +15,7 @@ router.post('/registration', [
         check('email', "").isEmail()
     ], authController.Registration);
 
-router.post('/registration/arrayusers', authController.RegistrationArray)
+router.post('/registration/arrayusers', authMiddleware, authController.RegistrationArray)
 
 router.post('/login', authController.Login)
 

@@ -99,8 +99,8 @@ app.use(express.json());;
 //app.use('/', authMiddleware);
 
 //app.use('/api/lessons', authMiddleware, lessonRoutes);
-app.use('/api/currentlessons', currentLessonRoutes);
-app.use('/api/marks', markRoutes);
+app.use('/api/currentlessons', authMiddleware, currentLessonRoutes);
+app.use('/api/marks', authMiddleware, markRoutes);
 
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/audiences', audienceRoutes);
