@@ -1,4 +1,3 @@
-import ApiError from "../exceptions/apiError";
 import {check} from "express-validator";
 
 import authController from '../controllers/authControllers';

@@ -98,29 +98,23 @@ app.use(express.json());;
 
 //app.use('/', authMiddleware);
 
-//app.use('/api/lessons', authMiddleware, lessonRoutes);
-app.use('/api/currentlessons', authMiddleware, currentLessonRoutes);
-app.use('/api/marks', authMiddleware, markRoutes);
-
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/audiences', audienceRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/faculties', facultyRoutes);
-
 app.use('/api/users', userRoutes);//аватарки тут
-//app.use('/api/users/:username', authMiddleware, userRoutes);//Пока что я могу просматривать только себя, я использую свой токен чтобы узнать как меня зовут
-app.use('/myprofile', authMiddleware, userController.GetMyData)//Что если вместо верхнего, используем не публичный api, а тот который для каждого будет свой 
 
 app.use('/api/auth', authRoutes);
 
+app.use('/currentlessons', authMiddleware, currentLessonRoutes);
+app.use('/marks', authMiddleware, markRoutes);
+app.use('/myprofile', authMiddleware, userController.GetMyData)
 app.use('/messages', authMiddleware, messageRoutes);
-
 app.use('/news', authMiddleware, newsRoutes);
 
 app.get('/files/getExcelTemplate', authMiddleware, fileController.LoadExcelTemplate);
-
 app.get('/images/:imageName', fileController.LoadLoginImages);
 
 app.post('/upload', fileController.SaveImage);
