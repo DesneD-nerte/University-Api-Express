@@ -2,11 +2,11 @@ import express, {Application} from "express";
 import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
-import fileController from "./controllers/fileController";
 import UserRepository from "./repositories/userRepository";
 import { Message } from "./types";
 import MessagesRepository from "./repositories/messagesRepository";
 import * as ios from 'socket.io';
+import fileController from "./controllers/fileController";
 require('./models/Faculty');
 require('./models/Department');
 require('./models/Group');
@@ -104,20 +104,21 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/faculties', facultyRoutes);
-app.use('/api/users', userRoutes);//аватарки тут
 
 app.use('/api/auth', authRoutes);
 
+app.use('/users', authMiddleware, userRoutes);//аватарки тут
 app.use('/currentlessons', authMiddleware, currentLessonRoutes);
 app.use('/marks', authMiddleware, markRoutes);
 app.use('/myprofile', authMiddleware, userController.GetMyData)
 app.use('/messages', authMiddleware, messageRoutes);
 app.use('/news', authMiddleware, newsRoutes);
 
+
 app.get('/files/getExcelTemplate', authMiddleware, fileController.LoadExcelTemplate);
 app.get('/images/:imageName', fileController.LoadLoginImages);
-
-app.post('/upload', fileController.SaveImage);
+app.get('/avatar/:id', fileController.LoadImage);
+app.post('/upload',  authMiddleware, fileController.SaveImage);
 
 app.use(errorMiddleware);
 

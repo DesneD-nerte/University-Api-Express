@@ -2,12 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { UploadedFile } from "express-fileupload";
 import fs from 'fs';
 import path from "path";
+import User from "../models/User";
 
 class FileController {
+
     async SaveImage (req: Request, res: Response, next: NextFunction) {
         let sampleFile: UploadedFile;
-        let uploadPath;
-        let idUserImage;
+        let uploadPath: string;
+        let idUserImage: string;
 
         if (!req.files || Object.keys(req.files).length === 0) {
             if(!req.body.file) {
@@ -25,21 +27,29 @@ class FileController {
         uploadPath = path.join(__dirname, '/../images/usersAvatar/', idUserImage);
 
         // Use the mv() method to place the file somewhere on your server
-        sampleFile.mv(uploadPath, function(err) {
-        if (err)
-            return res.status(500).send(err);
-    
-        res.send('File uploaded!');
+        sampleFile.mv(uploadPath, async function(err) {
+            if (err) {
+                return res.status(500).send(err);
+            }
         });
+       
+
+        const currentUser = await User.findOne({_id: req.body.id});
+        if (currentUser.imageUri === undefined) {
+            currentUser.imageUri = `http://${req.headers.host}/avatar/${req.body.id}`;//////////////////////////
+
+            currentUser.save();
+        }
+
+        res.send('File uploaded!');
     }
 
     async LoadImage (req: Request, res: Response, next: NextFunction) {
         const idUser = req.params.id;
-        const fileName = req.params.avatarName;
 
         const files = fs.readdirSync('./images/usersAvatar');
-        if(files.includes(`${fileName}`)) {
-            const uriImagePath = path.join(__dirname, '/../images/usersAvatar/', `${fileName}`);
+        if(files.includes(`${idUser}.jpeg`)) {
+            const uriImagePath = path.join(__dirname, '/../images/usersAvatar/', `${idUser}.jpeg`);
             
             res.sendFile(uriImagePath);//Отправка всего пути изображения с сервера
         } else {
