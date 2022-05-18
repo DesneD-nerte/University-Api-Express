@@ -107,7 +107,7 @@ app.use('/api/faculties', facultyRoutes);
 
 app.use('/api/auth', authRoutes);
 
-app.use('/users', authMiddleware, userRoutes);//аватарки тут
+app.use('/users', authMiddleware, userRoutes);
 app.use('/currentlessons', authMiddleware, currentLessonRoutes);
 app.use('/marks', authMiddleware, markRoutes);
 app.use('/myprofile', authMiddleware, userController.GetMyData)
