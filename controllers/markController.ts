@@ -95,8 +95,8 @@ class MarkController {
 
     async UpdateCurrentLesson(req: Request, res: Response, next: NextFunction) {
         const existedMark = req.body;
-
-        await Mark.findOneAndUpdate({_id: existedMark._id}, existedMark);
+        console.log(existedMark);
+        await Mark.findOneAndUpdate({_id: existedMark._id}, {allCurrentLessons: existedMark.allCurrentLessons});
 
         return res.sendStatus(200);
     }

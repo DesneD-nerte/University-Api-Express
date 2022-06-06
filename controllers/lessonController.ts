@@ -35,7 +35,7 @@ class LessonController {
 
     async SaveNewArrayCurrentLessons (req: Request, res: Response, next: NextFunction) {
         const arrayBody = req.body;
-
+        console.log(arrayBody);
         const arrayCurrentLessons = [];
 
         for (const oneCurrentLesson of arrayBody) {

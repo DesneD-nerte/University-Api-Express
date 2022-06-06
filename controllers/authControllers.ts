@@ -45,16 +45,15 @@ class AuthControllers {
 
         const hashPassword: string = bcryptjs.hashSync(password, 7);
 
-        //const userRoleStudent = await getDocRole(Role, "STUDENT");
         const userRolesDocs = await getDocRole(Role, roles);
-        // const userRoles = [];
 
-        // for (const oneUserDoc of userRolesDocs) {
-        //     userRoles.push(oneUserDoc._id);
-        // }
-
-        //const user = new User({username: username, password: hashPassword, roles: [userRoleStudent.value]});
-        const user = new User({username: username, password: hashPassword, email: email, name: name, roles: userRolesDocs});
+        const user = new User({
+            username: username,
+            password: hashPassword,
+            email: email,
+            name: name,
+            roles: userRolesDocs
+        });
         await user.save();
         
         return res.json({message: `hello ${username}`});
