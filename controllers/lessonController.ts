@@ -72,6 +72,14 @@ class LessonController {
 
         return res.json(updatedCurrentLesson);
     }
+
+    async GetSchedulerFormCurrentLessons (req: Request, res: Response, next: NextFunction) {
+        const { data } = req.body;
+
+        const result = await LessonRepository.getSchedulerCurrentLessons(data);
+        
+        return res.json(result);
+    }
 }
 
 export default new LessonController();
