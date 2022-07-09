@@ -4,4 +4,4 @@ const Lesson = new Schema({
     name: {type: String, unique: true, required: true}
 });
 
-export = model('Lesson', Lesson);
+export default model('Lesson', Lesson);

@@ -4,4 +4,4 @@ const Group = new Schema({
     name: {type: String, unique: true, required: true}
 });
 
-export = model('Group', Group);
+export default model('Group', Group);

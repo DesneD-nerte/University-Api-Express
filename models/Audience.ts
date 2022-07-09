@@ -4,4 +4,4 @@ const Audience = new Schema({
     name: {type: String, unique: true, required: true}
 });
 
-export = model('Audience', Audience);
+export default model('Audience', Audience);

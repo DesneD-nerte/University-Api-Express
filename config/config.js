@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 module.exports = {
-    connectionString: "mongodb+srv://admin:admin@cluster0.jpggl.mongodb.net/db_thesis?retryWrites=true&w=majority",
+    connectionString: process.env.connectionString,
     port: process.env.port,
     user: "admin",
     password: "admin",

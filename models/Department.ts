@@ -5,4 +5,4 @@ const Department = new Schema({
     room: {type: String}
 });
 
-export = model('Department', Department);
+export default model('Department', Department);

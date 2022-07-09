@@ -12,4 +12,4 @@ const User = new Schema({
     groups: [{type: Schema.Types.ObjectId, ref: 'Group'}],
 });
 
-export = model('User', User);
+export default model('User', User);

@@ -13,4 +13,4 @@ const Mark = new Schema({
     user: { type: Schema.Types.ObjectId, required: true, ref: 'User'}
 });
 
-export = model('Mark', Mark);
+export default model('Mark', Mark);
