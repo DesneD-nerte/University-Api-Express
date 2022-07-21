@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start ts-node": "ts-node app.ts",
-    "start": "nodemon app.ts"
+    "start ts-node": "ts-node src/app.ts",
+    "start": "nodemon src/app.ts",
+    "dev": "ts-node src/app.ts",
+    "build": "tsc -p"
   },
   "keywords": [],
   "author": "",

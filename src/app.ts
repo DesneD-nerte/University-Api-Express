@@ -1,4 +1,4 @@
-import express, {Application} from "express";
+import express, { Application } from "express";
 import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
