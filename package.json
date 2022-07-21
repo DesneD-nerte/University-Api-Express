@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start ts-node": "ts-node src/app.ts",
     "start": "nodemon src/app.ts",
+    "start ts-node": "ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
-    "build": "tsc -p"
+    "build": "npx tsc",
+    "production": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
