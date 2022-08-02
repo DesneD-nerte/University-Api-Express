@@ -99,6 +99,7 @@ app.get('/images/:imageName', fileController_1.default.LoadLoginImages);
 app.get('/avatar/:id', fileController_1.default.LoadImage);
 app.post('/upload', authMiddleware, fileController_1.default.SaveImage);
 app.use(errorMiddleware);
+app.use(express_1.default.static('images'));
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(config.connectionString);

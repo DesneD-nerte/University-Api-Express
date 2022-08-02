@@ -72,7 +72,8 @@ class FileController {
     LoadImage(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const idUser = req.params.id;
-            const files = fs.readdirSync('./images/usersAvatar');
+            // const files = fs.readdirSync('./images/usersAvatar');
+            const files = fs.readdirSync(path_1.default.join(__dirname, '/../images/usersAvatar'));
             if (files.includes(`${idUser}.jpeg`)) {
                 const uriImagePath = path_1.default.join(__dirname, '/../images/usersAvatar/', `${idUser}.jpeg`);
                 res.sendFile(uriImagePath); //Отправка всего пути изображения с сервера
@@ -85,7 +86,8 @@ class FileController {
     LoadLoginImages(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const fileName = req.params.imageName;
-            const files = fs.readdirSync('./images/loginPage');
+            // const files = fs.readdirSync('./images/loginPage');
+            const files = fs.readdirSync(path_1.default.join(__dirname, '/../images/loginPage'));
             if (files.includes(`${fileName}`)) {
                 const uriImagePath = path_1.default.join(__dirname, '/../images/loginPage/', `${fileName}`);
                 res.sendFile(uriImagePath);

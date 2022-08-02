@@ -12,9 +12,9 @@ class UserController {
         
         const myProfileMongo = await UserRepository.getMyData(usernameFromToken);
         
-        const {id, username, name, roles, imageUri, faculties, departments, groups} = myProfileMongo;
+        const {_id, username, name, roles, imageUri, faculties, departments, groups} = myProfileMongo;
 
-        return res.json({id, username, name, roles, imageUri, faculties, departments, groups});
+        return res.json({_id, username, name, roles, imageUri, faculties, departments, groups});
     }
 
     async GetStudents(req: Request, res: Response, next: NextFunction) {//Получаю просто всех студентов (нет в header - максимального количества студентов)

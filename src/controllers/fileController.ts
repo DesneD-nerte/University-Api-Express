@@ -47,7 +47,9 @@ class FileController {
     async LoadImage (req: Request, res: Response, next: NextFunction) {
         const idUser = req.params.id;
 
-        const files = fs.readdirSync('./images/usersAvatar');
+        // const files = fs.readdirSync('./images/usersAvatar');
+        const files = fs.readdirSync(path.join(__dirname, '/../images/usersAvatar'));
+
         if(files.includes(`${idUser}.jpeg`)) {
             const uriImagePath = path.join(__dirname, '/../images/usersAvatar/', `${idUser}.jpeg`);
             
@@ -60,7 +62,9 @@ class FileController {
     async LoadLoginImages (req: Request, res: Response, next: NextFunction) {
         const fileName = req.params.imageName;
 
-        const files = fs.readdirSync('./images/loginPage');
+        // const files = fs.readdirSync('./images/loginPage');
+        const files = fs.readdirSync(path.join(__dirname, '/../images/loginPage'));
+
         if(files.includes(`${fileName}`)) {
             const uriImagePath = path.join(__dirname, '/../images/loginPage/', `${fileName}`);
             
