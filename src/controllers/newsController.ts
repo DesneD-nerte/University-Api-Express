@@ -14,6 +14,9 @@ class NewsController {
         .limit(limit)
         .skip(limit * (page - 1));//Если хотим показывать 11-20, нужно скипать первый показанных и переходить на нужную страницу
 
+        const range = await News.count();
+        res.setHeader('range', range.toString());
+
         return res.json(massiveNews);
     }
 

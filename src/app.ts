@@ -2,8 +2,6 @@ import express, { Application } from "express";
 import mongoose from 'mongoose';
 import cors from 'cors';
 import userController from "./controllers/userController";
-import UserRepository from "./repositories/userRepository";
-import { Message } from "./types";
 import MessagesRepository from "./repositories/messagesRepository";
 import * as ios from 'socket.io';
 import fileController from "./controllers/fileController";
@@ -16,8 +14,6 @@ require('./models/Lesson');
 
 
 const config = require('./config/config');
-
-//const formData = require('express-form-data');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -86,17 +82,14 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 
-//app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors({
+    exposedHeaders: 'range'
+}));
 
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({}));
 
-//app.use(formData.parse());
-
 app.use(express.json());;
-
-//app.use('/', authMiddleware);
 
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/audiences', audienceRoutes);
