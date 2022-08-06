@@ -1,24 +1,25 @@
 import { Request, Response, NextFunction } from "express";
-import { JwtPayload } from 'jsonwebtoken';
 import MessagesRepository from "../repositories/messagesRepository";
 import mongoose from "mongoose";
 import Chat from "../models/Chat";
+import { MessagesService } from "../services/messagesService";
+
+
+interface BareRequestParams {}
+interface BareResponseBody {}
+interface BareRequestBody {}
+interface IQueryMessage {
+    myId: string,
+    id: string,
+    skip: string | undefined
+}
 
 class MessagesController {
-    async GetMessages (req: Request, res: Response, next: NextFunction) {
-        const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-        const id = new mongoose.Types.ObjectId(req.query.id?.toString());
-        
-        let skip = 0;
-        if(req.query.skip) {
-            skip = parseInt(req.query.skip?.toString());
-        }
-        
-        // const myChatMessages = await MessagesRepository.getMessages(myId, id); //:Array
-        const myChatMessages = await MessagesRepository.testgetMessages(myId, id, skip);
-        const myChatMessagesObject = myChatMessages[0];
+    async GetMessages (req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage>, res: Response, next: NextFunction) {
+        const messageService = new MessagesService();
 
-        // console.log(myChatMessagesObject);
+        const myChatMessagesObject = await messageService.GetMessages(req.query);
+
         return res.json(myChatMessagesObject);
     }
 
@@ -27,7 +28,7 @@ class MessagesController {
         const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
         const id = new mongoose.Types.ObjectId(req.query.id?.toString());
 
-        const myChatMessages = await MessagesRepository.checkExistingChatRoomMessages(myId, id); //:Array
+        const myChatMessages = await MessagesRepository.CheckExistingChatRoomMessages(myId, id); //:Array
         const myChatMessagesObject = myChatMessages[0];
 
         return res.json(myChatMessagesObject);
@@ -36,7 +37,7 @@ class MessagesController {
     async GetLastMessage(req: Request, res: Response, next: NextFunction) {
 
         const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-        const myLastMessages = await MessagesRepository.getLastMessage(myId);
+        const myLastMessages = await MessagesRepository.GetLastMessage(myId);
 
         for (const oneInstance of myLastMessages) {
             let otherId; 
@@ -44,7 +45,7 @@ class MessagesController {
             for (const oneUser of oneInstance.users) {
                 if(oneUser._id.toString() !== myId.toString()) {
                     otherId = new mongoose.Types.ObjectId(oneUser._id);
-                    const countBadge = await MessagesRepository.getCountBadge(myId, otherId);
+                    const countBadge = await MessagesRepository.GetCountBadge(myId, otherId);
 
                     if(countBadge.length !== 0) {
                         oneInstance.countBadge = countBadge[0].count;
@@ -66,9 +67,9 @@ class MessagesController {
         const id = new mongoose.Types.ObjectId(req.body.id?.toString());
         const message = req.body.message;
 
-        MessagesRepository.addMessage(myId, id, message)
-        .then(result => res.sendStatus(200))
-        .catch(error => res.send(error));
+        MessagesRepository.AddMessage(myId, id, message)
+            .then(result => res.sendStatus(200))
+            .catch(error => res.send(error));
 
         //return res.sendStatus(200);
     }
@@ -80,12 +81,6 @@ class MessagesController {
         return await new Chat({users: [firstUser, secondUser], messages: []}).save();
     }
 
-    // async UpdateVisibleMessage(req: Request, res: Response, next: NextFunction) {
-    //     const {chatMessage, oneMessage} = req.body;
-    //     await Chat.findOneAndUpdate({_id: chatMessage._id, "messages._id": oneMessage._id}, {$set: {"messages.$.isVisible": true}});
-
-    //     return res.sendStatus(200);
-    // }
     async UpdateVisibleAllMessages(req: Request, res: Response, next: NextFunction) {
         const {chatMessages, id, myId} = req.body;
 

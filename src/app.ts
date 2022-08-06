@@ -61,7 +61,7 @@ io.on('connection', (socket: any) => {
         const {content, createdAt, user, isVisible} = result.message;
         const mainMessage = {content, createdAt, user, isVisible};
 
-        MessagesRepository.addMessage(result.message.user._id, result.receiverId, mainMessage)
+        MessagesRepository.AddMessage(result.message.user._id, result.receiverId, mainMessage)
         .then(resRepos => {
            io.to(connectedUsers[result.message.user._id]).emit('updateMessages');
            io.to(connectedUsers[result.receiverId]).emit('updateMessages');
