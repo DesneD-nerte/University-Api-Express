@@ -112,7 +112,6 @@ export default class MessagesRepository {
     }
 
     static async GetLastMessage(myId: mongoose.Types.ObjectId) {
-        //return await Chat.find({'users': myId}, {'lastMessage': {$slice: ['$messages', -1]}, 'users': 1 });
         return await Chat.aggregate([
             {
                 $match: {

@@ -1,14 +1,10 @@
 import MessagesRepository from "../repositories/messagesRepository";
 import mongoose from "mongoose";
 import ApiError from "../exceptions/apiError";
+import { IBodyAddMessage, IQueryMessage, IQueryMyId, IBodyAddRoom, IBodyUpdateVisibleMessages } from "../types";
+import Chat from "../models/Chat";
 
-interface IQueryMessage {
-    myId: string,
-    id: string,
-    skip: string | undefined
-}
-
-export class MessagesService {
+class MessagesService {
     async GetMessages (query: IQueryMessage) {
         try {
             const myId = new mongoose.Types.ObjectId(query.myId.toString());
@@ -26,78 +22,77 @@ export class MessagesService {
         }
     }
 
-    // async CheckExistingChatRoomMessages (req: Request, res: Response, next: NextFunction) {
+    async CheckExistingChatRoomMessages (query: IQueryMessage) {
 
-    //     const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-    //     const id = new mongoose.Types.ObjectId(req.query.id?.toString());
+        const myId = new mongoose.Types.ObjectId(query.myId.toString());
+        const id = new mongoose.Types.ObjectId(query.id.toString());
 
-    //     const myChatMessages = await MessagesRepository.CheckExistingChatRoomMessages(myId, id); //:Array
-    //     const myChatMessagesObject = myChatMessages[0];
+        const myChatMessages = await MessagesRepository.CheckExistingChatRoomMessages(myId, id);
 
-    //     return res.json(myChatMessagesObject);
-    // }
+        return myChatMessages[0];
+    }
 
-    // async GetLastMessage(req: Request, res: Response, next: NextFunction) {
+    async GetLastMessage(query: IQueryMyId) {
 
-    //     const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-    //     const myLastMessages = await MessagesRepository.GetLastMessage(myId);
+        const myId = new mongoose.Types.ObjectId(query.myId?.toString());
+        const myLastMessages = await MessagesRepository.GetLastMessage(myId);
 
-    //     for (const oneInstance of myLastMessages) {
-    //         let otherId; 
+        for (const oneInstance of myLastMessages) {
+            let otherId; 
 
-    //         for (const oneUser of oneInstance.users) {
-    //             if(oneUser._id.toString() !== myId.toString()) {
-    //                 otherId = new mongoose.Types.ObjectId(oneUser._id);
-    //                 const countBadge = await MessagesRepository.GetCountBadge(myId, otherId);
+            for (const oneUser of oneInstance.users) {
+                if(oneUser._id.toString() !== myId.toString()) {
+                    otherId = new mongoose.Types.ObjectId(oneUser._id);
+                    const countBadge = await MessagesRepository.GetCountBadge(myId, otherId);
 
-    //                 if(countBadge.length !== 0) {
-    //                     oneInstance.countBadge = countBadge[0].count;
-    //                 } else {
-    //                     oneInstance.countBadge = 0;
-    //                 }
+                    if(countBadge.length !== 0) {
+                        oneInstance.countBadge = countBadge[0].count;
+                    } else {
+                        oneInstance.countBadge = 0;
+                    }
 
-    //                 break;
-    //             }
-    //         }
-    //     }
+                    break;
+                }
+            }
+        }
 
-    //     return res.json(myLastMessages);
-    // }
+        return myLastMessages;
+    }
 
-    // async AddMessage(req: Request, res: Response, next: NextFunction) {
+    async AddMessage(body: IBodyAddMessage) {
 
-    //     const myId = new mongoose.Types.ObjectId(req.body.myId?.toString());
-    //     const id = new mongoose.Types.ObjectId(req.body.id?.toString());
-    //     const message = req.body.message;
+        const myId = new mongoose.Types.ObjectId(body.myId?.toString());
+        const id = new mongoose.Types.ObjectId(body.id?.toString());
+        const message = body.message;
 
-    //     MessagesRepository.AddMessage(myId, id, message)
-    //         .then(result => res.sendStatus(200))
-    //         .catch(error => res.send(error));
+        const addedMessage = await MessagesRepository.AddMessage(myId, id, message);
 
-    //     //return res.sendStatus(200);
-    // }
+        return addedMessage;
+    }
 
-    // async AddRoom(req: Request, res: Response, next: NextFunction) {
-    //     const firstUser = req.body.chatRoom.users[0]
-    //     const secondUser = req.body.chatRoom.users[1];
+    async AddRoom(body: IBodyAddRoom) {
+        const firstUser = body.chatRoom.users[0]
+        const secondUser = body.chatRoom.users[1];
 
-    //     return await new Chat({users: [firstUser, secondUser], messages: []}).save();
-    // }
+        const addedRoom = await new Chat({users: [firstUser, secondUser], messages: []}).save();
 
-    // async UpdateVisibleAllMessages(req: Request, res: Response, next: NextFunction) {
-    //     const {chatMessages, id, myId} = req.body;
+        return addedRoom;
+    }
 
-    //     const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
-    //     const objectId = new mongoose.Types.ObjectId(id);
+    async UpdateVisibleAllMessages(body: IBodyUpdateVisibleMessages) {
+        const {chatMessages, id, myId} = body;
 
-    //     await Chat.updateOne(
-    //         {_id: chatObjectId},
-    //         {$set: {'messages.$[oneMessage].isVisible': true}},
-    //         {arrayFilters: [{'oneMessage.user': objectId}]}
-    //     )
+        const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
+        const objectId = new mongoose.Types.ObjectId(id);
+
+        await Chat.updateOne(
+            {_id: chatObjectId},
+            {$set: {'messages.$[oneMessage].isVisible': true}},
+            {arrayFilters: [{'oneMessage.user': objectId}]}
+        )
         
-    //     global.io.to(global.connectedUsers[myId]).emit('updateMessages');
-
-    //     return res.sendStatus(200);
-    // }
+        global.io.to(global.connectedUsers[myId]).emit('updateMessages');
+    }
 }
+
+export = new MessagesService();

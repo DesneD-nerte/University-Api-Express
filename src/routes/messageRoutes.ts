@@ -9,7 +9,6 @@ router.get('/checkExistingChatRoomMessages', messagesController.CheckExistingCha
 router.get('/getLastMessages', messagesController.GetLastMessage);
 router.post('/addMessage', messagesController.AddMessage);
 router.post('/addRoom', messagesController.AddRoom);
-//router.put('/updateVisibleMessage', messagesController.UpdateVisibleMessage);
 router.put('/updateVisibleAllMessages', messagesController.UpdateVisibleAllMessages);
 
 

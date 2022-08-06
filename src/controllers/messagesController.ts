@@ -1,99 +1,45 @@
-import { Request, Response, NextFunction } from "express";
-import MessagesRepository from "../repositories/messagesRepository";
-import mongoose from "mongoose";
-import Chat from "../models/Chat";
-import { MessagesService } from "../services/messagesService";
-
-
-interface BareRequestParams {}
-interface BareResponseBody {}
-interface BareRequestBody {}
-interface IQueryMessage {
-    myId: string,
-    id: string,
-    skip: string | undefined
-}
+import { Request, Response } from "express";
+import messagesService from "../services/messagesService";
+import { BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage, IQueryMyId, BareRequestQuery, IBodyAddMessage, IBodyAddRoom } from "../types";
 
 class MessagesController {
-    async GetMessages (req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage>, res: Response, next: NextFunction) {
-        const messageService = new MessagesService();
+    async GetMessages (req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage>, res: Response) {
 
-        const myChatMessagesObject = await messageService.GetMessages(req.query);
-
-        return res.json(myChatMessagesObject);
-    }
-
-    async CheckExistingChatRoomMessages (req: Request, res: Response, next: NextFunction) {
-
-        const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-        const id = new mongoose.Types.ObjectId(req.query.id?.toString());
-
-        const myChatMessages = await MessagesRepository.CheckExistingChatRoomMessages(myId, id); //:Array
-        const myChatMessagesObject = myChatMessages[0];
+        const myChatMessagesObject = await messagesService.GetMessages(req.query);
 
         return res.json(myChatMessagesObject);
     }
 
-    async GetLastMessage(req: Request, res: Response, next: NextFunction) {
+    async CheckExistingChatRoomMessages (req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage>, res: Response) {
 
-        const myId = new mongoose.Types.ObjectId(req.query.myId?.toString());
-        const myLastMessages = await MessagesRepository.GetLastMessage(myId);
+        const myChatMessagesObject = await messagesService.CheckExistingChatRoomMessages(req.query)
 
-        for (const oneInstance of myLastMessages) {
-            let otherId; 
+        return res.json(myChatMessagesObject);
+    }
 
-            for (const oneUser of oneInstance.users) {
-                if(oneUser._id.toString() !== myId.toString()) {
-                    otherId = new mongoose.Types.ObjectId(oneUser._id);
-                    const countBadge = await MessagesRepository.GetCountBadge(myId, otherId);
+    async GetLastMessage(req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMyId>, res: Response) {
 
-                    if(countBadge.length !== 0) {
-                        oneInstance.countBadge = countBadge[0].count;
-                    } else {
-                        oneInstance.countBadge = 0;
-                    }
-
-                    break;
-                }
-            }
-        }
+        const myLastMessages = await messagesService.GetLastMessage(req.query);
 
         return res.json(myLastMessages);
     }
 
-    async AddMessage(req: Request, res: Response, next: NextFunction) {
+    async AddMessage(req: Request<BareRequestParams, BareResponseBody, IBodyAddMessage, BareRequestQuery>, res: Response) {
 
-        const myId = new mongoose.Types.ObjectId(req.body.myId?.toString());
-        const id = new mongoose.Types.ObjectId(req.body.id?.toString());
-        const message = req.body.message;
-
-        MessagesRepository.AddMessage(myId, id, message)
-            .then(result => res.sendStatus(200))
-            .catch(error => res.send(error));
-
-        //return res.sendStatus(200);
-    }
-
-    async AddRoom(req: Request, res: Response, next: NextFunction) {
-        const firstUser = req.body.chatRoom.users[0]
-        const secondUser = req.body.chatRoom.users[1];
-
-        return await new Chat({users: [firstUser, secondUser], messages: []}).save();
-    }
-
-    async UpdateVisibleAllMessages(req: Request, res: Response, next: NextFunction) {
-        const {chatMessages, id, myId} = req.body;
-
-        const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
-        const objectId = new mongoose.Types.ObjectId(id);
-
-        await Chat.updateOne(
-            {_id: chatObjectId},
-            {$set: {'messages.$[oneMessage].isVisible': true}},
-            {arrayFilters: [{'oneMessage.user': objectId}]}
-        )
+        const addedMessage = await messagesService.AddMessage(req.body);
         
-        global.io.to(global.connectedUsers[myId]).emit('updateMessages');
+        return res.json(addedMessage);
+    }
+
+    async AddRoom(req: Request<BareRequestParams, BareResponseBody, IBodyAddRoom, BareRequestQuery>, res: Response) {
+        
+        const addedRoom = await messagesService.AddRoom(req.body); 
+        
+        return res.json(addedRoom);
+    }
+
+    async UpdateVisibleAllMessages(req: Request, res: Response) {
+        await messagesService.UpdateVisibleAllMessages(req.body);
 
         return res.sendStatus(200);
     }
