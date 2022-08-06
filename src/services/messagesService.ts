@@ -22,76 +22,94 @@ class MessagesService {
         }
     }
 
+    //Облегченная версия получения сообщений (без развертывания объектов)
     async CheckExistingChatRoomMessages (query: IQueryMessage) {
+        try {
+            const myId = new mongoose.Types.ObjectId(query.myId.toString());
+            const id = new mongoose.Types.ObjectId(query.id.toString());
 
-        const myId = new mongoose.Types.ObjectId(query.myId.toString());
-        const id = new mongoose.Types.ObjectId(query.id.toString());
+            const myChatMessages = await MessagesRepository.CheckExistingChatRoomMessages(myId, id);
 
-        const myChatMessages = await MessagesRepository.CheckExistingChatRoomMessages(myId, id);
-
-        return myChatMessages[0];
+            return myChatMessages[0];
+        } catch (e) {
+            return ApiError.BadRequest("Ошибка при получении сообщений пользователей")
+        }
     }
 
     async GetLastMessage(query: IQueryMyId) {
+        try {
+            const myId = new mongoose.Types.ObjectId(query.myId?.toString());
+            const myLastMessages = await MessagesRepository.GetLastMessage(myId);
 
-        const myId = new mongoose.Types.ObjectId(query.myId?.toString());
-        const myLastMessages = await MessagesRepository.GetLastMessage(myId);
+            for (const oneInstance of myLastMessages) {
+                let otherId; 
 
-        for (const oneInstance of myLastMessages) {
-            let otherId; 
+                for (const oneUser of oneInstance.users) {
+                    if(oneUser._id.toString() !== myId.toString()) {
+                        otherId = new mongoose.Types.ObjectId(oneUser._id);
+                        const countBadge = await MessagesRepository.GetCountBadge(myId, otherId);
 
-            for (const oneUser of oneInstance.users) {
-                if(oneUser._id.toString() !== myId.toString()) {
-                    otherId = new mongoose.Types.ObjectId(oneUser._id);
-                    const countBadge = await MessagesRepository.GetCountBadge(myId, otherId);
+                        if(countBadge.length !== 0) {
+                            oneInstance.countBadge = countBadge[0].count;
+                        } else {
+                            oneInstance.countBadge = 0;
+                        }
 
-                    if(countBadge.length !== 0) {
-                        oneInstance.countBadge = countBadge[0].count;
-                    } else {
-                        oneInstance.countBadge = 0;
+                        break;
                     }
-
-                    break;
                 }
             }
-        }
 
-        return myLastMessages;
+            return myLastMessages;
+        } catch(e) {
+            return ApiError.BadRequest("Ошибка при получении сообщений для главного окна");
+        }
     }
 
     async AddMessage(body: IBodyAddMessage) {
+        try {
+            const myId = new mongoose.Types.ObjectId(body.myId?.toString());
+            const id = new mongoose.Types.ObjectId(body.id?.toString());
+            const message = body.message;
 
-        const myId = new mongoose.Types.ObjectId(body.myId?.toString());
-        const id = new mongoose.Types.ObjectId(body.id?.toString());
-        const message = body.message;
+            const addedMessage = await MessagesRepository.AddMessage(myId, id, message);
 
-        const addedMessage = await MessagesRepository.AddMessage(myId, id, message);
-
-        return addedMessage;
+            return addedMessage;
+        } catch(e) {
+            return ApiError.BadRequest("Ошибка при добавлении нового сообщения");
+        }
     }
 
     async AddRoom(body: IBodyAddRoom) {
-        const firstUser = body.chatRoom.users[0]
-        const secondUser = body.chatRoom.users[1];
+        try {
+            const firstUser = body.chatRoom.users[0];
+            const secondUser = body.chatRoom.users[1];
 
-        const addedRoom = await new Chat({users: [firstUser, secondUser], messages: []}).save();
+            const addedRoom = await new Chat({users: [firstUser, secondUser], messages: []}).save();
 
-        return addedRoom;
+            return addedRoom;
+        } catch(e) {
+            return ApiError.BadRequest("Ошибка при добавлении новой комнаты");
+        }
     }
 
     async UpdateVisibleAllMessages(body: IBodyUpdateVisibleMessages) {
-        const {chatMessages, id, myId} = body;
+        try {
+            const {chatMessages, id, myId} = body;
 
-        const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
-        const objectId = new mongoose.Types.ObjectId(id);
+            const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
+            const objectId = new mongoose.Types.ObjectId(id);
 
-        await Chat.updateOne(
-            {_id: chatObjectId},
-            {$set: {'messages.$[oneMessage].isVisible': true}},
-            {arrayFilters: [{'oneMessage.user': objectId}]}
-        )
-        
-        global.io.to(global.connectedUsers[myId]).emit('updateMessages');
+            await Chat.updateOne(
+                {_id: chatObjectId},
+                {$set: {'messages.$[oneMessage].isVisible': true}},
+                {arrayFilters: [{'oneMessage.user': objectId}]}
+            )
+            
+            global.io.to(global.connectedUsers[myId]).emit('updateMessages');
+        } catch(e) {
+            return ApiError.BadRequest("Ошибка при обновлении счетчика просмотров сообщений");
+        }
     }
 }
 
