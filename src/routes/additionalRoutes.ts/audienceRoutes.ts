@@ -6,4 +6,4 @@ const router = Router();
 //  /api/audiences
 router.get('/', UnitedAdditionalController.GetAudiences)
 
-module.exports = router;
+export default router

@@ -9,13 +9,13 @@ class MessagesService {
         try {
             const myId = new mongoose.Types.ObjectId(query.myId.toString());
             const id = new mongoose.Types.ObjectId(query.id.toString());
-            
+
             let skip = 0;
             if(query.skip) {
                 skip = parseInt(query.skip.toString());
             }
             const myChatMessages = await MessagesRepository.GetMessages(myId, id, skip);
-            
+
             return myChatMessages[0];
         } catch(e) {
             return ApiError.BadRequest("Ошибка при получении сообщений пользователей", e);
@@ -62,6 +62,7 @@ class MessagesService {
 
             return myLastMessages;
         } catch(e) {
+            console.log(e);
             return ApiError.BadRequest("Ошибка при получении сообщений для главного окна");
         }
     }
@@ -106,7 +107,7 @@ class MessagesService {
                 {arrayFilters: [{'oneMessage.user': objectId}]}
             )
             
-            global.io.to(global.connectedUsers[myId]).emit('updateMessages');
+            // global.io.to(global.connectedUsers[myId]).emit('updateMessages');
         } catch(e) {
             return ApiError.BadRequest("Ошибка при обновлении счетчика просмотров сообщений");
         }

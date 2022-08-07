@@ -6,4 +6,4 @@ const router = Router();
 //  /api/lessons
 router.get('/', UnitedAdditionalController.GetLessons)
 
-module.exports = router;
+export default router

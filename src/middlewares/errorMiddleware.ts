@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import ApiError from "../exceptions/apiError";
 
-module.exports = function(err: Error, req: Request, res: Response, next: any) {
+export default function (err: Error, req: Request, res: Response) {
     console.log("error from error Middleware", err.message);
 
     if(err instanceof ApiError) {

@@ -12,4 +12,4 @@ router.put('/updateCurrentLesson', lessonController.UpdateCurrentLesson)
 router.put('/schedulercurrentlessons', lessonController.GetSchedulerFormCurrentLessons);
 
 
-module.exports = router;
+export default router;

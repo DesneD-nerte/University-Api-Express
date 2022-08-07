@@ -36,7 +36,7 @@ class FileController {
 
         const currentUser = await User.findOne({_id: req.body.id});
         if (currentUser.imageUri === undefined) {
-            currentUser.imageUri = `http://${req.headers.host}/avatar/${req.body.id}`;//////////////////////////
+            currentUser.imageUri = `http://${req.headers.host}/avatar/${req.body.id}`;
 
             currentUser.save();
         }
@@ -47,7 +47,6 @@ class FileController {
     async LoadImage (req: Request, res: Response, next: NextFunction) {
         const idUser = req.params.id;
 
-        // const files = fs.readdirSync('./images/usersAvatar');
         const files = fs.readdirSync(path.join(__dirname, '/../images/usersAvatar'));
 
         if(files.includes(`${idUser}.jpeg`)) {
@@ -62,7 +61,6 @@ class FileController {
     async LoadLoginImages (req: Request, res: Response, next: NextFunction) {
         const fileName = req.params.imageName;
 
-        // const files = fs.readdirSync('./images/loginPage');
         const files = fs.readdirSync(path.join(__dirname, '/../images/loginPage'));
 
         if(files.includes(`${fileName}`)) {

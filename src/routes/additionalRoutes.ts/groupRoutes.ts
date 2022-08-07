@@ -7,4 +7,4 @@ const router = Router();
 router.get('/', UnitedAdditionalController.GetGroups)
 
 
-module.exports = router;
+export default router

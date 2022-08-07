@@ -7,7 +7,7 @@ import Role from '../models/Role';
 
 import bcryptjs from 'bcryptjs';
 import jwt from "jsonwebtoken";
-const {secret} = require ("../config/config");
+import config from "../config/config";
 
 import {getDocRole, getDocDepartment, getDocGroup, getDocFaculty} from "../helpers/dbGetDocEntities";
 import { ObjectId } from "mongoose";
@@ -24,7 +24,7 @@ const generateAccessToken = (id: ObjectId, username: string, roles: Array<string
         roles: roles
     }
 
-    return jwt.sign(payload, secret, {expiresIn: "24h"});
+    return jwt.sign(payload, config.secret, {expiresIn: "24h"});
 }
 
 class AuthControllers {

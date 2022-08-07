@@ -1,6 +1,5 @@
 import userController from "../controllers/userController";
 import Router from "express";
-import fileController from "../controllers/fileController";
 
 const router = Router();
 
@@ -13,7 +12,4 @@ router.get('/teachers', userController.GetTeachers);
 
 router.get('/all', userController.GetAll);
 
-// router.get('/:id/avatar/:avatarName', fileController.LoadImage);
-
-
-module.exports = router;
+export default router

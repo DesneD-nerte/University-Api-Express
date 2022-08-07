@@ -6,4 +6,4 @@ const router = Router();
 //  /api/roles
 router.get('/', UnitedAdditionalController.GetRoles)
 
-module.exports = router;
+export default router

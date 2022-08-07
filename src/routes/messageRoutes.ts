@@ -11,5 +11,4 @@ router.post('/addMessage', messagesController.AddMessage);
 router.post('/addRoom', messagesController.AddRoom);
 router.put('/updateVisibleAllMessages', messagesController.UpdateVisibleAllMessages);
 
-
-module.exports = router;
+export default router

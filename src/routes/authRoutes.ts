@@ -5,7 +5,7 @@ import authController from '../controllers/authControllers';
 const {Router} = require('express');
 const router = Router();
 
-const authMiddleware = require('../middlewares/authMiddleware');
+import authMiddleware from '../middlewares/authMiddleware';
 
 //  /api/auth
 router.post('/registration', [
@@ -19,4 +19,4 @@ router.post('/registration/arrayusers', authMiddleware, authController.Registrat
 router.post('/login', authController.Login)
 
 
-module.exports = router;
+export default router;

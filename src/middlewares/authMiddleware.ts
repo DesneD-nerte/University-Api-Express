@@ -1,19 +1,18 @@
 import { Request, Response } from "express";
 import ApiError from "../exceptions/apiError";
+import { JwtPayload } from 'jsonwebtoken';
+import config  from "../config/config";
 
-import {JwtPayload, verify} from 'jsonwebtoken';
 const jwt = require('jsonwebtoken');
-const {secret} = require('../config/config');
 
-module.exports = function (req: Request, res: Response, next: any) {
+export default function (req: Request, res: Response, next: any) {
     try {
-        //const token: string | undefined = req.headers.authorization?.split(' ')[1];
         const token: string | undefined = req.headers.authorization?.toString();
         if(!token) {
             throw ApiError.UnauthorizedError();
         }
         
-        jwt.verify(token, secret, function(err: Error, decoded: JwtPayload) {
+        jwt.verify(token, config.secret, function(err: Error, decoded: JwtPayload) {
             if(err) {
                 throw ApiError.TokenExpired();
             }

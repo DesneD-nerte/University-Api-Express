@@ -6,4 +6,4 @@ const router = Router();
 //  /api/departments
 router.get('/', UnitedAdditionalController.GetDepartments)
 
-module.exports = router;
+export default router
