@@ -96,7 +96,7 @@ class MessagesService {
 
     async UpdateVisibleAllMessages(body: IBodyUpdateVisibleMessages) {
         try {
-            const {chatMessages, id, myId} = body;
+            const {chatMessages, id } = body;
 
             const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
             const objectId = new mongoose.Types.ObjectId(id);
@@ -106,8 +106,6 @@ class MessagesService {
                 {$set: {'messages.$[oneMessage].isVisible': true}},
                 {arrayFilters: [{'oneMessage.user': objectId}]}
             )
-            
-            // global.io.to(global.connectedUsers[myId]).emit('updateMessages');
         } catch(e) {
             return ApiError.BadRequest("Ошибка при обновлении счетчика просмотров сообщений");
         }
