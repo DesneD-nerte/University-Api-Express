@@ -1,10 +1,5 @@
 import { Model } from "mongoose"
 
-//Возвращает документ, значение которого равно данной роли
-// function getDocRole(modelRole: Model<any>, valueRole: string) {
-//     return modelRole.findOne({value: valueRole})
-// }
-
 export function getDocRole(modelRole: Model<any>, valueRole: Array<string>) {
     return modelRole.aggregate([
         {
@@ -52,6 +47,3 @@ export function getDocDepartment(modelDepartment: Model<any>, valueDepartment: A
         }
     ])
 }
-
-
-// export = getDocRole;

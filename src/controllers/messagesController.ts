@@ -1,37 +1,38 @@
 import { Request, Response } from "express";
 import messagesService from "../services/messagesService";
-import { BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage, IQueryMyId, BareRequestQuery, IBodyAddMessage, IBodyAddRoom } from "../types";
+import { IQueryMessage, IQueryMyId, IBodyAddMessage, IBodyAddRoom } from "../types/servicesTypes/messageServiceTypes";
+import { IBareRequestParams, IBareResponseBody, IBareRequestBody, IBareRequestQuery } from "../types/servicesTypes/types";
 
 class MessagesController {
-    async GetMessages (req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage>, res: Response) {
+    async GetMessages (req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, IQueryMessage>, res: Response) {
 
         const myChatMessagesObject = await messagesService.GetMessages(req.query);
 
         return res.json(myChatMessagesObject);
     }
 
-    async CheckExistingChatRoomMessages (req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMessage>, res: Response) {
+    async CheckExistingChatRoomMessages (req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, IQueryMessage>, res: Response) {
 
         const myChatMessagesObject = await messagesService.CheckExistingChatRoomMessages(req.query)
 
         return res.json(myChatMessagesObject);
     }
 
-    async GetLastMessage(req: Request<BareRequestParams, BareResponseBody, BareRequestBody, IQueryMyId>, res: Response) {
+    async GetLastMessages(req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, IQueryMyId>, res: Response) {
 
-        const myLastMessages = await messagesService.GetLastMessage(req.query);
+        const myLastMessages = await messagesService.GetLastMessages(req.query);
 
         return res.json(myLastMessages);
     }
 
-    async AddMessage(req: Request<BareRequestParams, BareResponseBody, IBodyAddMessage, BareRequestQuery>, res: Response) {
+    async AddMessage(req: Request<IBareRequestParams, IBareResponseBody, IBodyAddMessage, IBareRequestQuery>, res: Response) {
 
         const addedMessage = await messagesService.AddMessage(req.body);
         
         return res.json(addedMessage);
     }
 
-    async AddRoom(req: Request<BareRequestParams, BareResponseBody, IBodyAddRoom, BareRequestQuery>, res: Response) {
+    async AddRoom(req: Request<IBareRequestParams, IBareResponseBody, IBodyAddRoom, IBareRequestQuery>, res: Response) {
         
         const addedRoom = await messagesService.AddRoom(req.body); 
         
@@ -39,7 +40,7 @@ class MessagesController {
     }
 
     async UpdateVisibleAllMessages(req: Request, res: Response) {
-        await messagesService.UpdateVisibleAllMessages(req.body);
+        await messagesService.UpdateVisibleMessages(req.body);
 
         return res.sendStatus(200);
     }

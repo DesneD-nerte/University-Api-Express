@@ -1,8 +1,8 @@
 import MessagesRepository from "../repositories/messagesRepository";
 import mongoose from "mongoose";
 import ApiError from "../exceptions/apiError";
-import { IBodyAddMessage, IQueryMessage, IQueryMyId, IBodyAddRoom, IBodyUpdateVisibleMessages } from "../types";
 import Chat from "../models/Chat";
+import { IQueryMessage, IQueryMyId, IBodyAddMessage, IBodyAddRoom, IBodyUpdateVisibleMessages } from "../types/servicesTypes/messageServiceTypes";
 
 class MessagesService {
     async GetMessages (query: IQueryMessage) {
@@ -12,7 +12,7 @@ class MessagesService {
 
             let skip = 0;
             if(query.skip) {
-                skip = parseInt(query.skip.toString());
+                skip = Number.parseInt(query.skip.toString());
             }
             const myChatMessages = await MessagesRepository.GetMessages(myId, id, skip);
 
@@ -36,7 +36,7 @@ class MessagesService {
         }
     }
 
-    async GetLastMessage(query: IQueryMyId) {
+    async GetLastMessages(query: IQueryMyId) {
         try {
             const myId = new mongoose.Types.ObjectId(query.myId?.toString());
             const myLastMessages = await MessagesRepository.GetLastMessage(myId);
@@ -74,8 +74,10 @@ class MessagesService {
             const message = body.message;
 
             const addedMessage = await MessagesRepository.AddMessage(myId, id, message);
-
-            return addedMessage;
+            
+            const lastNewMessage = await this.GetMessages({myId: body.myId, id: body.id, skip: 0});
+            
+            return lastNewMessage.messages.pop();
         } catch(e) {
             return ApiError.BadRequest("Ошибка при добавлении нового сообщения");
         }
@@ -83,8 +85,8 @@ class MessagesService {
 
     async AddRoom(body: IBodyAddRoom) {
         try {
-            const firstUser = body.chatRoom.users[0];
-            const secondUser = body.chatRoom.users[1];
+            const firstUser = body.users[0];
+            const secondUser = body.users[1];
 
             const addedRoom = await new Chat({users: [firstUser, secondUser], messages: []}).save();
 
@@ -94,17 +96,20 @@ class MessagesService {
         }
     }
 
-    async UpdateVisibleAllMessages(body: IBodyUpdateVisibleMessages) {
+    async UpdateVisibleMessages(body: IBodyUpdateVisibleMessages) {
         try {
-            const {chatMessages, id } = body;
-
-            const chatObjectId = new mongoose.Types.ObjectId(chatMessages._id);
+            const {messages, roomId, id } = body;
+            const objectRoomId = new mongoose.Types.ObjectId(roomId);
             const objectId = new mongoose.Types.ObjectId(id);
 
+            const arrayObjectIdMessages = messages.map(oneMessage => {
+                return new mongoose.Types.ObjectId(oneMessage._id)
+            })
+
             await Chat.updateOne(
-                {_id: chatObjectId},
+                {_id: objectRoomId},
                 {$set: {'messages.$[oneMessage].isVisible': true}},
-                {arrayFilters: [{'oneMessage.user': objectId}]}
+                {arrayFilters: [{'oneMessage.user': objectId, 'oneMessage._id': {$in: [...arrayObjectIdMessages]}}]}
             )
         } catch(e) {
             return ApiError.BadRequest("Ошибка при обновлении счетчика просмотров сообщений");

@@ -1,7 +1,7 @@
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import messagesService from '../services/messagesService';
-import { IBodyUpdateVisibleMessages, IQueryMessage } from '../types';
+import { IBodyUpdateVisibleMessages, IQueryMessage } from '../types/servicesTypes/messageServiceTypes';
 
 type connectedUsersType = {
     [key: string]: string
@@ -18,7 +18,7 @@ export default (http: http.Server) => {
         socket.on('logged-in', (myId: string) => {
             connectedUsers[myId] = socket.id;
     
-            messagesService.GetLastMessage({ myId })
+            messagesService.GetLastMessages({ myId })
             .then((data) => {
                 console.log("updateLastMessages");
                 socket.emit('updateLastMessages', data);
@@ -40,18 +40,18 @@ export default (http: http.Server) => {
 
             messagesService.AddMessage(body)
             .then((message) => {
-                messagesService.GetLastMessage({myId: body.myId})
+                messagesService.GetLastMessages({myId: body.myId})
                 .then((lastMessages) => {
                     io.to(connectedUsers[body.myId]).emit('updateLastMessages', lastMessages);
                 });
-                messagesService.GetLastMessage({myId: body.id})
+                messagesService.GetLastMessages({myId: body.id})
                 .then((lastMessages) => {
                     io.to(connectedUsers[body.id]).emit('updateLastMessages', lastMessages);
                 });
-
-                messagesService.GetMessages({myId: body.myId, id: body.id, skip: '0'})
+                
+                messagesService.GetMessages({myId: body.myId, id: body.id, skip: 0})
                 .then((roomMessages) => {
-                    io.to(roomMessages._id.toString()).emit('updateRoomMessages', roomMessages);
+                    io.to(roomMessages._id.toString()).emit('updateRoomMessages', message);
                 })
             })
             .catch((err) => {
@@ -64,22 +64,32 @@ export default (http: http.Server) => {
 
             messagesService.GetMessages(data)
             .then((messages) => {
-                socket.join(messages._id.toString());
+                if(messages) {
+                    socket.join(messages._id.toString());
 
-                socket.emit("updateRoomMessages", messages);
+                    socket.emit("loadInitialRoomMessages", messages);
+                } else {
+                    messagesService.AddRoom({users: [data.myId, data.id]})
+                    .then((addedRoom) => {
+                        socket.join(addedRoom._id.toString());
+                    }) 
+                }
+            })
+        })
+
+        socket.on('onLoadNewMessages', (data: IQueryMessage) => {
+            console.log('loadNewMessages');
+
+            messagesService.GetMessages(data)
+            .then((messages) => {
+                socket.emit("loadNewRoomMessages", messages);
             })
         })
 
         socket.on("onUpdateVisibleMessages", (data: IBodyUpdateVisibleMessages) => {
             console.log('update visible essages server');
 
-            messagesService.UpdateVisibleAllMessages(data)
-            .then(() => {
-                messagesService.GetLastMessage({myId: data.myId})
-                .then((messages) => {
-                    io.to(connectedUsers[data.myId]).emit('updateLastMessages', messages);
-                })
-            })
+            messagesService.UpdateVisibleMessages(data)
         })
     
         socket.on('disconnect', () => {
