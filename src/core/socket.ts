@@ -26,8 +26,6 @@ export default (http: http.Server) => {
         })
     
         socket.on('sendMessage', (data: any) => {
-            console.log('sendMessage server');
-    
             const receiverId = data.receiverId;
             const {content, createdAt, user, isVisible} = data.message;
             const mainMessage = {content, createdAt, user, isVisible};
@@ -60,8 +58,6 @@ export default (http: http.Server) => {
         });
     
         socket.on('onEnterTheRoom', (data: IQueryMessage) => {
-            console.log('enter the room server');
-
             messagesService.GetMessages(data)
             .then((messages) => {
                 if(messages) {
@@ -78,8 +74,6 @@ export default (http: http.Server) => {
         })
 
         socket.on('onLoadNewMessages', (data: IQueryMessage) => {
-            console.log('loadNewMessages');
-
             messagesService.GetMessages(data)
             .then((messages) => {
                 socket.emit("loadNewRoomMessages", messages);
@@ -87,8 +81,6 @@ export default (http: http.Server) => {
         })
 
         socket.on("onUpdateVisibleMessages", (data: IBodyUpdateVisibleMessages) => {
-            console.log('update visible essages server');
-
             messagesService.UpdateVisibleMessages(data)
         })
     

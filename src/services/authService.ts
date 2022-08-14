@@ -1,33 +1,59 @@
+import { Request, Response, NextFunction, response } from "express";
+import { validationResult } from "express-validator";
+import ApiError from "../exceptions/apiError";
+
+import User from '../models/User';
+import Role from '../models/Role';
+
+import bcryptjs from 'bcryptjs';
+import jwt from "jsonwebtoken";
+import config from "../config/config";
+
+import { ObjectId } from "mongoose";
+import AuthRepository from "../repositories/authRepository";
+import AuthGenerator from '../services/authGenerator';
+import Faculty from "../models/Faculty";
+import Group from "../models/Group";
+import Department from "../models/Department";
+import AdditionalEntitiesRepository from "../repositories/additionalEntitiesRepository";
+import { IUser } from "../types/mainTypes";
+
+// const generateAccessToken = (id: ObjectId, username: string, roles: Array<string>) => {
+//     const payload = {
+//         id: id,
+//         username: username,
+//         roles: roles
+//     }
+
+//     return jwt.sign(payload, config.secret, {expiresIn: "24h"});
+// }
+
 class AuthService {
-    async Registration () {
-        // const errors = validationResult(req);
+    async Registration (createUserDto: CreateUserDto) {//roles приходит как ["STUDENT", "TEACHER"]
 
-        // if(!errors.isEmpty()) {
-        //     //throw ApiError.BadRequest("Неправильно заполнены данные", errors);
-        //     next(ApiError.BadRequest("Неправильно заполнены данные", errors));
-        // }
+        const {username, password, name, email, roles} = createUserDto;
 
-        // const {username, password, name, email, roles} = req.body;
-
-        // const condidate = await User.findOne({username});
-        // if(condidate) {
-        //     next(ApiError.BadRequest("Пользователь с таким именем уже есть"));
-        // }
-
-        // const hashPassword: string = bcryptjs.hashSync(password, 7);
-
-        // const userRolesDocs = await getDocRole(Role, roles);
-
-        // const user = new User({
-        //     username: username,
-        //     password: hashPassword,
-        //     email: email,
-        //     name: name,
-        //     roles: userRolesDocs
-        // });
-        // await user.save();
+        const condidate = await User.findOne({username});
         
-        // return res.json({message: `hello ${username}`});
+        if(condidate) {
+            throw ApiError.BadRequest("Пользователь с таким именем уже есть");
+        }
+
+        const hashPassword: string = bcryptjs.hashSync(password, 7);
+
+        const userRolesDocs = await AdditionalEntitiesRepository.GetDocRole(Role, roles);
+
+        const user = new User({
+            username: username,
+            password: hashPassword,
+            email: email,
+            name: name,
+            roles: userRolesDocs
+        });
+
+        await user.save();
+
+        return user;
     }
 
     // async Login(req: Request, res: Response, next: NextFunction) {
@@ -70,10 +96,10 @@ class AuthService {
     //         const generatedPassword = AuthGenerator.generatePassword(8)////////////Длина пароля
     //         const hashPassword: string = bcryptjs.hashSync(generatedPassword, 7);
 
-    //         const userRolesDocs = await getDocRole(Role, oneUser.roles);
-    //         const userFacultiesDocs = await getDocFaculty(Faculty, oneUser.faculties);
-    //         const userGroupsDocs = await getDocGroup(Group, oneUser.groups);
-    //         const userDepartmentsDocs = await getDocDepartment(Department, oneUser.departments);
+    //         const userRolesDocs = await AdditionalEntitiesRepository.GetDocRole(Role, oneUser.roles);
+    //         const userFacultiesDocs = await AdditionalEntitiesRepository.GetDocFaculty(Faculty, oneUser.faculties);
+    //         const userGroupsDocs = await AdditionalEntitiesRepository.GetDocGroup(Group, oneUser.groups);
+    //         const userDepartmentsDocs = await AdditionalEntitiesRepository.GetDocDepartment(Department, oneUser.departments);
             
     //         const user = new User({username: generatedUsername, name: oneUser.name, password: hashPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs});
     //         const userClientResponse = {username: generatedUsername, name: oneUser.name, password: generatedPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs};
@@ -88,3 +114,5 @@ class AuthService {
     //         .catch(error => console.log('AuthController', error));
     // }
 }
+
+export default new AuthService()
