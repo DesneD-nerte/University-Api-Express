@@ -1,6 +1,4 @@
 import { ObjectId } from "mongoose";
-import ApiError from "../exceptions/apiError";
-import CurrentLessons from '../models/CurrentLessons';
 import Mark from "../models/Mark";
 
 export default class MarkRepository {

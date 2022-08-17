@@ -35,7 +35,7 @@ class FileController {
        
 
         const currentUser = await User.findOne({_id: req.body.id});
-        if (currentUser.imageUri === undefined) {
+        if (currentUser && currentUser.imageUri === undefined) {
             currentUser.imageUri = `http://${req.headers.host}/avatar/${req.body.id}`;
 
             currentUser.save();

@@ -1,11 +1,10 @@
-import mongoose, { Schema } from "mongoose";
-import ApiError from "../exceptions/apiError";
-import CurrentLessons from '../models/CurrentLessons';
+import mongoose from "mongoose";
+import CurrentLesson from '../models/CurrentLesson';
 
 export default class LessonRepository {
 
     static async getCurrentLessons () {
-        const currentLessons = await CurrentLessons.find({})
+        const currentLessons = await CurrentLesson.find({})
             .populate('name')
             .populate('teachers', {password: 0})
             .populate('classroom')
@@ -19,7 +18,7 @@ export default class LessonRepository {
 
         const arrayId = currentLessons.map((oneId: string) => new mongoose.Types.ObjectId(oneId));
 
-        const schedulerCurrentLessons = await CurrentLessons.find({_id: {$in: arrayId}})
+        const schedulerCurrentLessons = await CurrentLesson.find({_id: {$in: arrayId}})
             .populate('name')
             .populate('teachers', {password: 0})
             .populate('classroom')

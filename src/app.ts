@@ -10,7 +10,7 @@ require('./models/Faculty');
 require('./models/Department');
 require('./models/Group');
 require('./models/Audience');
-require('./models/CurrentLessons');
+require('./models/CurrentLesson');
 require('./models/Lesson');
 
 

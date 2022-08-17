@@ -1,16 +1,15 @@
 import { Schema, model } from 'mongoose';
-const mongoose = require('mongoose');
+import { ICurrentLesson } from '../types/modelsTypes';
 
-const CurrentLessons = new Schema({
+const CurrentLesson = new Schema<ICurrentLesson>({
     name: { type: Schema.Types.ObjectId, required: true, ref: 'Lesson' },
     teachers: [{ type: Schema.Types.ObjectId, required: true, ref: 'User' }],
     beginDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     classroom: { type: Schema.Types.ObjectId, required: true, ref: 'Audience' },
     group: { type: Schema.Types.ObjectId, required: true, ref: 'Group' }
-    //missedstudents: [UserSchema]
 }, {
     collection: 'currentLessons'
 });
 
-export default model('CurrentLessons', CurrentLessons);
+export default model('CurrentLesson', CurrentLesson);

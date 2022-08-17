@@ -1,5 +1,6 @@
 import { HydratedDocument, Query } from 'mongoose';
 import User from '../models/User';
+import { IUser } from '../types/modelsTypes';
 
 export default class AuthGenerator {
 
@@ -93,8 +94,8 @@ async function getLastExistingLoginNumbers (login: string) {
     const emptyNumbers = '';
     console.log(userDocs);
     if(userDocs.length !== 0) { 
-        const lastLoginNumber = userDocs.pop();
-        const {username} = lastLoginNumber; 
+        const lastLoginNumber = userDocs.pop() as HydratedDocument<IUser>;
+        const username = lastLoginNumber?.username; 
 
         for (let i = 0; i < username.length; i++) {
             const oneLetter = username[i];
