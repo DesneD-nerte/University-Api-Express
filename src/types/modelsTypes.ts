@@ -11,14 +11,20 @@ export interface ICurrentLesson {
 
 export interface IUser {
     username: string,
-    password: string
-    roles: Array<Schema.Types.ObjectId>
-    name: string
-    email: string
-    imageUri: string
-    faculties: Array<Schema.Types.ObjectId>
-    departments: Array<Schema.Types.ObjectId>
+    password: string,
+    roles: Array<Schema.Types.ObjectId>,
+    name: string,
+    email: string,
+    imageUri: string,
+    faculties: Array<Schema.Types.ObjectId>,
+    departments: Array<Schema.Types.ObjectId>,
     groups: Array<Schema.Types.ObjectId>
+}
+
+export interface INews {
+    name: string,
+    content: string,
+    createdAt: Date,
 }
 
 export interface IRole {
@@ -26,21 +32,22 @@ export interface IRole {
 }
 
 export interface IAudience {
-    value: string
+    name: string
 }
 
 export interface IDepartment {
-    value: string
+    name: string,
+    room: string
 }
 
 export interface IFaculty {
-    value: string
+    name: string
 }
 
 export interface IGroup {
-    value: string
+    name: string
 }
 
 export interface ILesson {
-    value: string
+    name: string
 }

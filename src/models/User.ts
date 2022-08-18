@@ -13,4 +13,4 @@ const User = new Schema<IUser>({
     groups: [{type: Schema.Types.ObjectId, ref: 'Group'}],
 });
 
-export default model('User', User);
+export default model<IUser>('User', User);

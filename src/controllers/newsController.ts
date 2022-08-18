@@ -1,51 +1,52 @@
 import { Request, Response, NextFunction } from "express";
-import { JwtPayload } from 'jsonwebtoken';
+import { DeleteArrayNewsDto } from "../dto/news/deleteArrayNewsDto";
+import { GetNewsDto } from "../dto/news/getNewsDto";
 import News from '../models/News';
+import newsService from "../services/newsService";
+import { IBareRequestParams, IBareResponseBody, IBareRequestBody, IBareRequestQuery } from "../types/servicesTypes/types";
 
 class NewsController {
-    //SORT {createdAt: -1} Задом наперед приходят данные
-    async GetNews(req: Request, res: Response, next: NextFunction) {
-        console.log("Get News method.");
+    async GetNews(req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, GetNewsDto>, res: Response, next: NextFunction) {
+        try {
+            const massiveNews = await newsService.GetNews(req.query);
 
-        const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
-        const page = Number.parseInt(req.query.page?.toString()!) || 1; 
+            const range = await News.count();
+            res.setHeader('range', range.toString());
 
-        const massiveNews = await News.find({}).sort({createdAt: -1})
-        .limit(limit)
-        .skip(limit * (page - 1));//Если хотим показывать 11-20, нужно скипать первый показанных и переходить на нужную страницу
-
-        const range = await News.count();
-        res.setHeader('range', range.toString());
-
-        return res.json(massiveNews);
+            return res.json(massiveNews);
+        } catch (err) {
+            next(err);
+        }
     }
 
     async GetAllNews (req: Request, res: Response, next: NextFunction) {
-        const allNews: Array<typeof News> = await News.find({}).sort({createdAt: -1});
+        try {
+            const allNews = await newsService.GetAllNews();
         
-        return res.json(allNews);
+            return res.json(allNews);
+        } catch (err) {
+            next(err);
+        }
     }
 
     async PostNewNews (req: Request, res: Response, next: NextFunction) {
-        const newNews = req.body.data.newNews;
+        try {
+            const newCreatedNews = await newsService.PostNewNews(req.body.data);
 
-        News.create(newNews)
-        .then(response => {
-            res.sendStatus(200);
-        })
-        .catch(error => {
-            res.sendStatus(400);
-        })  
+            return res.json(newCreatedNews);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async DeleteNews(req: Request, res: Response, next: NextFunction) {
-        const arrayToDelete: Array<typeof News> = req.body.oldNews;
+    async DeleteNews(req: Request<IBareRequestParams, IBareResponseBody, DeleteArrayNewsDto, IBareRequestQuery>, res: Response, next: NextFunction) {
+        try {
+            const result = await newsService.DeleteNews(req.body.arrayIdNews);
 
-        for (let i = 0; i < arrayToDelete.length; i++) {
-            await News.deleteOne(arrayToDelete[i]);
+            return res.json(result);
+        } catch (err) {
+            next(err);
         }
-
-        return res.sendStatus(200);
     }
 }
 

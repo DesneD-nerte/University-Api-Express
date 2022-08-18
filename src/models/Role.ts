@@ -5,4 +5,4 @@ const Role = new Schema<IRole>({
     value: {type: String, unique: true}
 });
 
-export default model('Role', Role);
+export default model<IRole>('Role', Role);

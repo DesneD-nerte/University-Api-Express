@@ -14,9 +14,11 @@ import Faculty from "../models/Faculty";
 import Group from "../models/Group";
 import Department from "../models/Department";
 import AdditionalEntitiesRepository from "../repositories/additionalEntitiesRepository";
-import { IUser } from "../types/mainTypes";
+import { IDepartment, IFaculty, IGroup, IUser } from "../types/modelsTypes";
 import { LoginUserDto } from "../dto/auth/loginUserDto";
 import { LoginUserResponseDto } from "../dto/auth/loginUserResponseDto";
+import { IRole } from "../types/modelsTypes";
+import { IGeneratedProperties } from "../types/servicesTypes/authServicesTypes";
 
 class AuthService {
     async Registration (createUserDto: CreateUserDto) {//roles приходит как ["STUDENT", "TEACHER"]
@@ -31,7 +33,7 @@ class AuthService {
 
         const hashPassword: string = bcryptjs.hashSync(password, 7);
 
-        const userRolesDocs = await AdditionalEntitiesRepository.GetDocRole(Role, roles);
+        const userRolesDocs = await AdditionalEntitiesRepository.GetDocModel(Role, roles);
 
         const user = new User({
             username: username,
@@ -66,40 +68,84 @@ class AuthService {
         return new LoginUserResponseDto(token, _id, username, roles, email, name, faculties, groups, departments, imageUri)
     }
 
-    // async RegistrationArray(req: Request, res: Response, next: NextFunction) {
-    //     const arrayUsers = req.body;
-    //     const arrayUsersDataBase: Array<HydratedDocument<IUser>> = [];
-    //     const arrayUsersClientResponse: Array<HydratedDocument<IUser>> = [];
+    async RegistrationArray(body: Array<CreateManyUsersDto>) {
+        const arrayUsers = body;
+        const arrayUsersDataBase: Array<HydratedDocument<IUser>> = [];
+        const arrayUsersClientResponse: Array<HydratedDocument<IUser>> = [];
 
-    //     for (const oneUser of arrayUsers) {
-    //         const existingUser = await User.findOne({email: oneUser.email});
-    //         if(existingUser) {
-    //             const userClientResponse = new User({username: '—', name: oneUser.name, password: '—', roles: ['STUDENT'], email: 'Пользователь уже зарегистрирован'});
-    //             arrayUsersClientResponse.push(userClientResponse);
+        for (const oneUser of arrayUsers) {
+            const existingUser = await User.findOne({email: oneUser.email});
+           
+            if(existingUser) {
+                const userClientResponse: HydratedDocument<IUser> = new User({
+                    username: '—',
+                    name: oneUser.name, 
+                    password: '—', 
+                    email: 'Пользователь уже зарегистрирован'
+                });
+                arrayUsersClientResponse.push(userClientResponse);
                 
-    //             continue;
-    //         }
-    //         const generatedUsername = await AuthGenerator.generateLogin(oneUser.name);
-    //         const generatedPassword = AuthGenerator.generatePassword(8)////////////Длина пароля
-    //         const hashPassword: string = bcryptjs.hashSync(generatedPassword, 7);
+                continue;
+            }
 
-    //         const userRolesDocs: Array<HydratedDocument<IRole>> = await AdditionalEntitiesRepository.GetDocRole(Role, oneUser.roles);
-    //         const userFacultiesDocs = await AdditionalEntitiesRepository.GetDocFaculty(Faculty, oneUser.faculties);
-    //         const userGroupsDocs = await AdditionalEntitiesRepository.GetDocGroup(Group, oneUser.groups);
-    //         const userDepartmentsDocs = await AdditionalEntitiesRepository.GetDocDepartment(Department, oneUser.departments);
+            const { user, userClientResponse } = await this.createUsers(oneUser);
 
-    //         const user = await new User({username: generatedUsername, name: oneUser.name, password: hashPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs})
-    //         const userClientResponse = await new User({username: generatedUsername, name: oneUser.name, password: generatedPassword, roles: userRolesDocs, email: oneUser.email, faculties: userFacultiesDocs, departments: userDepartmentsDocs, groups: userGroupsDocs}).populate(["roles", "faculties", "groups", "departments"]);
-            
-    //         arrayUsersDataBase.push(user);
-    //         arrayUsersClientResponse.push(userClientResponse);
-    //     }
-    //     console.log("arrayUsersClientResponse", arrayUsersClientResponse);
+            arrayUsersDataBase.push(user);
+            arrayUsersClientResponse.push(userClientResponse);
+        }
 
-    //     User.insertMany(arrayUsersDataBase)
-    //         .then(docs => res.json(arrayUsersClientResponse))
-    //         .catch(error => console.log('AuthController', error));
-    // }
+        const registeredUsers = await User.insertMany(arrayUsersDataBase)
+
+        return arrayUsersClientResponse;
+    }
+
+    private async getUserProperties (oneUser: CreateManyUsersDto): Promise<IGeneratedProperties> {
+        const generatedUsername = await AuthGenerator.generateLogin(oneUser.name);
+        const generatedPassword = AuthGenerator.generatePassword(8)////////////Длина пароля
+        const hashPassword = bcryptjs.hashSync(generatedPassword, 7);
+
+        const userRolesDocs: Array<HydratedDocument<IRole>> = await AdditionalEntitiesRepository.GetDocModel(Role, oneUser.roles);
+        const userFacultiesDocs: Array<HydratedDocument<IFaculty>> = await AdditionalEntitiesRepository.GetDocModel(Faculty, oneUser.faculties);
+        const userGroupsDocs: Array<HydratedDocument<IGroup>> = await AdditionalEntitiesRepository.GetDocModel(Group, oneUser.groups);
+        const userDepartmentsDocs: Array<HydratedDocument<IDepartment>> = await AdditionalEntitiesRepository.GetDocModel(Department, oneUser.departments);
+
+        return {
+            generatedUsername,
+            generatedPassword,
+            hashPassword,
+            userRolesDocs,
+            userFacultiesDocs,
+            userGroupsDocs,
+            userDepartmentsDocs,
+        }
+    }
+
+    private async createUsers (oneUser: CreateManyUsersDto) {
+        const generatedProperties = await this.getUserProperties(oneUser);
+
+        const user = await new User({
+            username: generatedProperties.generatedUsername,
+            name: oneUser.name, 
+            password: generatedProperties.hashPassword,
+            roles: generatedProperties.userRolesDocs, 
+            email: oneUser.email, 
+            faculties: generatedProperties.userFacultiesDocs,
+            departments: generatedProperties.userDepartmentsDocs,
+            groups: generatedProperties.userGroupsDocs
+        })
+
+        const userClientResponse = await new User({username: generatedProperties.generatedUsername,
+            name: oneUser.name,
+            password: generatedProperties.generatedPassword,
+            roles: generatedProperties.userRolesDocs,
+            email: oneUser.email,
+            faculties: generatedProperties.userFacultiesDocs,
+            departments: generatedProperties.userDepartmentsDocs,
+            groups: generatedProperties.userGroupsDocs
+        }).populate(["roles", "faculties", "groups", "departments"]);
+
+        return { user, userClientResponse };
+    }
 
     private generateAccessToken = (id: ObjectId, username: string, roles: Array<Schema.Types.ObjectId>) => {
         const payload = {
