@@ -1,26 +1,24 @@
-import { HydratedDocument, Query } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import User from '../models/User';
 import { IUser } from '../types/modelsTypes';
 
-export default class AuthGenerator {
+export class AuthGenerator {
 
-    static #characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&()';
+    private characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&()';
 
-    static generatePassword(lengthPassword: Number) {
+    GeneratePassword(lengthPassword: Number) {
         let generatedPassword = '';
 
-        const charactersLength = this.#characters.length;
+        const charactersLength = this.characters.length;
 
         for (let i = 0; i < lengthPassword; i++) {
-            generatedPassword += this.#characters.charAt(Math.floor(Math.random() * charactersLength));
+            generatedPassword += this.characters.charAt(Math.floor(Math.random() * charactersLength));
         }
 
         return generatedPassword;
     }
 
-    static generateLogin(words: string) {
-        const arrayName = words.split(' ');
-        
+    GenerateLogin(words: string) {
         let resultTranslit = '';
 
         type converterItems = {
@@ -44,8 +42,7 @@ export default class AuthGenerator {
             'Э': 'E',    'Ю': 'Yu',   'Я': 'Ya'
         };
      
-     
-        for (var i = 0; i < words.length; ++i ) {
+        for (let i = 0; i < words.length; ++i ) {
             if (converter[words[i]] === undefined){
                 resultTranslit += words[i];
             } else {
@@ -53,61 +50,60 @@ export default class AuthGenerator {
             }
         }
 
-        return separateName(resultTranslit);
-    }
-}
-
-function separateName (stringTranslit: string) {
-    const arrayTranslit = stringTranslit.split(' ');
-
-    let generatedUsername = '';
-    for(let i = 0; i < arrayTranslit.length; i++) {
-        if(i === 0) {
-            generatedUsername += arrayTranslit[i];
-        } else {
-            generatedUsername += arrayTranslit[i].slice(0, 1)
-        }
+        return this.separateName(resultTranslit);
     }
 
-    return correctLoginNumbers(generatedUsername)
-}
-
-async function correctLoginNumbers (login: string) {
-    const loginNumbers = await getLastExistingLoginNumbers(login);
-    let intNumbers: number = 0;
-
-    if(Number.isInteger(parseInt(loginNumbers))) {
-        intNumbers = parseInt(loginNumbers);
-        console.log('intNumbers', intNumbers);
-    }  
-
-    intNumbers += 1;
-
-    const newLogin = login + intNumbers;
-    console.log('newLogin', newLogin);
-
-    return newLogin;
-}
-
-async function getLastExistingLoginNumbers (login: string) {
-    const userDocs = await User.find({username: {$regex: login}});
-    const emptyNumbers = '';
-    console.log(userDocs);
-    if(userDocs.length !== 0) { 
-        const lastLoginNumber = userDocs.pop() as HydratedDocument<IUser>;
-        const username = lastLoginNumber?.username; 
-
-        for (let i = 0; i < username.length; i++) {
-            const oneLetter = username[i];
-            console.log(oneLetter);
-            if(Number.isInteger(parseInt(oneLetter))) {
-                console.log('qwe');
-                return username.slice(i);
+    private separateName (stringTranslit: string) {
+        const arrayTranslit = stringTranslit.split(' ');
+    
+        let generatedUsername = '';
+        for(let i = 0; i < arrayTranslit.length; i++) {
+            if(i === 0) {
+                generatedUsername += arrayTranslit[i];
+            } else {
+                generatedUsername += arrayTranslit[i].slice(0, 1)
             }
         }
-        
+    
+        return this.correctLoginNumbers(generatedUsername)
+    }
+    
+    private async correctLoginNumbers (login: string) {
+        const loginNumbers = await this.getLastExistingLoginNumbers(login);
+        let intNumbers = 0;
+    
+        if(parseInt(loginNumbers)) {
+            intNumbers = parseInt(loginNumbers);
+        }  
+    
+        intNumbers += 1;
+    
+        const newLogin = login + intNumbers;
+    
+        return newLogin;
+    }
+    
+    private async getLastExistingLoginNumbers (login: string) {
+        const userDocs = await User.find({username: {$regex: login}});
+        const emptyNumbers = '';
+    
+        if(userDocs.length) { 
+            const lastLoginNumber = userDocs.pop() as HydratedDocument<IUser>;
+            const username = lastLoginNumber?.username; 
+    
+            for (let i = 0; i < username.length; i++) {
+                const oneLetter = username[i];
+    
+                if(parseInt(oneLetter)) {
+                    return username.slice(i);
+                }
+            }
+            
+            return emptyNumbers;
+        }
+    
         return emptyNumbers;
     }
-
-    return emptyNumbers;
 }
+
+export default new AuthGenerator();

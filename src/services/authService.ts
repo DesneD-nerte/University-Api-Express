@@ -9,7 +9,7 @@ import config from "../config/config";
 
 import { HydratedDocument, ObjectId, Schema } from "mongoose";
 import AuthRepository from "../repositories/authRepository";
-import AuthGenerator from '../services/authGenerator';
+import authGenerator from '../services/authGenerator';
 import Faculty from "../models/Faculty";
 import Group from "../models/Group";
 import Department from "../models/Department";
@@ -100,8 +100,8 @@ class AuthService {
     }
 
     private async getUserProperties (oneUser: CreateManyUsersDto): Promise<IGeneratedProperties> {
-        const generatedUsername = await AuthGenerator.generateLogin(oneUser.name);
-        const generatedPassword = AuthGenerator.generatePassword(8)////////////Длина пароля
+        const generatedUsername = await authGenerator.GenerateLogin(oneUser.name);
+        const generatedPassword = authGenerator.GeneratePassword(8)////////////Длина пароля
         const hashPassword = bcryptjs.hashSync(generatedPassword, 7);
 
         const userRolesDocs: Array<HydratedDocument<IRole>> = await AdditionalEntitiesRepository.GetDocModel(Role, oneUser.roles);
