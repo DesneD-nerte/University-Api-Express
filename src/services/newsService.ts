@@ -1,22 +1,18 @@
 import { HydratedDocument } from "mongoose";
 import { GetNewsDto } from "../dto/news/getNewsDto";
 import News from "../models/News";
+import newsRepository from "../repositories/newsRepository";
 import { INews } from "../types/modelsTypes";
 
 class NewsService {
-    //SORT {createdAt: -1} Задом наперед приходят данные
     async GetNews(query: GetNewsDto) {
-        const { limit, page } = query;
-
-        const massiveNews = await News.find({}).sort({createdAt: -1})
-            .limit(limit)
-            .skip(limit * (page - 1));
+        const massiveNews = await newsRepository.GetNews(query);
 
         return massiveNews;
     }
 
     async GetAllNews () {
-        const allNews: Array<HydratedDocument<INews>> = await News.find({}).sort({createdAt: -1});
+        const allNews = await newsRepository.GetAllNews();
         
         return allNews;
     }
@@ -27,8 +23,10 @@ class NewsService {
         return newCreatedNews;
     }
 
-    async DeleteNews(dataArray: any) {
-        return await News.deleteMany({_id: {$in: dataArray}})
+    async DeleteNews(idNewsArray: string[]) {
+        const deleteResult = await newsRepository.DeleteNews(idNewsArray);
+        
+        return deleteResult;
     }
 }
 

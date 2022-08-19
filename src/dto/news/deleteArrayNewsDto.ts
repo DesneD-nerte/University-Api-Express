@@ -1,9 +1,7 @@
 export class DeleteArrayNewsDto {
-    arrayIdNews: {
-        _id: string
-    }
+    arrayIdNews: string[]
 
-    constructor(arrayIdNews: {_id: string}) {
+    constructor(arrayIdNews: string[]) {
         this.arrayIdNews = arrayIdNews;
     }
 }

@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
+import { HydratedDocument } from "mongoose";
 import CurrentLesson from '../models/CurrentLesson';
+import { ICurrentLesson } from "../types/modelsTypes";
 
 export default class LessonRepository {
 
@@ -14,20 +15,26 @@ export default class LessonRepository {
         return currentLessons;
     }
 
-    static async getSchedulerCurrentLessons(currentLessons: any) {
+    static async SaveNewArrayCurrentLessons(arrayCurrentLessons: Array<HydratedDocument<ICurrentLesson>>) {
+        const addedCurrentLessons = await CurrentLesson.insertMany(arrayCurrentLessons, {
+            populate: [
+                {path: 'name'}, 
+                {path: 'classroom'},
+                {path: 'group'},
+                {path: 'teachers', select: {password: 0}}
+            ]
+        })
 
-        const arrayId = currentLessons.map((oneId: string) => new mongoose.Types.ObjectId(oneId));
-
-        const schedulerCurrentLessons = await CurrentLesson.find({_id: {$in: arrayId}})
-            .populate('name')
-            .populate('teachers', {password: 0})
-            .populate('classroom')
-            .populate('group')
-            .exec(); 
-
-        return schedulerCurrentLessons;
+        return addedCurrentLessons;
     }
 
+    static async UpdateCurrentLesson(newCurrentLesson: HydratedDocument<ICurrentLesson>) {
+        const updatedCurrentLesson = await CurrentLesson.findOneAndUpdate({_id: newCurrentLesson._id}, newCurrentLesson);
+        
+        return updatedCurrentLesson;
+    }
+
+    //#region Количество пропущенных занятий 
     // static async getCountStudents () {
     //     return await User.aggregate([
     //         {
@@ -74,4 +81,5 @@ export default class LessonRepository {
     //         }
     //     ])
     // }
+    //#endregion
 }

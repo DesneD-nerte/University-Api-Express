@@ -39,7 +39,9 @@ class LessonService {
             arrayCurrentLessons.push(currentLesson);
         }
 
-        return await CurrentLesson.insertMany(arrayCurrentLessons)
+        const addedCurrentLessons = await LessonRepository.SaveNewArrayCurrentLessons(arrayCurrentLessons);
+
+        return addedCurrentLessons;
     }
 
     async UpdateCurrentLesson (updateCurrentLessonDto: UpdateCurrentLessonDto) {
@@ -54,16 +56,10 @@ class LessonService {
             group: updateCurrentLessonDto.groupId
         })
 
-        return await CurrentLesson.findOneAndUpdate({_id: newCurrentLessons._id}, newCurrentLessons);
-    }
-
-    // async GetSchedulerFormCurrentLessons () {
-    //     const { data } = req.body;
-
-    //     const result = await LessonRepository.getSchedulerCurrentLessons(data);
+        const updatedCurrentLesson = await LessonRepository.UpdateCurrentLesson(newCurrentLessons);
         
-    //     return res.json(result);
-    // }
+        return updatedCurrentLesson;
+    }
 }
 
 export default new LessonService();

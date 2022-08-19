@@ -147,14 +147,14 @@ class AuthService {
         return { user, userClientResponse };
     }
 
-    private generateAccessToken = (id: ObjectId, username: string, roles: Array<Schema.Types.ObjectId>) => {
+    private generateAccessToken = (id: ObjectId, username: string, roles: Array<ObjectId>) => {
         const payload = {
-            id: id,
+            _id: id,
             username: username,
             roles: roles
         }
     
-        return jwt.sign(payload, config.secret, {expiresIn: "24h"});
+        return jwt.sign(payload, config.secret, {algorithm: 'HS512', expiresIn: "24h"});
     }
 }
 

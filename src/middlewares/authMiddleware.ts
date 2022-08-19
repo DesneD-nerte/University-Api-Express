@@ -17,7 +17,9 @@ export default function (req: Request, res: Response, next: any) {
                 throw ApiError.TokenExpired();
             }
 
-            req.body.user = decoded;
+            if(req.baseUrl === "/myprofile") {
+                req.body.user = decoded;
+            }
         });
 
         next();

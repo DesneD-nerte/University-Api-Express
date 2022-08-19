@@ -9,7 +9,5 @@ router.post('/savenewcurrentlesson', lessonController.SaveNewCurrentLesson);
 router.post('/savenewcurrentlessonsarray', lessonController.SaveNewArrayCurrentLessons);
 router.get('/lessongroup', lessonController.GetCurrentLessons)
 router.put('/updateCurrentLesson', lessonController.UpdateCurrentLesson)
-router.put('/schedulercurrentlessons', lessonController.GetSchedulerFormCurrentLessons);
-
 
 export default router;

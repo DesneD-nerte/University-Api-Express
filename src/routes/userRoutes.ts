@@ -10,6 +10,6 @@ router.get('/:groupId/students', userController.GetStudentsByGroupId);
 
 router.get('/teachers', userController.GetTeachers);
 
-router.get('/all', userController.GetAll);
+router.get('/all', userController.GetAllButMe);
 
 export default router

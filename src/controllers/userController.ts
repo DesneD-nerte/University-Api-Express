@@ -1,49 +1,57 @@
 import { Request, Response, NextFunction } from "express";
 import User from '../models/User';
-import UserRepository from "../repositories/userRepository";
 import { roleTeacherObjectId } from '../databaseLinks';
+import userService from "../services/userService";
+import { IJwtPayload } from "../types/servicesTypes/jwtTypes";
+import { UserGroupIdDto } from "../dto/user/UserGroupIdDto";
+import { UserFilterDto } from "../dto/user/UserFilterDto";
 
 class UserController {
-    async GetMyData (req: Request, res: Response) {//Здесь мы получаем наш токен
+    async GetMyData (req: Request<any, any, IJwtPayload, any>, res: Response, next: NextFunction) {
+        try {
+            const dataTokenUser = req.body.user;
+            const myData = await userService.GetMyData(dataTokenUser);
 
-        const usernameFromToken = req.body.user.username;
-        
-        const myProfileMongo = await UserRepository.getMyData(usernameFromToken);
-        
-        const {_id, username, name, roles, imageUri, faculties, departments, groups} = myProfileMongo;
-
-        return res.json({_id, username, name, roles, imageUri, faculties, departments, groups});
+            return res.json(myData);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async GetStudents(req: Request, res: Response) {
-        console.log("getStudents method.");
+    async GetStudents(req: Request<any, any, any, UserFilterDto>, res: Response, next: NextFunction) {
+        try {
+            const userFilterDto = req.query;
+            const arrayStudents = await userService.GetStudents(userFilterDto);
 
-        const limit = Number.parseInt(req.query.limit?.toString()!) || 10; 
-        const page = Number.parseInt(req.query.page?.toString()!) || 0; 
-
-        const massiveStudents = await User.find({roles: ["STUDENT"]}, "name email")
-        .limit(limit)
-        .skip(limit * page);//Если хотим показывать 11-20, нужно скипать первый показанных и переходить на нужную страницу
-
-        return res.json(massiveStudents);
+            return res.json(arrayStudents);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async GetStudentsByGroupId(req: Request, res: Response) {
+    async GetStudentsByGroupId(req: Request<UserGroupIdDto, any, any, any>, res: Response, next: NextFunction) {
+        try {
+            const userGroupIdDto = req.params;
+            const arrayStudents = await userService.GetStudentsByGroupId(userGroupIdDto);
 
-        const {groupId} = req.params;
-
-        const arrayStudents = await User.find({groups: [groupId]})
-
-        return res.json(arrayStudents);
+            return res.json(arrayStudents);
+        } catch (err) {
+            next(err);
+        }
     }
     
-    async GetStudentById(req: Request, res: Response) {
-        const student = await User.findOne({_id: req.params.id});
+    async GetStudentById(req: Request<any, any, any, any>, res: Response, next: NextFunction) {
+        try {
+            const student = await User.findOne({_id: req.params.id});
 
-        return res.json(student);
+            return res.json(student);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async GetTeachers(req: Request, res: Response) {
+    async GetTeachers(req: Request<any, any, any, any>, res: Response, next: NextFunction) {
+        try {
         let massiveTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
             .populate({
                 path: 'roles',
@@ -51,13 +59,20 @@ class UserController {
             })
             .exec()
 
-        return res.json(massiveTeachers);
+            return res.json(massiveTeachers);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async GetAll(req: Request, res: Response) {
-        const users = await User.find({_id: {$nin: [req.query._id]}});
+    async GetAllButMe(req: Request<any, any, any, any>, res: Response, next: NextFunction) {
+        try {
+            const users = await User.find({_id: {$nin: [req.query._id]}});
 
-        res.json(users);
+            res.json(users);
+        } catch (err) {
+            next(err);
+        }
     }
 }
 

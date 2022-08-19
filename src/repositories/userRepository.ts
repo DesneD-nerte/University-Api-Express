@@ -1,10 +1,10 @@
-import ApiError from "../exceptions/apiError";
+import mongoose from "mongoose";
 import User from '../models/User';
 
 export default class UserRepository {
 
-    static async getMyData (username: string) {
-        const user = await User.findOne({username: username})
+    static async getMyData (myId: mongoose.Types.ObjectId) {
+        const user = await User.findOne({_id: myId})
             .populate('roles')
             .populate('faculties')
             .populate('departments')
