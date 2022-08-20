@@ -1,8 +1,9 @@
-import { UserFilterDto } from "../dto/user/userFilterDto";
-import { UserGroupIdDto } from "../dto/user/userGroupIdDto";
 import userRepository from "../repositories/userRepository";
 import { IJwtPayloadData } from "../types/servicesTypes/jwtTypes";
 import { UserIdDto } from "../dto/user/userIdDto";
+import { UserGroupIdDto } from "../dto/user/userGroupIdDto";
+import { UserFilterDto } from "../dto/user/userFilterDto";
+import mongooseService from "./mongooseService";
 
 class UserService {
     async GetMyData(user: IJwtPayloadData) {
@@ -21,26 +22,29 @@ class UserService {
     }
 
     async GetStudentsByGroupId(userGroupDto: UserGroupIdDto) {
-        const groupId = userGroupDto.groupId;
+        const groupId = mongooseService.ToObjectId(userGroupDto.groupId);
+
         const arrayStudents = await userRepository.GetStudentsByGroupId(groupId);
 
         return arrayStudents;
     }
     
     async GetUserById(userIdDto: UserIdDto) {
-        const user = await userRepository.GetUserById(userIdDto._id);
+        const _id = mongooseService.ToObjectId(userIdDto.id);
+        const user = await userRepository.GetUserById(_id);
 
         return user;
     }
 
     async GetTeachers() {
         const arrayTeachers = await userRepository.GetTeachers();
-
+        console.log(arrayTeachers);
         return arrayTeachers;
     }
 
     async GetAllButMe(userIdDto: UserIdDto) {
-        const _id = userIdDto._id;
+        const _id = mongooseService.ToObjectId(userIdDto.id);
+
         const arrayUsers = await userRepository.GetAllButMe(_id);
 
         return arrayUsers;

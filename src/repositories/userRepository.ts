@@ -1,7 +1,6 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose from "mongoose";
 import User from '../models/User';
-import { roleTeacherObjectId } from '../databaseLinks';
-import { roleStudentObjectId } from '../databaseLinks';
+import { roleTeacherObjectId, roleStudentObjectId } from '../databaseLinks';
 
 export class UserRepository {
 
@@ -37,14 +36,14 @@ export class UserRepository {
         ])
     }
 
-    async GetStudentsByGroupId(groupId: ObjectId) {
+    async GetStudentsByGroupId(groupId: mongoose.Types.ObjectId) {
         const arrayStudents = await User.find({groups: [groupId]})
 
         return arrayStudents;
     }
 
-    async GetUserById(_id: ObjectId) {
-        const user = await User.findOne(_id);
+    async GetUserById(_id: mongoose.Types.ObjectId) {
+        const user = await User.findById(_id);
 
         return user;
     }
@@ -59,7 +58,7 @@ export class UserRepository {
         return arrayTeachers;
     }
 
-    async GetAllButMe(_id: ObjectId) {
+    async GetAllButMe(_id: mongoose.Types.ObjectId) {
         const arrayUsers = await User.find({_id: {$nin: [_id]}});
 
         return arrayUsers;

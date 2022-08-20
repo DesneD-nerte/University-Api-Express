@@ -1,9 +1,7 @@
-import { ObjectId } from "mongoose";
-
 export class UserGroupIdDto {
-    groupId: ObjectId;
+    groupId: string;
 
-    constructor(groupId: ObjectId) {
+    constructor(groupId: string) {
         this.groupId = groupId;
     }
 }

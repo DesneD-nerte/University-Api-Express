@@ -1,9 +1,7 @@
-import { ObjectId } from "mongoose";
-
 export class UserIdDto {
-    _id: ObjectId
+    id: string
 
-    constructor(_id: ObjectId) {
-        this._id = _id;
+    constructor(id: string) {
+        this.id = id;
     }
 }

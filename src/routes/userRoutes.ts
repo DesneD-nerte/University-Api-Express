@@ -4,7 +4,7 @@ import Router from "express";
 const router = Router();
 
 // /users/
-router.get('/:id', userController.GetUserById)
+router.get('/id', userController.GetUserById)
 router.get('/students', userController.GetStudents);
 router.get('/:groupId/students', userController.GetStudentsByGroupId);
 

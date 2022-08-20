@@ -39,9 +39,9 @@ class UserController {
         }
     }
     
-    async GetUserById(req: Request<UserIdDto, any, any, any>, res: Response, next: NextFunction) {
+    async GetUserById(req: Request<any, any, any, UserIdDto>, res: Response, next: NextFunction) {
         try {
-            const userIdDto = req.params;
+            const userIdDto = req.query;
             const student = await userService.GetUserById(userIdDto);
 
             return res.json(student);
