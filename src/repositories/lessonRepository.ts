@@ -15,6 +15,14 @@ export default class LessonRepository {
         return currentLessons;
     }
 
+    static async SaveNewCurrentLesson(newCurrentLessons: HydratedDocument<ICurrentLesson>) {
+        const addedCurrentLesson = await (await newCurrentLessons.save()).populate([
+            "name", "classroom", 'group', 'teachers'
+        ])
+
+        return addedCurrentLesson;
+    }
+
     static async SaveNewArrayCurrentLessons(arrayCurrentLessons: Array<HydratedDocument<ICurrentLesson>>) {
         const addedCurrentLessons = await CurrentLesson.insertMany(arrayCurrentLessons, {
             populate: [

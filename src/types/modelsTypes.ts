@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 
 export interface ICurrentLesson {
+    _id: Schema.Types.ObjectId,
     name: Schema.Types.ObjectId,
     teachers: Schema.Types.ObjectId,
     beginDate: Date,
@@ -20,6 +21,21 @@ export interface IUser {
     departments: Array<Schema.Types.ObjectId>,
     groups: Array<Schema.Types.ObjectId>
 }
+
+
+
+export interface IMark {
+    allCurrentLessons: IAllCurrentLessonsMark[],
+    lesson: Schema.Types.ObjectId,
+    user: Schema.Types.ObjectId
+}
+
+export interface IAllCurrentLessonsMark {
+    currentLesson: Schema.Types.ObjectId,
+    mark: string
+}
+
+
 
 export interface INews {
     name: string,

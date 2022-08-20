@@ -32,3 +32,37 @@ export interface IChatType {
 	users: Array<IUser>;
 	messages: Array<IMessage>;
 }
+
+
+
+
+export interface IRole {
+    _id: string,
+    value: string
+}
+
+export interface IAudience {
+    _id: string,
+    name: string
+}
+
+export interface IDepartment {
+    _id: string,
+    name: string,
+    room: string
+}
+
+export interface IFaculty {
+    _id: string,
+    name: string
+}
+
+export interface IGroup {
+    _id: string,
+    name: string
+}
+
+export interface ILesson {
+    _id: string,
+    name: string
+}

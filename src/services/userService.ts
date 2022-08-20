@@ -24,7 +24,6 @@ class UserService {
 
     async GetStudentsByGroupId(userGroupDto: UserGroupIdDto) {
         const groupId = mongooseService.ToObjectId(userGroupDto.groupId);
-
         const arrayStudents = await userRepository.GetStudentsByGroupId(groupId);
 
         return arrayStudents;

@@ -20,7 +20,8 @@ class LessonService {
             group: createCurrentLessonDto.groupId
         })
 
-        return await currentLesson.save();
+        // return await currentLesson.save();
+        return await LessonRepository.SaveNewCurrentLesson(currentLesson);
     }
 
     async SaveNewArrayCurrentLessons (arrayCreateCurrentLessonDto: Array<CreateCurrentLessonDto>) {

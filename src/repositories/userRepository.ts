@@ -37,7 +37,7 @@ export class UserRepository {
     }
 
     async GetStudentsByGroupId(groupId: mongoose.Types.ObjectId) {
-        const arrayStudents = await User.find({groups: [groupId]})
+        const arrayStudents = await User.find({groups: {$in: [groupId]}})
 
         return arrayStudents;
     }

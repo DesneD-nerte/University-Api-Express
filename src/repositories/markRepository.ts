@@ -1,9 +1,10 @@
 import { ObjectId } from "mongoose";
 import Mark from "../models/Mark";
+import { ICurrentLesson } from "../types/modelsTypes";
 
-export default class MarkRepository {
+export class MarkRepository {
 
-    static async getMarks () {
+    async GetMarks () {
         const marks = await Mark.find({})
             .populate('lesson')
             .populate('user', {password: 0})
@@ -21,11 +22,14 @@ export default class MarkRepository {
         return marks;
     }
 
-    static async getAdditionalDataMarksOfOneStudent (_id: ObjectId | string, lessonId: ObjectId | string) {
+    async GetAdditionalDataMarksOfOneStudent (_id: ObjectId | string, lessonId: ObjectId | string) {
         const oneStudentMarks = await Mark.findOne({user: _id, lesson: lessonId})
-            .populate('allCurrentLessons.currentLesson')
+            .populate<{ allCurrentLessons: {currentLesson: ICurrentLesson, mark: string}[] }>("allCurrentLessons.currentLesson")
             .exec()
+            // .populate('allCurrentLessons.currentLesson')
 
         return oneStudentMarks;
     }
 }
+
+export default new MarkRepository();
