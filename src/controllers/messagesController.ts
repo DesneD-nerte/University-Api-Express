@@ -1,48 +1,67 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import messagesService from "../services/messagesService";
 import { IQueryMessage, IQueryMyId, IBodyAddMessage, IBodyAddRoom } from "../types/servicesTypes/messageServiceTypes";
-import { IBareRequestParams, IBareResponseBody, IBareRequestBody, IBareRequestQuery } from "../types/servicesTypes/types";
 
 class MessagesController {
-    async GetMessages (req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, IQueryMessage>, res: Response) {
+    async GetMessages (req: Request<any, any, any, IQueryMessage>, res: Response, next: NextFunction) {
+        try {
+            const myChatMessagesObject = await messagesService.GetMessages(req.query);
 
-        const myChatMessagesObject = await messagesService.GetMessages(req.query);
-
-        return res.json(myChatMessagesObject);
+            return res.json(myChatMessagesObject);
+        } catch(err) {
+            next(err);
+        }
     }
 
-    async CheckExistingChatRoomMessages (req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, IQueryMessage>, res: Response) {
+    async CheckExistingChatRoomMessages (req: Request<any, any, any, IQueryMessage>, res: Response, next: NextFunction) {
+        try {
+            const myChatMessagesObject = await messagesService.CheckExistingChatRoomMessages(req.query)
 
-        const myChatMessagesObject = await messagesService.CheckExistingChatRoomMessages(req.query)
-
-        return res.json(myChatMessagesObject);
+            return res.json(myChatMessagesObject);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async GetLastMessages(req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, IQueryMyId>, res: Response) {
+    async GetLastMessages(req: Request<any, any, any, IQueryMyId>, res: Response, next: NextFunction) {
+        try {
+            const myLastMessages = await messagesService.GetLastMessages(req.query);
 
-        const myLastMessages = await messagesService.GetLastMessages(req.query);
-
-        return res.json(myLastMessages);
+            return res.json(myLastMessages);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async AddMessage(req: Request<IBareRequestParams, IBareResponseBody, IBodyAddMessage, IBareRequestQuery>, res: Response) {
-
-        const addedMessage = await messagesService.AddMessage(req.body);
-        
-        return res.json(addedMessage);
+    async AddMessage(req: Request<any, any, IBodyAddMessage, any>, res: Response, next: NextFunction) {
+        try {
+            const addedMessage = await messagesService.AddMessage(req.body);
+            
+            return res.json(addedMessage);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async AddRoom(req: Request<IBareRequestParams, IBareResponseBody, IBodyAddRoom, IBareRequestQuery>, res: Response) {
-        
-        const addedRoom = await messagesService.AddRoom(req.body); 
-        
-        return res.json(addedRoom);
+    async AddRoom(req: Request<any, any, IBodyAddRoom, any>, res: Response, next: NextFunction) {
+        try {
+            const arrayUsers = req.body
+            const addedRoom = await messagesService.AddRoom(arrayUsers); 
+            
+            return res.json(addedRoom);
+        } catch (err) {
+            next(err);
+        }
     }
 
-    async UpdateVisibleAllMessages(req: Request, res: Response) {
-        await messagesService.UpdateVisibleMessages(req.body);
+    async UpdateVisibleAllMessages(req: Request, res: Response, next: NextFunction) {
+        try {
+            await messagesService.UpdateVisibleMessages(req.body);
 
-        return res.sendStatus(200);
+            return res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
     }
 }
 

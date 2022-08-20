@@ -3,10 +3,9 @@ import Chat from "../models/Chat";
 import User from "../models/User";
 import { IMessage } from "../types/mainTypes";
 
+class MessagesRepository {
 
-export default class MessagesRepository {
-
-    static async GetMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, skip: number) {
+    async GetMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, skip: number) {
         return await Chat.aggregate([
             {
                 $match: {
@@ -77,7 +76,7 @@ export default class MessagesRepository {
         )
     }
 
-    static async CheckExistingChatRoomMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId) {
+    async CheckExistingChatRoomMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId) {
         return await Chat.aggregate([
             {
                 $match: {
@@ -90,7 +89,7 @@ export default class MessagesRepository {
         ])
     }
 
-    static async GetCountBadge(myId: mongoose.Types.ObjectId, other: mongoose.Types.ObjectId) {
+    async GetCountBadge(myId: mongoose.Types.ObjectId, other: mongoose.Types.ObjectId) {
         return await Chat.aggregate([
             {
                 $unwind: '$messages'
@@ -112,7 +111,7 @@ export default class MessagesRepository {
         ])
     }
 
-    static async GetLastMessage(myId: mongoose.Types.ObjectId) {
+    async GetLastMessage(myId: mongoose.Types.ObjectId) {
         return await Chat.aggregate([
             {
                 $match: {
@@ -154,7 +153,7 @@ export default class MessagesRepository {
         ])
     }
 
-    static async AddMessage(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, message: IMessage) {
+    async AddMessage(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, message: IMessage) {
 
         return await Chat.findOneAndUpdate({
                 users: {$all: [new mongoose.Types.ObjectId(myId), new mongoose.Types.ObjectId(id)]}},
@@ -166,4 +165,21 @@ export default class MessagesRepository {
             }
         )
     }
+
+    async AddRoom (firstUserId: mongoose.Types.ObjectId, secondUserId: mongoose.Types.ObjectId) {
+        const addedRoom = await new Chat({users: [firstUserId, secondUserId], messages: []})
+            .save();
+
+        return addedRoom;
+    }
+
+    async UpdateVisibleMessages(id: mongoose.Types.ObjectId, roomId: mongoose.Types.ObjectId, arrayIdMessages: mongoose.Types.ObjectId[]) {
+        await Chat.updateOne(
+            {_id: roomId},
+            {$set: {'messages.$[oneMessage].isVisible': true}},
+            {arrayFilters: [{'oneMessage.user': id, 'oneMessage._id': {$in: [...arrayIdMessages]}}]}
+        )
+    }
 }
+
+export default new MessagesRepository();

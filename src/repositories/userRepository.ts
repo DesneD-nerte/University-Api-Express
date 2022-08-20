@@ -42,6 +42,12 @@ export class UserRepository {
         return arrayStudents;
     }
 
+    async GetUserByEmail(email: string) {
+        const user = await User.findOne({email: email});
+
+        return user;
+    }
+
     async GetUserById(_id: mongoose.Types.ObjectId) {
         const user = await User.findById(_id);
 

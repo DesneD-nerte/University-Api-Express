@@ -13,12 +13,13 @@ import authGenerator from '../services/authGenerator';
 import Faculty from "../models/Faculty";
 import Group from "../models/Group";
 import Department from "../models/Department";
-import AdditionalEntitiesRepository from "../repositories/additionalEntitiesRepository";
+import additionalEntitiesRepository from "../repositories/additionalEntitiesRepository";
 import { IDepartment, IFaculty, IGroup, IUser } from "../types/modelsTypes";
 import { LoginUserDto } from "../dto/auth/loginUserDto";
 import { LoginUserResponseDto } from "../dto/auth/loginUserResponseDto";
 import { IRole } from "../types/modelsTypes";
 import { IGeneratedProperties } from "../types/servicesTypes/authServicesTypes";
+import userRepository from "../repositories/userRepository";
 
 class AuthService {
     async Registration (createUserDto: CreateUserDto) {//roles приходит как ["STUDENT", "TEACHER"]
@@ -33,7 +34,7 @@ class AuthService {
 
         const hashPassword: string = bcryptjs.hashSync(password, 7);
 
-        const userRolesDocs = await AdditionalEntitiesRepository.GetDocModel(Role, roles);
+        const userRolesDocs = await additionalEntitiesRepository.GetDocModel(Role, roles);
 
         const user = new User({
             username: username,
@@ -74,7 +75,7 @@ class AuthService {
         const arrayUsersClientResponse: Array<HydratedDocument<IUser>> = [];
 
         for (const oneUser of arrayUsers) {
-            const existingUser = await User.findOne({email: oneUser.email});
+            const existingUser = await userRepository.GetUserByEmail(oneUser.email);
            
             if(existingUser) {
                 const userClientResponse: HydratedDocument<IUser> = new User({
@@ -104,10 +105,10 @@ class AuthService {
         const generatedPassword = authGenerator.GeneratePassword(8)////////////Длина пароля
         const hashPassword = bcryptjs.hashSync(generatedPassword, 7);
 
-        const userRolesDocs: Array<HydratedDocument<IRole>> = await AdditionalEntitiesRepository.GetDocModel(Role, oneUser.roles);
-        const userFacultiesDocs: Array<HydratedDocument<IFaculty>> = await AdditionalEntitiesRepository.GetDocModel(Faculty, oneUser.faculties);
-        const userGroupsDocs: Array<HydratedDocument<IGroup>> = await AdditionalEntitiesRepository.GetDocModel(Group, oneUser.groups);
-        const userDepartmentsDocs: Array<HydratedDocument<IDepartment>> = await AdditionalEntitiesRepository.GetDocModel(Department, oneUser.departments);
+        const userRolesDocs: Array<HydratedDocument<IRole>> = await additionalEntitiesRepository.GetDocModel(Role, oneUser.roles);
+        const userFacultiesDocs: Array<HydratedDocument<IFaculty>> = await additionalEntitiesRepository.GetDocModel(Faculty, oneUser.faculties);
+        const userGroupsDocs: Array<HydratedDocument<IGroup>> = await additionalEntitiesRepository.GetDocModel(Group, oneUser.groups);
+        const userDepartmentsDocs: Array<HydratedDocument<IDepartment>> = await additionalEntitiesRepository.GetDocModel(Department, oneUser.departments);
 
         return {
             generatedUsername,
