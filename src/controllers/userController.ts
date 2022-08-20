@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import User from '../models/User';
-import { roleTeacherObjectId } from '../databaseLinks';
 import userService from "../services/userService";
 import { IJwtPayload } from "../types/servicesTypes/jwtTypes";
-import { UserGroupIdDto } from "../dto/user/UserGroupIdDto";
-import { UserFilterDto } from "../dto/user/UserFilterDto";
+import { UserGroupIdDto } from "../dto/user/userGroupIdDto";
+import { UserFilterDto } from "../dto/user/userFilterDto";
+import { UserIdDto } from "../dto/user/userIdDto";
 
 class UserController {
     async GetMyData (req: Request<any, any, IJwtPayload, any>, res: Response, next: NextFunction) {
@@ -40,9 +39,10 @@ class UserController {
         }
     }
     
-    async GetStudentById(req: Request<any, any, any, any>, res: Response, next: NextFunction) {
+    async GetUserById(req: Request<UserIdDto, any, any, any>, res: Response, next: NextFunction) {
         try {
-            const student = await User.findOne({_id: req.params.id});
+            const userIdDto = req.params;
+            const student = await userService.GetUserById(userIdDto);
 
             return res.json(student);
         } catch (err) {
@@ -50,26 +50,22 @@ class UserController {
         }
     }
 
-    async GetTeachers(req: Request<any, any, any, any>, res: Response, next: NextFunction) {
+    async GetTeachers(req: Request, res: Response, next: NextFunction) {
         try {
-        let massiveTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
-            .populate({
-                path: 'roles',
-                // match: {value: 'TEACHER'}
-            })
-            .exec()
+            const arrayTeachers = await userService.GetTeachers();
 
-            return res.json(massiveTeachers);
+            return res.json(arrayTeachers);
         } catch (err) {
             next(err);
         }
     }
 
-    async GetAllButMe(req: Request<any, any, any, any>, res: Response, next: NextFunction) {
+    async GetAllButMe(req: Request<any, any, any, UserIdDto>, res: Response, next: NextFunction) {
         try {
-            const users = await User.find({_id: {$nin: [req.query._id]}});
+            const userIdDto = req.query;
+            const arrayUsers = await userService.GetAllButMe(userIdDto);
 
-            res.json(users);
+            res.json(arrayUsers);
         } catch (err) {
             next(err);
         }

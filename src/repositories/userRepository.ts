@@ -1,9 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import User from '../models/User';
+import { roleTeacherObjectId } from '../databaseLinks';
+import { roleStudentObjectId } from '../databaseLinks';
 
-export default class UserRepository {
+export class UserRepository {
 
-    static async getMyData (myId: mongoose.Types.ObjectId) {
+    async GetMyData (myId: mongoose.Types.ObjectId) {
         const user = await User.findOne({_id: myId})
             .populate('roles')
             .populate('faculties')
@@ -14,7 +16,15 @@ export default class UserRepository {
         return user;
     }
 
-    static async getCountStudents () {
+    async GetStudents(limit: number, page: number) {
+        const arrayStudents = await User.find({roles: [roleStudentObjectId]}, "name email")
+            .limit(limit)
+            .skip(limit * page);
+
+        return arrayStudents;
+    }
+
+    async GetCountStudents () {
         return await User.aggregate([
             {
                 $match: {
@@ -25,6 +35,34 @@ export default class UserRepository {
                 $count: 'count'
             }
         ])
+    }
+
+    async GetStudentsByGroupId(groupId: ObjectId) {
+        const arrayStudents = await User.find({groups: [groupId]})
+
+        return arrayStudents;
+    }
+
+    async GetUserById(_id: ObjectId) {
+        const user = await User.findOne(_id);
+
+        return user;
+    }
+
+    async GetTeachers() {
+        let arrayTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
+            .populate({
+                path: 'roles',
+            })
+            .exec()
+
+        return arrayTeachers;
+    }
+
+    async GetAllButMe(_id: ObjectId) {
+        const arrayUsers = await User.find({_id: {$nin: [_id]}});
+
+        return arrayUsers;
     }
 
     // static async getMissedLessons(limit: number, page: number) {
@@ -60,8 +98,6 @@ export default class UserRepository {
     //         }
     //     ])
     // }
-
-    static async getUserById(id: string) {
-        return await User.findById(id);
-    }
 }
+
+export default new UserRepository();

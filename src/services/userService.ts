@@ -1,14 +1,12 @@
-import { UserFilterDto } from "../dto/user/UserFilterDto";
-import { UserGroupIdDto } from "../dto/user/UserGroupIdDto";
-import User from "../models/User";
-import UserRepository from "../repositories/userRepository";
+import { UserFilterDto } from "../dto/user/userFilterDto";
+import { UserGroupIdDto } from "../dto/user/userGroupIdDto";
+import userRepository from "../repositories/userRepository";
 import { IJwtPayloadData } from "../types/servicesTypes/jwtTypes";
-import { roleTeacherObjectId } from '../databaseLinks';
-import { roleStudentObjectId } from '../databaseLinks';
+import { UserIdDto } from "../dto/user/userIdDto";
 
 class UserService {
     async GetMyData(user: IJwtPayloadData) {
-        const myProfile = await UserRepository.getMyData(user._id);
+        const myProfile = await userRepository.GetMyData(user._id);
         
         return myProfile
     }
@@ -17,41 +15,36 @@ class UserService {
         const limit = userFilterDto.limit || 10;
         const page = userFilterDto.page | 0;
 
-        const arrayStudents = await User.find({roles: [roleStudentObjectId]}, "name email")
-            .limit(limit)
-            .skip(limit * page);
+        const arrayStudents = await userRepository.GetStudents(limit, page);
 
         return arrayStudents;
     }
 
     async GetStudentsByGroupId(userGroupDto: UserGroupIdDto) {
-        const arrayStudents = await User.find({groups: [userGroupDto.groupId]})
+        const groupId = userGroupDto.groupId;
+        const arrayStudents = await userRepository.GetStudentsByGroupId(groupId);
 
         return arrayStudents;
     }
     
-    // async GetStudentById(req: Request, res: Response, next: NextFunction) {
-    //     const student = await User.findOne({_id: req.params.id});
+    async GetUserById(userIdDto: UserIdDto) {
+        const user = await userRepository.GetUserById(userIdDto._id);
 
-    //     return res.json(student);
-    // }
+        return user;
+    }
 
-    // async GetTeachers(req: Request, res: Response, next: NextFunction) {
-    //     let massiveTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
-    //         .populate({
-    //             path: 'roles',
-    //             // match: {value: 'TEACHER'}
-    //         })
-    //         .exec()
+    async GetTeachers() {
+        const arrayTeachers = await userRepository.GetTeachers();
 
-    //     return res.json(massiveTeachers);
-    // }
+        return arrayTeachers;
+    }
 
-    // async GetAll(req: Request, res: Response, next: NextFunction) {
-    //     const users = await User.find({_id: {$nin: [req.query._id]}});
+    async GetAllButMe(userIdDto: UserIdDto) {
+        const _id = userIdDto._id;
+        const arrayUsers = await userRepository.GetAllButMe(_id);
 
-    //     res.json(users);
-    // }
+        return arrayUsers;
+    }
 }
 
 export default new UserService();
