@@ -12,4 +12,4 @@ const CurrentLesson = new Schema<ICurrentLesson>({
     collection: 'currentLessons'
 });
 
-export default model('CurrentLesson', CurrentLesson);
+export default model<ICurrentLesson>('CurrentLesson', CurrentLesson);

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import LessonRepository from "../repositories/lessonRepository";
+import { CreateCurrentLessonDto } from "../dto/lesson/createCurrentLessonDto";
+import { UpdateCurrentLessonDto } from "../dto/lesson/updateCurrentLessonDto";
 import lessonService from "../services/lessonService";
 
 class LessonController {
@@ -14,9 +15,10 @@ class LessonController {
         }
     }
 
-    async SaveNewCurrentLesson (req: Request, res: Response, next: NextFunction) {
+    async SaveNewCurrentLesson (req: Request<any, any, CreateCurrentLessonDto, any>, res: Response, next: NextFunction) {
         try {
-            const currentLesson = await lessonService.SaveNewCurrentLesson(req.body);
+            const createCurrentLessonDto = req.body;
+            const currentLesson = await lessonService.SaveNewCurrentLesson(createCurrentLessonDto);
 
             return res.json(currentLesson);
         } catch (err) {
@@ -24,9 +26,10 @@ class LessonController {
         }
     }
 
-    async SaveNewArrayCurrentLessons (req: Request, res: Response, next: NextFunction) {
+    async SaveNewArrayCurrentLessons (req: Request<any, any, CreateCurrentLessonDto[], any>, res: Response, next: NextFunction) {
         try {
-            const arrayCurrentLessons = await lessonService.SaveNewArrayCurrentLessons(req.body);
+            const arrayCreateCurrentLessonDto = req.body;
+            const arrayCurrentLessons = await lessonService.SaveNewArrayCurrentLessons(arrayCreateCurrentLessonDto);
             
             return res.json(arrayCurrentLessons);
         } catch (err) {
@@ -34,9 +37,10 @@ class LessonController {
         }
     }
 
-    async UpdateCurrentLesson (req: Request, res: Response, next: NextFunction) {
+    async UpdateCurrentLesson (req: Request<any, any, UpdateCurrentLessonDto, any>, res: Response, next: NextFunction) {
         try {
-            const updatedCurrentLesson = await lessonService.UpdateCurrentLesson(req.body);
+            const updateCurrentLessonDto = req.body;
+            const updatedCurrentLesson = await lessonService.UpdateCurrentLesson(updateCurrentLessonDto);
 
             return res.json(updatedCurrentLesson);
         } catch (err) {
