@@ -31,7 +31,6 @@ createRoutes(app);
 
 app.use(errorMiddleware);
 
-
 const start = async () => { 
     try {
         await mongoose.connect(config.connectionString);
