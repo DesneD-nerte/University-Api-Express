@@ -2,20 +2,21 @@ import { HydratedDocument } from "mongoose";
 import CurrentLesson from '../models/CurrentLesson';
 import { ICurrentLesson } from "../types/modelsTypes";
 
-export default class LessonRepository {
+class LessonRepository {
 
-    static async getCurrentLessons () {
+    async GetCurrentLessons () {
         const currentLessons = await CurrentLesson.find({})
             .populate('name')
             .populate('teachers', {password: 0})
             .populate('classroom')
             .populate('group')
+            .sort({beginDate: 1})
             .exec(); 
 
         return currentLessons;
     }
 
-    static async SaveNewCurrentLesson(newCurrentLessons: HydratedDocument<ICurrentLesson>) {
+    async SaveNewCurrentLesson(newCurrentLessons: HydratedDocument<ICurrentLesson>) {
         const addedCurrentLesson = await (await newCurrentLessons.save()).populate([
             "name", "classroom", 'group', 'teachers'
         ])
@@ -23,7 +24,7 @@ export default class LessonRepository {
         return addedCurrentLesson;
     }
 
-    static async SaveNewArrayCurrentLessons(arrayCurrentLessons: Array<HydratedDocument<ICurrentLesson>>) {
+    async SaveNewArrayCurrentLessons(arrayCurrentLessons: Array<HydratedDocument<ICurrentLesson>>) {
         const addedCurrentLessons = await CurrentLesson.insertMany(arrayCurrentLessons, {
             populate: [
                 {path: 'name'}, 
@@ -36,7 +37,7 @@ export default class LessonRepository {
         return addedCurrentLessons;
     }
 
-    static async UpdateCurrentLesson(newCurrentLesson: HydratedDocument<ICurrentLesson>) {
+    async UpdateCurrentLesson(newCurrentLesson: HydratedDocument<ICurrentLesson>) {
         const updatedCurrentLesson = await CurrentLesson.findOneAndUpdate({_id: newCurrentLesson._id}, newCurrentLesson);
         
         return updatedCurrentLesson;
@@ -91,3 +92,5 @@ export default class LessonRepository {
     // }
     //#endregion
 }
+
+export default new LessonRepository();

@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import Mark from "../models/Mark";
 import { ICurrentLesson } from "../types/modelsTypes";
 
-export class MarkRepository {
+class MarkRepository {
 
     async GetMarks () {
         const marks = await Mark.find({})

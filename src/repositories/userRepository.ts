@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import User from '../models/User';
 import { roleTeacherObjectId, roleStudentObjectId } from '../databaseLinks';
 
-export class UserRepository {
+class UserRepository {
 
     async GetMyData (myId: mongoose.Types.ObjectId) {
         const user = await User.findOne({_id: myId})

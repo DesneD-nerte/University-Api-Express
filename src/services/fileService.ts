@@ -35,7 +35,7 @@ class FileService {
             
             return uriImagePath; 
         } else {
-            throw Error('Изображение отсутствует на сервере');
+            throw new Error('Изображение отсутствует на сервере');
         }
     }
 
@@ -47,7 +47,7 @@ class FileService {
             
             return uriImagePath;
         } else {
-            throw Error('Изображение отсутствует на сервере');
+            throw new Error('Изображение отсутствует на сервере');
         }
     }
 }

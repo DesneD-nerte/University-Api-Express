@@ -6,9 +6,9 @@ import { ObjectId } from "mongoose";
 
 const {secret} = require ("../config/config");
 
-export default class AuthRepository {
+class AuthRepository {
 
-    static async login(username: string, password: string) {
+    async Login(username: string, password: string) {
         const user = await User.findOne({username: username})
             .populate('roles')
             .populate('faculties')
@@ -19,3 +19,5 @@ export default class AuthRepository {
         return user;
     }
 }
+
+export default new AuthRepository();

@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express from "express";
 import mongoose from 'mongoose';
 import cors from 'cors';
 import createSocket from "./core/socket";

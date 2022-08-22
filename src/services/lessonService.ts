@@ -1,11 +1,11 @@
 import { CreateCurrentLessonDto } from "../dto/lesson/createCurrentLessonDto";
 import { UpdateCurrentLessonDto } from "../dto/lesson/updateCurrentLessonDto";
 import CurrentLesson from "../models/CurrentLesson";
-import LessonRepository from "../repositories/lessonRepository";
+import lessonRepository from "../repositories/lessonRepository";
 
 class LessonService {
     async GetCurrentLessons () {
-        const lessons = await LessonRepository.getCurrentLessons();
+        const lessons = await lessonRepository.GetCurrentLessons();
 
         return lessons;
     }
@@ -21,7 +21,7 @@ class LessonService {
         })
 
         // return await currentLesson.save();
-        return await LessonRepository.SaveNewCurrentLesson(currentLesson);
+        return await lessonRepository.SaveNewCurrentLesson(currentLesson);
     }
 
     async SaveNewArrayCurrentLessons (arrayCreateCurrentLessonDto: Array<CreateCurrentLessonDto>) {
@@ -40,7 +40,7 @@ class LessonService {
             arrayCurrentLessons.push(currentLesson);
         }
 
-        const addedCurrentLessons = await LessonRepository.SaveNewArrayCurrentLessons(arrayCurrentLessons);
+        const addedCurrentLessons = await lessonRepository.SaveNewArrayCurrentLessons(arrayCurrentLessons);
 
         return addedCurrentLessons;
     }
@@ -57,7 +57,7 @@ class LessonService {
             group: updateCurrentLessonDto.groupId
         })
 
-        const updatedCurrentLesson = await LessonRepository.UpdateCurrentLesson(newCurrentLessons);
+        const updatedCurrentLesson = await lessonRepository.UpdateCurrentLesson(newCurrentLessons);
         
         return updatedCurrentLesson;
     }

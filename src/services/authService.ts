@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 import config from "../config/config";
 
 import { HydratedDocument, ObjectId, Schema } from "mongoose";
-import AuthRepository from "../repositories/authRepository";
+import authRepository from "../repositories/authRepository";
 import authGenerator from '../services/authGenerator';
 import Faculty from "../models/Faculty";
 import Group from "../models/Group";
@@ -52,7 +52,7 @@ class AuthService {
     async Login(data: LoginUserDto) {
         const { username, password } = data;
 
-        const user = await AuthRepository.login(username, password);
+        const user = await authRepository.Login(username, password);
         if(!user) {
             throw ApiError.BadRequest("Пользователь отсутствует");
         }

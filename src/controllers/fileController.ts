@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { UploadedFile } from "express-fileupload";
-import * as fs from "fs";
-import path from "path";
-import User from "../models/User";
 import fileService from "../services/fileService";
 
 class FileController {
