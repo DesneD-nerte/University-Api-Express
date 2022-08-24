@@ -7,7 +7,6 @@ class LessonController {
     async GetCurrentLessons (req: Request, res: Response, next: NextFunction) {
         try {
             const lessons = await lessonService.GetCurrentLessons();
-
             return res.json(lessons);
 
         } catch(err) {

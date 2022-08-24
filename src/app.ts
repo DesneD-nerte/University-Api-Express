@@ -5,6 +5,7 @@ import createSocket from "./core/socket";
 import config from './config/config'
 import errorMiddleware from './middlewares/errorMiddleware';
 import createRoutes from "./core/routes";
+import compression from "compression";
 
 require('./models/Faculty');
 require('./models/Department');
@@ -28,6 +29,8 @@ app.use(fileUpload({}));
 app.use(express.json());;
 
 createRoutes(app);
+
+app.use(compression());
 
 app.use(errorMiddleware);
 

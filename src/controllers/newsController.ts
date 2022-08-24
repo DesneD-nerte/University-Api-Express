@@ -9,7 +9,7 @@ class NewsController {
     async GetNews(req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, GetNewsDto>, res: Response, next: NextFunction) {
         try {
             const massiveNews = await newsService.GetNews(req.query);
-
+            console.log(req.headers);
             const range = await News.count();
             res.setHeader('range', range.toString());
 
