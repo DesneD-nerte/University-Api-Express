@@ -16,7 +16,7 @@ class UserRepository {
     }
 
     async GetStudents(limit: number, page: number) {
-        const arrayStudents = await User.find({roles: [roleStudentObjectId]}, "name email")
+        const arrayStudents = await User.find({roles: [roleStudentObjectId]}, "name email imageUri")
             .limit(limit)
             .skip(limit * page);
 
@@ -37,35 +37,35 @@ class UserRepository {
     }
 
     async GetStudentsByGroupId(groupId: mongoose.Types.ObjectId) {
-        const arrayStudents = await User.find({groups: {$in: [groupId]}})
+        const arrayStudents = await User.find({groups: {$in: [groupId]}}, "name email imageUri");
 
         return arrayStudents;
     }
 
     async GetUserByEmail(email: string) {
-        const user = await User.findOne({email: email});
+        const user = await User.findOne({email: email}, "name email imageUri");
 
         return user;
     }
 
     async GetUserById(_id: mongoose.Types.ObjectId) {
-        const user = await User.findById(_id);
+        const user = await User.findById(_id, "name email imageUri");
 
         return user;
     }
 
     async GetTeachers() {
-        let arrayTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri roles")
-            .populate({
-                path: 'roles',
-            })
-            .exec()
+        let arrayTeachers = await User.find({roles: {_id: roleTeacherObjectId}}, "_id name email imageUri")
+            // .populate({
+            //     path: 'roles',
+            // })
+            // .exec()
 
         return arrayTeachers;
     }
 
     async GetAllButMe(_id: mongoose.Types.ObjectId) {
-        const arrayUsers = await User.find({_id: {$nin: [_id]}});
+        const arrayUsers = await User.find({_id: {$nin: [_id]}}, "name email imageUri");
 
         return arrayUsers;
     }
