@@ -8,7 +8,8 @@ import createRoutes from "./core/routes";
 
 import compression from "compression";
 import swaggerUI from "swagger-ui-express";
-const swaggerDocument = require('../swagger.yaml');
+import YAML from "yamljs";
+const swaggerDocument = YAML.load('./swaggerDocument.yaml');
 // import swaggerDocument from "./swagger.json";
 
 require('./models/Faculty');

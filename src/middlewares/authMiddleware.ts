@@ -7,7 +7,16 @@ const jwt = require('jsonwebtoken');
 
 export default function (req: Request, res: Response, next: any) {
     try {
-        const token: string | undefined = req.headers.authorization?.toString();
+        const initialTokenValue: string | undefined = req.headers.authorization?.toString();
+        const tokenArr = initialTokenValue?.split(" ");
+        let token;
+
+        if(tokenArr && tokenArr.length > 1) {
+            token = tokenArr[1];
+        } else {
+            token = initialTokenValue;
+        }
+
         if(!token) {
             throw ApiError.UnauthorizedError();
         }

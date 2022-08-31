@@ -1,0 +1,237 @@
+openapi: 3.0.0 
+info:
+  title: Express API for Uninersity Service
+  description: The REST API for Uninersity Web and Mobile Service
+  version: 1.0.0
+
+servers: 
+  - url: http://localhost:5000
+    description: "Development server"
+  - url: http://api.stu-training.ru
+    description: "production server"
+
+components: 
+  securitySchemes: 
+    bearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas: 
+    UserMainDesc:
+      type: object
+      properties:
+        _id: 
+          type: string
+        name:
+          type: string
+        email:
+          type: string 
+        imageUri:
+          nullable: true
+          type: string 
+    User: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        username: 
+          type: string
+        password: 
+          type: string
+        roles: 
+          nullable: true
+          type: array 
+          items: 
+            type: string
+        name: 
+          type: string
+        email: 
+          type: string
+        imageUri: 
+          nullable: true
+          type: string
+        faculties: 
+          nullable: true
+          type: array 
+          items: 
+            type: string
+        departments: 
+          nullable: true
+          type: array 
+          items: 
+            type: string
+        groups: 
+          nullable: true
+          type: array 
+          items: 
+            type: string
+    News: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        name: 
+          type: string
+        content: 
+          type: string
+        createdAt: 
+          type: string
+          format: date
+    Message: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        content: 
+          type: string
+        createdAt: 
+          type: string
+          format: date
+        user: 
+          type: string
+
+    Role: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        value: 
+          type: string
+    Audience: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        value: 
+          name: string
+    Department: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        value: 
+          name: string
+    Faculty: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        value: 
+          name: string
+    Group: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+        value: 
+          name: string   
+
+paths: 
+  /users/id:
+    get:
+      summary: Returns certain user by id.
+      description: Optional extended description in CommonMark or HTML.
+      security: 
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema: 
+            type: string
+          description: Certain id of user
+      responses:
+        '200':    # status code
+          description: A JSON user by id
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/User'
+  /users/students:
+    get:
+      summary: Returns all students.
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Parameter limit of students
+          schema:
+            type : integer
+            format: int64
+            minimum: 0
+        - name: page
+          in: query
+          description: Parameter skip of students
+          schema:
+            type : integer
+            format: int64
+            minimum: 0
+      responses: 
+        '200':
+          description: OK
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/UserMainDesc'
+
+  /users/{groupId}/students:
+    get:
+      summary: Returns students by groupId
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          description: Certain id of group
+          schema:
+            type : string
+      responses: 
+        '200':
+          description: OK
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/UserMainDesc'
+  /users/teachers:
+    get:
+      summary: Returns an array of teachers.
+      security: 
+        - bearerAuth: []
+      responses: 
+        '200':
+          description: OK
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/UserMainDesc'
+                    
+  /users/allButMe:
+    get:
+      summary: Returns all users without certain Id 
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Certain user id to skip (usually client id)
+          schema:
+            type : string
+      responses: 
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#components/schemas/UserMainDesc'
