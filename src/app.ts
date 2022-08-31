@@ -5,7 +5,11 @@ import createSocket from "./core/socket";
 import config from './config/config'
 import errorMiddleware from './middlewares/errorMiddleware';
 import createRoutes from "./core/routes";
+
 import compression from "compression";
+import swaggerUI from "swagger-ui-express";
+const swaggerDocument = require('../swagger.yaml');
+// import swaggerDocument from "./swagger.json";
 
 require('./models/Faculty');
 require('./models/Department');
@@ -31,6 +35,7 @@ app.use(express.json());;
 createRoutes(app);
 
 app.use(compression());
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorMiddleware);
 
