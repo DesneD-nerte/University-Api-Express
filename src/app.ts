@@ -10,7 +10,6 @@ import compression from "compression";
 import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
 const swaggerDocument = YAML.load('./swaggerDocument.yaml');
-// import swaggerDocument from "./swagger.json";
 
 require('./models/Faculty');
 require('./models/Department');

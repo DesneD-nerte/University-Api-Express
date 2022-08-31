@@ -127,6 +127,22 @@ components:
         value: 
           name: string   
 
+  responses: 
+    UnauthorizedError: 
+      description: Access token is missing, invalid or expired
+      content: 
+        application/json:
+          schema: 
+            type: object 
+            properties: 
+              message: 
+                type: string
+              errors: 
+                type: array
+                items: 
+                  message: 
+                    type: string
+
 paths: 
   /users/id:
     get:
@@ -148,6 +164,8 @@ paths:
             application/json:
               schema: 
                 $ref: '#components/schemas/User'
+        "401": 
+          $ref: '#components/responses/UnauthorizedError'
   /users/students:
     get:
       summary: Returns all students.
@@ -177,7 +195,8 @@ paths:
                 type: array
                 items: 
                   $ref: '#components/schemas/UserMainDesc'
-
+        "401": 
+          $ref: '#components/responses/UnauthorizedError'
   /users/{groupId}/students:
     get:
       summary: Returns students by groupId
@@ -199,6 +218,8 @@ paths:
                 type: array
                 items: 
                   $ref: '#components/schemas/UserMainDesc'
+        "401": 
+          $ref: '#components/responses/UnauthorizedError'
   /users/teachers:
     get:
       summary: Returns an array of teachers.
@@ -213,15 +234,16 @@ paths:
                 type: array
                 items: 
                   $ref: '#components/schemas/UserMainDesc'
-                    
+        "401": 
+          $ref: '#components/responses/UnauthorizedError'          
   /users/allButMe:
     get:
       summary: Returns all users without certain Id 
       security: 
         - bearerAuth: []
       parameters:
-        - name: userId
-          in: path
+        - name: id
+          in: query
           required: true
           description: Certain user id to skip (usually client id)
           schema:
@@ -235,3 +257,5 @@ paths:
                 type: array
                 items: 
                   $ref: '#components/schemas/UserMainDesc'
+        "401": 
+          $ref: '#components/responses/UnauthorizedError'

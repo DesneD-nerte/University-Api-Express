@@ -8,7 +8,6 @@ class MarkController {
     async GetMarks (req: Request, res: Response, next: NextFunction) {
         try {
             const marks = await markRepository.GetMarks();
-            console.log(marks);
 
             return res.json(marks);
 
@@ -42,7 +41,7 @@ class MarkController {
     async UpdateCurrentLesson(req: Request, res: Response, next: NextFunction) {
         try {
             const existedMark = req.body;
-            console.log(existedMark);
+            
             await Mark.findOneAndUpdate({_id: existedMark._id}, {allCurrentLessons: existedMark.allCurrentLessons});
 
             return res.sendStatus(200);

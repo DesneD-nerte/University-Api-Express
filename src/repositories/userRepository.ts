@@ -49,6 +49,7 @@ class UserRepository {
     }
 
     async GetUserById(_id: mongoose.Types.ObjectId) {
+        console.log(_id);
         const user = await User.findById(_id, "name email imageUri");
 
         return user;
@@ -65,7 +66,9 @@ class UserRepository {
     }
 
     async GetAllButMe(_id: mongoose.Types.ObjectId) {
+        console.log(_id);
         const arrayUsers = await User.find({_id: {$nin: [_id]}}, "name email imageUri");
+        console.log(arrayUsers);
 
         return arrayUsers;
     }
