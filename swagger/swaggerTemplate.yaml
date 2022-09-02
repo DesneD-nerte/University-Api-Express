@@ -1,0 +1,36 @@
+openapi: 3.0.0 
+info:
+  title: Express API for Uninersity Service
+  description: The REST API for Uninersity Web and Mobile Service
+  version: 1.0.0
+
+servers: 
+  - url: http://localhost:5000
+    description: "Development server"
+  - url: http://api.stu-training.ru
+    description: "production server"
+
+components: 
+  securitySchemes: 
+    bearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas: 
+    $ref: './schemas/_index.yaml'
+
+  responses: 
+    $ref: './responses/_index.yaml'
+
+paths: 
+  /users/id:
+    $ref: './resources/users/id.yaml'
+  /users/students:
+    $ref: './resources/users/students.yaml'
+  /users/{groupId}/students:
+    $ref: './resources/users/groupId-students.yaml' #!!!!
+  /users/teachers:
+    $ref: './resources/users/teachers.yaml'   
+  /users/allButMe:
+    $ref: './resources/users/allButMe.yaml'

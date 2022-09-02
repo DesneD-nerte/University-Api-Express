@@ -1,0 +1,22 @@
+get:
+  summary: Returns all users without certain Id 
+  security: 
+    - bearerAuth: []
+  parameters:
+    - name: id
+      in: query
+      required: true
+      description: Certain user id to skip (usually client id)
+      schema:
+        type : string
+  responses: 
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items: 
+              $ref: '../../schemas/UserMainDesc.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

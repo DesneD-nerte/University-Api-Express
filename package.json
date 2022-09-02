@@ -8,7 +8,8 @@
     "start ts-node": "npx ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
     "build": "npx cross-env NODE_ENV=production tsc",
-    "production": "node dist/app.js"
+    "production": "node dist/app.js",
+    "swagger": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile openapi.yaml --type yaml"
   },
   "keywords": [],
   "author": "",
@@ -43,6 +44,7 @@
     "@types/yamljs": "^0.2.31",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.15",
+    "swagger-cli": "^4.0.4",
     "ts-node": "^10.4.0"
   }
 }

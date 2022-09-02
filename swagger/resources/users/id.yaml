@@ -1,0 +1,21 @@
+get:
+  summary: Returns certain user by id.
+  description: Optional extended description in CommonMark or HTML.
+  security: 
+    - bearerAuth: []
+  parameters:
+    - in: query
+      name: id
+      required: true
+      schema: 
+        type: string
+      description: Certain id of user
+  responses:
+    '200':    # status code
+      description: A JSON user by id
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/User.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

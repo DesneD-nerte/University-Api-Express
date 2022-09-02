@@ -1,206 +1,200 @@
-openapi: 3.0.0 
+openapi: 3.0.0
 info:
   title: Express API for Uninersity Service
   description: The REST API for Uninersity Web and Mobile Service
   version: 1.0.0
-
-servers: 
-  - url: http://localhost:5000
-    description: "Development server"
-  - url: http://api.stu-training.ru
-    description: "production server"
-
-components: 
-  securitySchemes: 
-    bearerAuth: 
+servers:
+  - url: 'http://localhost:5000'
+    description: Development server
+  - url: 'http://api.stu-training.ru'
+    description: production server
+components:
+  securitySchemes:
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
-  schemas: 
+  schemas:
     UserMainDesc:
       type: object
       properties:
-        _id: 
+        _id:
           type: string
         name:
           type: string
         email:
-          type: string 
+          type: string
         imageUri:
           nullable: true
-          type: string 
-    User: 
+          type: string
+    User:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        username: 
+        username:
           type: string
-        password: 
+        password:
           type: string
-        roles: 
+        roles:
           nullable: true
-          type: array 
-          items: 
+          type: array
+          items:
             type: string
-        name: 
+        name:
           type: string
-        email: 
+        email:
           type: string
-        imageUri: 
+        imageUri:
           nullable: true
           type: string
-        faculties: 
+        faculties:
           nullable: true
-          type: array 
-          items: 
+          type: array
+          items:
             type: string
-        departments: 
+        departments:
           nullable: true
-          type: array 
-          items: 
+          type: array
+          items:
             type: string
-        groups: 
+        groups:
           nullable: true
-          type: array 
-          items: 
+          type: array
+          items:
             type: string
-    News: 
+    Role:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        name: 
+        value:
           type: string
-        content: 
+    News:
+      type: object
+      properties:
+        _id:
           type: string
-        createdAt: 
+        name:
+          type: string
+        content:
+          type: string
+        createdAt:
           type: string
           format: date
-    Message: 
+    Message:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        content: 
+        content:
           type: string
-        createdAt: 
+        createdAt:
           type: string
           format: date
-        user: 
+        user:
           type: string
-
-    Role: 
+    Group:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        value: 
-          type: string
-    Audience: 
-      type: object
-      properties: 
-        _id: 
-          type: string
-        value: 
+        value:
           name: string
-    Department: 
+    Faculty:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        value: 
+        value:
           name: string
-    Faculty: 
+    Department:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        value: 
+        value:
           name: string
-    Group: 
+    Audience:
       type: object
-      properties: 
-        _id: 
+      properties:
+        _id:
           type: string
-        value: 
-          name: string   
-
-  responses: 
-    UnauthorizedError: 
-      description: Access token is missing, invalid or expired
-      content: 
+        value:
+          name: string
+  responses:
+    UnauthorizedError:
+      description: 'Access token is missing, invalid or expired'
+      content:
         application/json:
-          schema: 
-            type: object 
-            properties: 
-              message: 
+          schema:
+            type: object
+            properties:
+              message:
                 type: string
-              errors: 
+              errors:
                 type: array
-                items: 
-                  message: 
+                items:
+                  message:
                     type: string
-
-paths: 
+paths:
   /users/id:
     get:
       summary: Returns certain user by id.
       description: Optional extended description in CommonMark or HTML.
-      security: 
+      security:
         - bearerAuth: []
       parameters:
         - in: query
           name: id
           required: true
-          schema: 
+          schema:
             type: string
           description: Certain id of user
       responses:
-        '200':    # status code
+        '200':
           description: A JSON user by id
           content:
             application/json:
-              schema: 
-                $ref: '#components/schemas/User'
-        "401": 
-          $ref: '#components/responses/UnauthorizedError'
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /users/students:
     get:
       summary: Returns all students.
-      security: 
+      security:
         - bearerAuth: []
       parameters:
         - name: limit
           in: query
           description: Parameter limit of students
           schema:
-            type : integer
+            type: integer
             format: int64
             minimum: 0
         - name: page
           in: query
           description: Parameter skip of students
           schema:
-            type : integer
+            type: integer
             format: int64
             minimum: 0
-      responses: 
+      responses:
         '200':
           description: OK
-          content: 
+          content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
-                  $ref: '#components/schemas/UserMainDesc'
-        "401": 
-          $ref: '#components/responses/UnauthorizedError'
-  /users/{groupId}/students:
+                items:
+                  $ref: '#/components/schemas/UserMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  '/users/{groupId}/students':
     get:
       summary: Returns students by groupId
-      security: 
+      security:
         - bearerAuth: []
       parameters:
         - name: groupId
@@ -208,38 +202,38 @@ paths:
           required: true
           description: Certain id of group
           schema:
-            type : string
-      responses: 
+            type: string
+      responses:
         '200':
           description: OK
-          content: 
+          content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
-                  $ref: '#components/schemas/UserMainDesc'
-        "401": 
-          $ref: '#components/responses/UnauthorizedError'
+                items:
+                  $ref: '#/components/schemas/UserMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /users/teachers:
     get:
       summary: Returns an array of teachers.
-      security: 
+      security:
         - bearerAuth: []
-      responses: 
+      responses:
         '200':
           description: OK
-          content: 
-            application/json: 
-              schema: 
+          content:
+            application/json:
+              schema:
                 type: array
-                items: 
-                  $ref: '#components/schemas/UserMainDesc'
-        "401": 
-          $ref: '#components/responses/UnauthorizedError'          
+                items:
+                  $ref: '#/components/schemas/UserMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /users/allButMe:
     get:
-      summary: Returns all users without certain Id 
-      security: 
+      summary: Returns all users without certain Id
+      security:
         - bearerAuth: []
       parameters:
         - name: id
@@ -247,15 +241,15 @@ paths:
           required: true
           description: Certain user id to skip (usually client id)
           schema:
-            type : string
-      responses: 
+            type: string
+      responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
-                items: 
-                  $ref: '#components/schemas/UserMainDesc'
-        "401": 
-          $ref: '#components/responses/UnauthorizedError'
+                items:
+                  $ref: '#/components/schemas/UserMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'

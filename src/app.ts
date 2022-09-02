@@ -9,7 +9,7 @@ import createRoutes from "./core/routes";
 import compression from "compression";
 import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
-const swaggerDocument = YAML.load('./swaggerDocument.yaml');
+const swaggerDocument = YAML.load('./openapi.yaml');
 
 require('./models/Faculty');
 require('./models/Department');

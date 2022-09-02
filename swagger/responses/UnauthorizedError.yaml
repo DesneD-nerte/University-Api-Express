@@ -1,0 +1,13 @@
+description: Access token is missing, invalid or expired
+content: 
+  application/json:
+    schema: 
+      type: object 
+      properties: 
+        message: 
+          type: string
+        errors: 
+          type: array
+          items: 
+            message: 
+              type: string

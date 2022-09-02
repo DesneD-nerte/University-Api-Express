@@ -1,0 +1,11 @@
+type: object
+properties: 
+  _id: 
+    type: string
+  name: 
+    type: string
+  content: 
+    type: string
+  createdAt: 
+    type: string
+    format: date

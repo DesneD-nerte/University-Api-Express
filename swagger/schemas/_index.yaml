@@ -1,0 +1,18 @@
+UserMainDesc:
+  $ref: './UserMainDesc.yaml'
+User:
+  $ref: './User.yaml'
+Role:
+  $ref: './Role.yaml'
+News:
+  $ref: './News.yaml'
+Message:
+  $ref: './Message.yaml'
+Group:
+  $ref: './Group.yaml'
+Faculty:
+  $ref: './Faculty.yaml'
+Department:
+  $ref: './Department.yaml'
+Audience:
+  $ref: './Audience.yaml'
