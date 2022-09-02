@@ -1,4 +1,3 @@
-import { HydratedDocument } from "mongoose";
 import { GetNewsDto } from "../dto/news/getNewsDto";
 import News from "../models/News";
 import newsRepository from "../repositories/newsRepository";
@@ -9,12 +8,6 @@ class NewsService {
         const massiveNews = await newsRepository.GetNews(query);
 
         return massiveNews;
-    }
-
-    async GetAllNews () {
-        const allNews = await newsRepository.GetAllNews();
-        
-        return allNews;
     }
 
     async PostNewNews (data: INews) {

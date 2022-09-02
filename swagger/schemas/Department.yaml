@@ -2,5 +2,5 @@ type: object
 properties: 
   _id: 
     type: string
-  value: 
-    name: string
+  name: 
+    type: string

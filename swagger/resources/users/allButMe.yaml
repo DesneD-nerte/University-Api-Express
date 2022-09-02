@@ -1,5 +1,7 @@
 get:
   summary: Returns all users without certain Id 
+  tags: 
+    - Users
   security: 
     - bearerAuth: []
   parameters:

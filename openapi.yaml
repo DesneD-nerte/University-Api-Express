@@ -63,6 +63,61 @@ components:
           type: array
           items:
             type: string
+    CurrentLesson:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        teachers:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        classroom:
+          type: string
+        group:
+          type: string
+    CurrentLessonMainDesc:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          $ref: '#/components/schemas/Lesson'
+        teachers:
+          $ref: '#/components/schemas/User'
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        classroom:
+          $ref: '#/components/schemas/Audience'
+        group:
+          $ref: '#/components/schemas/Group'
+    CreateCurrentLesson:
+      type: object
+      properties:
+        lessonNameId:
+          type: string
+        teacherId:
+          type: string
+        classRoomId:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        groupId:
+          type: string
     Role:
       type: object
       properties:
@@ -82,6 +137,29 @@ components:
         createdAt:
           type: string
           format: date
+    NewsMainDesc:
+      type: object
+      properties:
+        name:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date
+    Mark:
+      type: object
+      properties:
+        _id:
+          type: string
+        allCurrentLessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrentLesson'
+        lesson:
+          $ref: '#/components/schemas/Lesson'
+        user:
+          $ref: '#/components/schemas/User'
     Message:
       type: object
       properties:
@@ -99,29 +177,48 @@ components:
       properties:
         _id:
           type: string
-        value:
-          name: string
+        name:
+          type: string
     Faculty:
       type: object
       properties:
         _id:
           type: string
-        value:
-          name: string
+        name:
+          type: string
     Department:
       type: object
       properties:
         _id:
           type: string
-        value:
-          name: string
+        name:
+          type: string
     Audience:
       type: object
       properties:
         _id:
           type: string
-        value:
-          name: string
+        name:
+          type: string
+    Lesson:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+    IdMongo:
+      oneOf:
+        - type: array
+          items:
+            type: string
+            minimum: 12
+            maximum: 12
+        - type: array
+          items:
+            type: string
+            minimum: 24
+            maximum: 24
   responses:
     UnauthorizedError:
       description: 'Access token is missing, invalid or expired'
@@ -141,7 +238,8 @@ paths:
   /users/id:
     get:
       summary: Returns certain user by id.
-      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Users
       security:
         - bearerAuth: []
       parameters:
@@ -163,6 +261,8 @@ paths:
   /users/students:
     get:
       summary: Returns all students.
+      tags:
+        - Users
       security:
         - bearerAuth: []
       parameters:
@@ -194,6 +294,8 @@ paths:
   '/users/{groupId}/students':
     get:
       summary: Returns students by groupId
+      tags:
+        - Users
       security:
         - bearerAuth: []
       parameters:
@@ -217,6 +319,8 @@ paths:
   /users/teachers:
     get:
       summary: Returns an array of teachers.
+      tags:
+        - Users
       security:
         - bearerAuth: []
       responses:
@@ -233,6 +337,8 @@ paths:
   /users/allButMe:
     get:
       summary: Returns all users without certain Id
+      tags:
+        - Users
       security:
         - bearerAuth: []
       parameters:
@@ -251,5 +357,198 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /news/getNews:
+    get:
+      summary: Returns news
+      tags:
+        - News
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Parameter limit of news
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: page
+          in: query
+          description: Parameter skip of news
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+      responses:
+        '200':
+          description: A JSON user by id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/News'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /news/postNews:
+    post:
+      summary: Create new news and return it
+      tags:
+        - News
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: News content
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsMainDesc'
+      responses:
+        '200':
+          description: A JSON of created news
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /news/deleteNews:
+    delete:
+      summary: delete one or many news and return
+      tags:
+        - News
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: News content
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdMongo'
+      responses:
+        '200':
+          description: A JSON of all deleted news
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /marks:
+    get:
+      summary: Returns marks
+      tags:
+        - Marks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A JSON all marks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mark'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /currentLessons/:
+    get:
+      summary: Get current lessons
+      tags:
+        - CurrentLesson
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A JSON of current lessons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CurrentLessonMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /currentLessons/saveNewCurrentLesson:
+    post:
+      summary: Save new current lesson
+      tags:
+        - CurrentLesson
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Current lesson content
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCurrentLesson'
+      responses:
+        '200':
+          description: A JSON of current lesson
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentLessonMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /currentLessons/saveNewCurrentLessonsArray:
+    post:
+      summary: Save new current lessons
+      tags:
+        - CurrentLesson
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Current lesson content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateCurrentLesson'
+      responses:
+        '200':
+          description: A JSON of current lessons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CurrentLessonMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /currentLessons/updateCurrentLesson:
+    post:
+      summary: Save new current lesson
+      tags:
+        - CurrentLesson
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Current lesson content
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    _id:
+                      type: string
+                - $ref: '#/components/schemas/CreateCurrentLesson'
+      responses:
+        '200':
+          description: A JSON of current lesson
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentLessonMainDesc'
         '401':
           $ref: '#/components/responses/UnauthorizedError'

@@ -18,16 +18,6 @@ class NewsController {
         }
     }
 
-    async GetAllNews (req: Request, res: Response, next: NextFunction) {
-        try {
-            const allNews = await newsService.GetAllNews();
-        
-            return res.json(allNews);
-        } catch (err) {
-            next(err);
-        }
-    }
-
     async PostNewNews (req: Request, res: Response, next: NextFunction) {
         try {
             const newCreatedNews = await newsService.PostNewNews(req.body.data);

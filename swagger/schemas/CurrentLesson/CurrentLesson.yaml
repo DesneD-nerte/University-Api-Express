@@ -1,0 +1,18 @@
+type: object
+properties:
+  _id: 
+    type: string
+  name: 
+    type: string
+  teachers:
+    type: string
+  beginDate: 
+    type: string
+    format: date
+  endDate: 
+    type: string
+    format: date
+  classroom: 
+    type: string
+  group: 
+    type: string

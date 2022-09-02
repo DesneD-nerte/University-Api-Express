@@ -1,5 +1,7 @@
 get:
   summary: Returns students by groupId
+  tags: 
+    - Users
   security: 
     - bearerAuth: []
   parameters:

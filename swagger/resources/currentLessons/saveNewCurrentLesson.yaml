@@ -1,0 +1,23 @@
+post:
+  summary: Save new current lesson 
+  tags: 
+    - CurrentLesson
+  security: 
+    - bearerAuth: []
+  requestBody: 
+    description: Current lesson content
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/CurrentLesson/CreateCurrentLesson.yaml'
+
+  responses:
+    '200':
+      description: A JSON of current lesson
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/CurrentLesson/CurrentLessonMainDesc.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

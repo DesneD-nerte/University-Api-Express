@@ -1,0 +1,17 @@
+get:
+  summary: Returns marks
+  tags: 
+    - Marks
+  security: 
+    - bearerAuth: []
+  responses:
+    '200': 
+      description: A JSON all marks
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '../../schemas/Mark.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

@@ -1,5 +1,5 @@
 type: object
-properties: 
+properties:
   _id: 
     type: string
   name: 

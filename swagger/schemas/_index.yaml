@@ -2,10 +2,20 @@ UserMainDesc:
   $ref: './UserMainDesc.yaml'
 User:
   $ref: './User.yaml'
+CurrentLesson:
+  $ref: './CurrentLesson/CurrentLesson.yaml'
+CurrentLessonMainDesc: 
+  $ref: './CurrentLesson/CurrentLessonMainDesc.yaml'
+CreateCurrentLesson:
+  $ref: './CurrentLesson/CreateCurrentLesson.yaml'
 Role:
   $ref: './Role.yaml'
 News:
   $ref: './News.yaml'
+NewsMainDesc:
+  $ref: './NewsMainDesc.yaml'
+Mark:
+  $ref: './Mark.yaml'
 Message:
   $ref: './Message.yaml'
 Group:
@@ -16,3 +26,7 @@ Department:
   $ref: './Department.yaml'
 Audience:
   $ref: './Audience.yaml'
+Lesson: 
+  $ref: './Lesson.yaml'
+IdMongo:
+  $ref: './IdMongo.yaml'

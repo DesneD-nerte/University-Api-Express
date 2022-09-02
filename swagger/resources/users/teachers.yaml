@@ -1,5 +1,7 @@
 get:
   summary: Returns an array of teachers.
+  tags: 
+    - Users
   security: 
     - bearerAuth: []
   responses: 

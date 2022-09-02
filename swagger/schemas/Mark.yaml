@@ -1,0 +1,12 @@
+type: object
+properties:
+  _id:
+    type: string
+  allCurrentLessons:
+    type: array
+    items: 
+      $ref: './CurrentLesson/CurrentLesson.yaml'
+  lesson: 
+    $ref: './Lesson.yaml'
+  user:
+    $ref: './User.yaml'

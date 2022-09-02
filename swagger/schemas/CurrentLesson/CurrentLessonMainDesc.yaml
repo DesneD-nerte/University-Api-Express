@@ -1,0 +1,18 @@
+type: object
+properties:
+  _id: 
+    type: string
+  name: 
+    $ref: '../Lesson.yaml'
+  teachers:
+    $ref: '../User.yaml'
+  beginDate: 
+    type: string
+    format: date
+  endDate: 
+    type: string
+    format: date
+  classroom: 
+    $ref: '../Audience.yaml'
+  group: 
+    $ref: '../Group.yaml'

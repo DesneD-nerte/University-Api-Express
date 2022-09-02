@@ -1,0 +1,22 @@
+post:
+  summary: Create new news and return it
+  tags: 
+    - News
+  security: 
+    - bearerAuth: []
+  requestBody: 
+    description: News content
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/NewsMainDesc.yaml'
+  responses:
+    '200':
+      description: A JSON of created news
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/News.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

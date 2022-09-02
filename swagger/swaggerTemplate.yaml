@@ -29,8 +29,55 @@ paths:
   /users/students:
     $ref: './resources/users/students.yaml'
   /users/{groupId}/students:
-    $ref: './resources/users/groupId-students.yaml' #!!!!
+    $ref: './resources/users/groupId-students.yaml'
   /users/teachers:
     $ref: './resources/users/teachers.yaml'   
   /users/allButMe:
     $ref: './resources/users/allButMe.yaml'
+
+  /news/getNews:
+    $ref: './resources/news/getNews.yaml'
+  /news/postNews:
+    $ref: './resources/news/postNews.yaml'
+  /news/deleteNews:
+    $ref: './resources/news/deleteNews.yaml'
+
+  /marks:
+    $ref: './resources/marks/marks.yaml'
+  # /marks/saveNewCurrentLesson:
+  #   $ref: './resources/marks/saveNewCurrentLesson.yaml'
+  # /marks/saveNewCurrentLessonsArray:
+  #   $ref: './resources/marks/saveNewCurrentLessonsArray.yaml'
+  # /marks/updateCurrentLesson:
+  #   $ref: './resources/marks/updateCurrentLesson.yaml'
+
+  # /api/auth/registration:
+  #   $ref: './resources/api-auth/registration.yaml'
+  # /api/auth/registration/arrayUsers:
+  #   $ref: './resources/api-auth/registration-arrayUsers.yaml'
+  # /api/auth/login:
+  #   $ref: './resources/api-auth/login.yaml'
+
+  /currentLessons/:
+    $ref: './resources/currentLessons/currentLessons.yaml'
+  /currentLessons/saveNewCurrentLesson:
+    $ref: './resources/currentLessons/saveNewCurrentLesson.yaml'
+  /currentLessons/saveNewCurrentLessonsArray:
+    $ref: './resources/currentLessons/saveNewCurrentLessonsArray.yaml'
+  # /currentLessons/lessonGroup:
+  #   $ref: './resources/currentLessons/lessonGroup.yaml'
+  /currentLessons/updateCurrentLesson:
+    $ref: './resources/currentLessons/updateCurrentLesson.yaml'
+
+  # /messages/getChatRoomMessages:
+  #   $ref: './resources/messages/getChatRoomMessages.yaml'
+  # /messages/checkExistingChatRoomMessages:
+  #   $ref: './resources/messages/checkExistingChatRoomMessages.yaml'
+  # /messages/getLastMessages:
+  #   $ref: './resources/messages/getLastMessages.yaml'
+  # /messages/addMessage:
+  #   $ref: './resources/messages/addMessage.yaml'
+  # /messages/addRoom:
+  #   $ref: './resources/messages/addRoom.yaml'
+  # /messages/updateVisibleAllMessages:
+  #   $ref: './resources/messages/updateVisibleAllMessages.yaml'

@@ -9,10 +9,6 @@ class NewsRepository {
             .skip(query.limit * (query.page - 1));
     }
 
-    async GetAllNews() {
-       return await News.find({}).sort({createdAt: -1});
-    }
-
     async PostNewNews(data: INews) {
        return await News.create(data);
     }

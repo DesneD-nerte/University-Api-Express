@@ -1,6 +1,7 @@
 get:
   summary: Returns certain user by id.
-  description: Optional extended description in CommonMark or HTML.
+  tags: 
+    - Users
   security: 
     - bearerAuth: []
   parameters:
