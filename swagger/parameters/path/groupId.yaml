@@ -1,0 +1,6 @@
+name: groupId
+in: path
+description: Parameter groupId 
+required: true
+schema:
+  $ref: '../../schemas/IdMongo.yaml'

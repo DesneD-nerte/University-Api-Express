@@ -3,7 +3,9 @@ properties:
   lessonNameId:
     type: string
   teacherId: 
-    type: string
+    type: array 
+    items: 
+      type: string
   classRoomId: 
     type: string
   startDate:

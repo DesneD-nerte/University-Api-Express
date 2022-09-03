@@ -5,18 +5,13 @@ get:
   security: 
     - bearerAuth: []
   parameters:
-    - in: query
-      name: id
-      required: true
-      schema: 
-        type: string
-      description: Certain id of user
+    - $ref: '../../parameters/query/id.yaml'
   responses:
-    '200':    # status code
+    '200': 
       description: A JSON user by id
       content:
         application/json:
           schema: 
-            $ref: '../../schemas/User.yaml'
+            $ref: '../../schemas/User/User.yaml'
     "401": 
       $ref: '../../responses/UnauthorizedError.yaml'

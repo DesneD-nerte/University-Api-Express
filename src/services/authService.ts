@@ -7,7 +7,7 @@ import bcryptjs from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 
-import { HydratedDocument, ObjectId, Schema } from "mongoose";
+import { HydratedDocument, ObjectId } from "mongoose";
 import authRepository from "../repositories/authRepository";
 import authGenerator from '../services/authGenerator';
 import Faculty from "../models/Faculty";

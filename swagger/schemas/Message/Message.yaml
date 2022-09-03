@@ -1,11 +1,13 @@
 type: object
 properties: 
   _id: 
-    type: string
+    $ref: '../IdMongo.yaml'
   content: 
     type: string
   createdAt: 
     type: string
     format: date
   user: 
-    type: string
+    $ref: '../IdMongo.yaml'
+  isVisible:
+    type: boolean

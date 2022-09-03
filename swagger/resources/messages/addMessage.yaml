@@ -1,0 +1,29 @@
+post:
+  summary: Returns messages of room
+  tags: 
+    - Messages
+  security: 
+    - bearerAuth: []
+  requestBody:
+    description: Message content
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            myId:
+              $ref: '../../schemas/IdMongo.yaml'
+            id: 
+              $ref: '../../schemas/IdMongo.yaml'
+            message: 
+              $ref: '../../schemas/Message/Message.yaml'
+  responses:
+    '200':
+      description: A JSON of new Message
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/Message/PopulatedRoomMessages.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

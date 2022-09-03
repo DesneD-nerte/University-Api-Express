@@ -1,0 +1,6 @@
+name: roomId
+in: query
+description: Parameter room id
+required: true
+schema:
+  $ref: '../../schemas/IdMongo.yaml'

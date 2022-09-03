@@ -1,0 +1,22 @@
+type: object
+properties:
+  name: 
+    type: string
+  email: 
+    type: string
+  roles: 
+    type: array
+    items: 
+      type: string
+  departments: 
+    type: array
+    items: 
+      type: string
+  faculties: 
+    type: array
+    items: 
+      type: string
+  groups: 
+    type: array
+    items: 
+      type: string

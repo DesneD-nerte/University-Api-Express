@@ -1,0 +1,30 @@
+post:
+  summary: Returns user data
+  tags: 
+    - Auth
+  requestBody: 
+    description: Username and password
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: 
+            username: 
+              type: string
+            password: 
+              type: string
+  responses:
+    '200':
+      description: A JSON of user and token
+      content:
+        application/json:
+          schema: 
+            allOf:
+              - type: object
+                properties: 
+                  token: 
+                    type: string
+              - $ref: '../../schemas/User/User.yaml'
+    '400': 
+      description: User is invalid

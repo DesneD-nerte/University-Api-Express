@@ -1,18 +1,19 @@
 get:
-  summary: Returns messages of room without populated users
+  summary: Returns last messages of user
   tags: 
     - Messages
   security: 
     - bearerAuth: []
   parameters:
-    - $ref: '../../parameters/query/id.yaml'
     - $ref: '../../parameters/query/myId.yaml'
   responses:
     '200':
-      description: A JSON of messages
+      description: A JSON of last messages
       content:
         application/json:
           schema: 
-            $ref: '../../schemas/Message/RoomMessages.yaml'
+            type: array
+            items: 
+              $ref: '../../schemas/Message/LastMessage.yaml'
     "401": 
       $ref: '../../responses/UnauthorizedError.yaml'

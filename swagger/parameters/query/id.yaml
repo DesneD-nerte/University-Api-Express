@@ -1,0 +1,6 @@
+name: id
+in: query
+description: Parameter id 
+required: true
+schema:
+  $ref: '../../schemas/IdMongo.yaml'

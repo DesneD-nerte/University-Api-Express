@@ -1,0 +1,7 @@
+name: page
+in: query
+description: Parameter page 
+schema:
+  type : integer
+  format: int64
+  minimum: 0

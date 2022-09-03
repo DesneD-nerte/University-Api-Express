@@ -1,0 +1,19 @@
+get:
+  summary: Returns messages of room
+  tags: 
+    - Messages
+  security: 
+    - bearerAuth: []
+  parameters:
+    - $ref: '../../parameters/query/id.yaml'
+    - $ref: '../../parameters/query/myId.yaml'
+    - $ref: '../../parameters/query/skip.yaml'
+  responses:
+    '200':
+      description: A JSON of messages
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/Message/PopulatedRoomMessages.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

@@ -1,0 +1,11 @@
+type: object
+properties: 
+  _id: 
+    $ref: '../IdMongo.yaml'
+  content: 
+    type: string
+  createdAt: 
+    type: string
+    format: date
+  user: 
+    $ref: '../User/User.yaml'

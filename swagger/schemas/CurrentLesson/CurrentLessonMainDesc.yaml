@@ -5,7 +5,9 @@ properties:
   name: 
     $ref: '../Lesson.yaml'
   teachers:
-    $ref: '../User.yaml'
+    type: array
+    items: 
+      $ref: '../User/User.yaml'
   beginDate: 
     type: string
     format: date

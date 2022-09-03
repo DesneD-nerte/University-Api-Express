@@ -1,0 +1,9 @@
+type: object
+properties:
+  myId:
+    type: string
+  id: 
+    type: string
+  skip:
+    nullable: true
+    type: number

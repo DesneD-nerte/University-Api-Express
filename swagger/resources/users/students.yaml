@@ -5,20 +5,8 @@ get:
   security: 
     - bearerAuth: []
   parameters:
-    - name: limit
-      in: query
-      description: Parameter limit of students
-      schema:
-        type : integer
-        format: int64
-        minimum: 0
-    - name: page
-      in: query
-      description: Parameter skip of students
-      schema:
-        type : integer
-        format: int64
-        minimum: 0
+    - $ref: '../../parameters/query/limit.yaml'
+    - $ref: '../../parameters/query/page.yaml'
   responses: 
     '200':
       description: OK
@@ -27,6 +15,6 @@ get:
           schema: 
             type: array
             items: 
-              $ref: '../../schemas/UserMainDesc.yaml'
+              $ref: '../../schemas/User/UserMainDesc.yaml'
     "401": 
       $ref: '../../responses/UnauthorizedError.yaml'

@@ -1,0 +1,7 @@
+name: limit
+in: query
+description: Parameter limit
+schema:
+  type : integer
+  format: int64
+  minimum: 0

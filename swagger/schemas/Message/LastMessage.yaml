@@ -1,0 +1,10 @@
+type: object
+properties:
+  _id: 
+    $ref: '../IdMongo.yaml'
+  users: 
+    $ref: '../User/User.yaml'
+  lastMessage:
+    $ref: './Message.yaml'
+  countBadge:
+    type: number

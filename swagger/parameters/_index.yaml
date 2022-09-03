@@ -1,0 +1,15 @@
+id:
+  $ref: './query/id.yaml'
+myId:
+  $ref: './query/myId.yaml'
+roomId:
+  $ref: './query/roomId.yaml'
+limit:
+  $ref: './query/limit.yaml'
+page: 
+  $ref: './query/page.yaml'
+skip: 
+  $ref: './query/skip.yaml'
+
+groupId:
+  $ref: './path/groupId.yaml'

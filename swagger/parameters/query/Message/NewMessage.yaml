@@ -1,0 +1,8 @@
+type: object
+properties:
+  myId:
+    type: string
+  id: 
+    type: string
+  message:
+    $ref: './Message.yaml'

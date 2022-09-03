@@ -9,4 +9,4 @@ properties:
   lesson: 
     $ref: './Lesson.yaml'
   user:
-    $ref: './User.yaml'
+    $ref: './User/User.yaml'

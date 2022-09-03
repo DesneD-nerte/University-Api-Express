@@ -17,6 +17,9 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+  parameters:
+    $ref: './parameters/_index.yaml'
+
   schemas: 
     $ref: './schemas/_index.yaml'
 
@@ -44,19 +47,19 @@ paths:
 
   /marks:
     $ref: './resources/marks/marks.yaml'
-  # /marks/saveNewCurrentLesson:
-  #   $ref: './resources/marks/saveNewCurrentLesson.yaml'
-  # /marks/saveNewCurrentLessonsArray:
-  #   $ref: './resources/marks/saveNewCurrentLessonsArray.yaml'
-  # /marks/updateCurrentLesson:
-  #   $ref: './resources/marks/updateCurrentLesson.yaml'
+  /marks/saveNewCurrentLesson:
+    $ref: './resources/marks/saveNewCurrentLesson.yaml'
+  /marks/saveNewCurrentLessonsArray:
+    $ref: './resources/marks/saveNewCurrentLessonsArray.yaml'
+  /marks/updateCurrentLesson:
+    $ref: './resources/marks/updateCurrentLesson.yaml'
 
-  # /api/auth/registration:
-  #   $ref: './resources/api-auth/registration.yaml'
-  # /api/auth/registration/arrayUsers:
-  #   $ref: './resources/api-auth/registration-arrayUsers.yaml'
-  # /api/auth/login:
-  #   $ref: './resources/api-auth/login.yaml'
+  /api/auth/registration:
+    $ref: './resources/api-auth/registration.yaml'
+  /api/auth/registration/arrayUsers:
+    $ref: './resources/api-auth/registration-arrayUsers.yaml'
+  /api/auth/login:
+    $ref: './resources/api-auth/login.yaml'
 
   /currentLessons/:
     $ref: './resources/currentLessons/currentLessons.yaml'
@@ -64,20 +67,18 @@ paths:
     $ref: './resources/currentLessons/saveNewCurrentLesson.yaml'
   /currentLessons/saveNewCurrentLessonsArray:
     $ref: './resources/currentLessons/saveNewCurrentLessonsArray.yaml'
-  # /currentLessons/lessonGroup:
-  #   $ref: './resources/currentLessons/lessonGroup.yaml'
   /currentLessons/updateCurrentLesson:
     $ref: './resources/currentLessons/updateCurrentLesson.yaml'
 
-  # /messages/getChatRoomMessages:
-  #   $ref: './resources/messages/getChatRoomMessages.yaml'
-  # /messages/checkExistingChatRoomMessages:
-  #   $ref: './resources/messages/checkExistingChatRoomMessages.yaml'
-  # /messages/getLastMessages:
-  #   $ref: './resources/messages/getLastMessages.yaml'
-  # /messages/addMessage:
-  #   $ref: './resources/messages/addMessage.yaml'
-  # /messages/addRoom:
-  #   $ref: './resources/messages/addRoom.yaml'
-  # /messages/updateVisibleAllMessages:
-  #   $ref: './resources/messages/updateVisibleAllMessages.yaml'
+  /messages/getChatRoomMessages:
+    $ref: './resources/messages/getChatRoomMessages.yaml'
+  /messages/checkExistingChatRoomMessages:
+    $ref: './resources/messages/checkExistingChatRoomMessages.yaml'
+  /messages/getLastMessages:
+    $ref: './resources/messages/getLastMessages.yaml'
+  /messages/addMessage:
+    $ref: './resources/messages/addMessage.yaml'
+  /messages/addRoom:
+    $ref: './resources/messages/addRoom.yaml'
+  /messages/updateVisibleAllMessages:
+    $ref: './resources/messages/updateVisibleAllMessages.yaml'

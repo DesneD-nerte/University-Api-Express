@@ -1,4 +1,4 @@
-post:
+put:
   summary: Update existed current lesson
   tags: 
     - CurrentLesson

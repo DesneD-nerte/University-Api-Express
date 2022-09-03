@@ -1,0 +1,19 @@
+put:
+  summary: Update existed current lesson for mark
+  tags: 
+    - Marks
+  security: 
+    - bearerAuth: []
+  requestBody: 
+    description: Marks content
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/Mark.yaml'
+
+  responses:
+    '200':
+      description: Ok
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

@@ -5,12 +5,7 @@ get:
   security: 
     - bearerAuth: []
   parameters:
-    - name: id
-      in: query
-      required: true
-      description: Certain user id to skip (usually client id)
-      schema:
-        type : string
+    - $ref: '../../parameters/query/id.yaml'
   responses: 
     '200':
       description: OK
@@ -19,6 +14,6 @@ get:
           schema:
             type: array
             items: 
-              $ref: '../../schemas/UserMainDesc.yaml'
+              $ref: '../../schemas/User/UserMainDesc.yaml'
     "401": 
       $ref: '../../responses/UnauthorizedError.yaml'

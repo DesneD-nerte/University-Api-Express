@@ -1,0 +1,25 @@
+put:
+  summary: Update visible all messages of certain user
+  tags: 
+    - Messages
+  security: 
+    - bearerAuth: []
+  requestBody:
+    description: RoomID, userId and messages
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            messages: 
+              $ref: '../../schemas/Message/Message.yaml'
+            roomId: 
+              $ref: '../../schemas/IdMongo.yaml'
+            id:
+              $ref: '../../schemas/IdMongo.yaml'
+  responses:
+    '200':
+      description: Ok
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

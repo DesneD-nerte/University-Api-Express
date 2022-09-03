@@ -1,0 +1,18 @@
+post:
+  summary: Save new current lesson for mark
+  tags: 
+    - Marks
+  security: 
+    - bearerAuth: []
+  requestBody: 
+    description: Current Lesson content
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/CurrentLesson/CurrentLessonMainDesc.yaml'
+  responses:
+    '200': 
+      description: Ok
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

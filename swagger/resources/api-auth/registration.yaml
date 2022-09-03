@@ -1,0 +1,31 @@
+post:
+  summary: Returns user data
+  tags: 
+    - Auth
+  requestBody: 
+    description: Registration data of user
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: 
+            username: 
+              type: string
+            password: 
+              type: string
+            name: 
+              type: string
+            email: 
+              type: string
+            roles:
+              type: array
+              items: 
+                type: string
+  responses:
+    '200':
+      description: A JSON of created user
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/User/User.yaml'

@@ -5,7 +5,9 @@ properties:
   name: 
     type: string
   teachers:
-    type: string
+    type: array
+    items: 
+      type: string
   beginDate: 
     type: string
     format: date

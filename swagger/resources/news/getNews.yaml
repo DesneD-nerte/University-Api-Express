@@ -5,20 +5,8 @@ get:
   security: 
     - bearerAuth: []
   parameters:
-    - name: limit
-      in: query
-      description: Parameter limit of news
-      schema:
-        type : integer
-        format: int64
-        minimum: 0
-    - name: page
-      in: query
-      description: Parameter skip of news
-      schema:
-        type : integer
-        format: int64
-        minimum: 0
+    - $ref: '../../parameters/query/limit.yaml'
+    - $ref: '../../parameters/query/page.yaml'
   responses:
     '200': 
       description: A JSON user by id

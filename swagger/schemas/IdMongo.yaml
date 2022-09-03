@@ -1,11 +1,7 @@
 oneOf:
-  - type: array
-    items: 
-      type: string
-      minimum: 12
-      maximum: 12
-  - type: array
-    items: 
-      type: string
-      minimum: 24
-      maximum: 24
+  - type: string
+    minimum: 12
+    maximum: 12
+  - type: string
+    minimum: 24
+    maximum: 24

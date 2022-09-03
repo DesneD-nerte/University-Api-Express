@@ -1,5 +1,5 @@
 delete:
-  summary: delete one or many news and return
+  summary: Delete one or many news and return
   tags: 
     - News
   security: 
@@ -10,7 +10,7 @@ delete:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/IdMongo.yaml'
+          $ref: '../../schemas/IdMongoArray.yaml'
 
   responses:
     '200':

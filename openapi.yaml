@@ -14,19 +14,60 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    id:
+      name: id
+      in: query
+      description: Parameter id
+      required: true
+      schema:
+        $ref: '#/components/schemas/IdMongo'
+    myId:
+      name: myId
+      in: query
+      description: Parameter myId
+      required: true
+      schema:
+        $ref: '#/components/schemas/IdMongo'
+    roomId:
+      name: roomId
+      in: query
+      description: Parameter room id
+      required: true
+      schema:
+        $ref: '#/components/schemas/IdMongo'
+    limit:
+      name: limit
+      in: query
+      description: Parameter limit
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    page:
+      name: page
+      in: query
+      description: Parameter page
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    skip:
+      name: skip
+      in: query
+      description: Parameter skip
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    groupId:
+      name: groupId
+      in: path
+      description: Parameter groupId
+      required: true
+      schema:
+        $ref: '#/components/schemas/IdMongo'
   schemas:
-    UserMainDesc:
-      type: object
-      properties:
-        _id:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        imageUri:
-          nullable: true
-          type: string
     User:
       type: object
       properties:
@@ -63,6 +104,56 @@ components:
           type: array
           items:
             type: string
+    UserMainDesc:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        imageUri:
+          nullable: true
+          type: string
+    CreateUser:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    CreateManyUsers:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        departments:
+          type: array
+          items:
+            type: string
+        faculties:
+          type: array
+          items:
+            type: string
+        groups:
+          type: array
+          items:
+            type: string
     CurrentLesson:
       type: object
       properties:
@@ -71,7 +162,9 @@ components:
         name:
           type: string
         teachers:
-          type: string
+          type: array
+          items:
+            type: string
         beginDate:
           type: string
           format: date
@@ -90,7 +183,9 @@ components:
         name:
           $ref: '#/components/schemas/Lesson'
         teachers:
-          $ref: '#/components/schemas/User'
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
         beginDate:
           type: string
           format: date
@@ -107,7 +202,9 @@ components:
         lessonNameId:
           type: string
         teacherId:
-          type: string
+          type: array
+          items:
+            type: string
         classRoomId:
           type: string
         startDate:
@@ -118,13 +215,19 @@ components:
           format: date
         groupId:
           type: string
-    Role:
+    Mark:
       type: object
       properties:
         _id:
           type: string
-        value:
-          type: string
+        allCurrentLessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrentLesson'
+        lesson:
+          $ref: '#/components/schemas/Lesson'
+        user:
+          $ref: '#/components/schemas/User'
     News:
       type: object
       properties:
@@ -147,30 +250,12 @@ components:
         createdAt:
           type: string
           format: date
-    Mark:
+    Role:
       type: object
       properties:
         _id:
           type: string
-        allCurrentLessons:
-          type: array
-          items:
-            $ref: '#/components/schemas/CurrentLesson'
-        lesson:
-          $ref: '#/components/schemas/Lesson'
-        user:
-          $ref: '#/components/schemas/User'
-    Message:
-      type: object
-      properties:
-        _id:
-          type: string
-        content:
-          type: string
-        createdAt:
-          type: string
-          format: date
-        user:
+        value:
           type: string
     Group:
       type: object
@@ -209,6 +294,14 @@ components:
           type: string
     IdMongo:
       oneOf:
+        - type: string
+          minimum: 12
+          maximum: 12
+        - type: string
+          minimum: 24
+          maximum: 24
+    IdMongoArray:
+      oneOf:
         - type: array
           items:
             type: string
@@ -219,6 +312,65 @@ components:
             type: string
             minimum: 24
             maximum: 24
+    Message:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/IdMongo'
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date
+        user:
+          $ref: '#/components/schemas/IdMongo'
+        isVisible:
+          type: boolean
+    MessagePopulated:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/IdMongo'
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date
+        user:
+          $ref: '#/components/schemas/User'
+    LastMessage:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/IdMongo'
+        users:
+          $ref: '#/components/schemas/User'
+        lastMessage:
+          $ref: '#/components/schemas/Message'
+        countBadge:
+          type: number
+    PopulatedRoomMessages:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/IdMongo'
+        users:
+          $ref: '#/components/schemas/User'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessagePopulated'
+    RoomMessage:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/IdMongo'
+        users:
+          $ref: '#/components/schemas/IdMongoArray'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
   responses:
     UnauthorizedError:
       description: 'Access token is missing, invalid or expired'
@@ -243,12 +395,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - in: query
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Certain id of user
+        - $ref: '#/components/parameters/id'
       responses:
         '200':
           description: A JSON user by id
@@ -266,20 +413,8 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: limit
-          in: query
-          description: Parameter limit of students
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
-        - name: page
-          in: query
-          description: Parameter skip of students
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
       responses:
         '200':
           description: OK
@@ -299,12 +434,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: groupId
-          in: path
-          required: true
-          description: Certain id of group
-          schema:
-            type: string
+        - $ref: '#/components/parameters/groupId'
       responses:
         '200':
           description: OK
@@ -342,12 +472,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: id
-          in: query
-          required: true
-          description: Certain user id to skip (usually client id)
-          schema:
-            type: string
+        - $ref: '#/components/parameters/id'
       responses:
         '200':
           description: OK
@@ -367,20 +492,8 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: limit
-          in: query
-          description: Parameter limit of news
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
-        - name: page
-          in: query
-          description: Parameter skip of news
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
       responses:
         '200':
           description: A JSON user by id
@@ -417,7 +530,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /news/deleteNews:
     delete:
-      summary: delete one or many news and return
+      summary: Delete one or many news and return
       tags:
         - News
       security:
@@ -428,7 +541,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IdMongo'
+              $ref: '#/components/schemas/IdMongoArray'
       responses:
         '200':
           description: A JSON of all deleted news
@@ -456,6 +569,153 @@ paths:
                   $ref: '#/components/schemas/Mark'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /marks/saveNewCurrentLesson:
+    post:
+      summary: Save new current lesson for mark
+      tags:
+        - Marks
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Current Lesson content
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrentLessonMainDesc'
+      responses:
+        '200':
+          description: Ok
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /marks/saveNewCurrentLessonsArray:
+    post:
+      summary: Save new current lessons for marks
+      tags:
+        - Marks
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Current Lessons content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CurrentLessonMainDesc'
+      responses:
+        '200':
+          description: Ok
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /marks/updateCurrentLesson:
+    put:
+      summary: Update existed current lesson for mark
+      tags:
+        - Marks
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Marks content
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mark'
+      responses:
+        '200':
+          description: Ok
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/auth/registration:
+    post:
+      summary: Returns user data
+      tags:
+        - Auth
+      requestBody:
+        description: Registration data of user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: A JSON of created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/auth/registration/arrayUsers:
+    post:
+      summary: Returns user data
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateManyUsers'
+      responses:
+        '200':
+          description: A JSON of created user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/auth/login:
+    post:
+      summary: Returns user data
+      tags:
+        - Auth
+      requestBody:
+        description: Username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: A JSON of user and token
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      token:
+                        type: string
+                  - $ref: '#/components/schemas/User'
+        '400':
+          description: User is invalid
   /currentLessons/:
     get:
       summary: Get current lessons
@@ -525,8 +785,8 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
   /currentLessons/updateCurrentLesson:
-    post:
-      summary: Save new current lesson
+    put:
+      summary: Update existed current lesson
       tags:
         - CurrentLesson
       security:
@@ -550,5 +810,146 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentLessonMainDesc'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/getChatRoomMessages:
+    get:
+      summary: Returns messages of room
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/myId'
+        - $ref: '#/components/parameters/skip'
+      responses:
+        '200':
+          description: A JSON of messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopulatedRoomMessages'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/checkExistingChatRoomMessages:
+    get:
+      summary: Returns messages of room without populated users
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/myId'
+      responses:
+        '200':
+          description: A JSON of messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomMessage'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/getLastMessages:
+    get:
+      summary: Returns last messages of user
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/myId'
+      responses:
+        '200':
+          description: A JSON of last messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LastMessage'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/addMessage:
+    post:
+      summary: Returns messages of room
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Message content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                myId:
+                  $ref: '#/components/schemas/IdMongo'
+                id:
+                  $ref: '#/components/schemas/IdMongo'
+                message:
+                  $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: A JSON of new Message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopulatedRoomMessages'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/addRoom:
+    post:
+      summary: Returns new Room of users
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Message content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  $ref: '#/components/schemas/IdMongoArray'
+      responses:
+        '200':
+          description: A JSON of new room of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomMessage'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/updateVisibleAllMessages:
+    put:
+      summary: Update visible all messages of certain user
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: 'RoomID, userId and messages'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messages:
+                  $ref: '#/components/schemas/Message'
+                roomId:
+                  $ref: '#/components/schemas/IdMongo'
+                id:
+                  $ref: '#/components/schemas/IdMongo'
+      responses:
+        '200':
+          description: Ok
         '401':
           $ref: '#/components/responses/UnauthorizedError'

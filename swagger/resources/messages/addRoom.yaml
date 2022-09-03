@@ -1,0 +1,25 @@
+post:
+  summary: Returns new Room of users
+  tags: 
+    - Messages
+  security: 
+    - bearerAuth: []
+  requestBody:
+    description: Message content
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            users: 
+              $ref: '../../schemas/IdMongoArray.yaml'
+  responses:
+    '200':
+      description: A JSON of new room of users
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/Message/RoomMessages.yaml'
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

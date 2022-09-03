@@ -1,23 +1,28 @@
-UserMainDesc:
-  $ref: './UserMainDesc.yaml'
 User:
-  $ref: './User.yaml'
+  $ref: './User/User.yaml'
+UserMainDesc:
+  $ref: './User/UserMainDesc.yaml'
+CreateUser: 
+  $ref: './User/CreateUser.yaml'
+CreateManyUsers:
+  $ref: './User/CreateManyUsers.yaml'
+
 CurrentLesson:
   $ref: './CurrentLesson/CurrentLesson.yaml'
 CurrentLessonMainDesc: 
   $ref: './CurrentLesson/CurrentLessonMainDesc.yaml'
 CreateCurrentLesson:
   $ref: './CurrentLesson/CreateCurrentLesson.yaml'
-Role:
-  $ref: './Role.yaml'
+
+Mark:
+  $ref: './Mark.yaml'
+
 News:
   $ref: './News.yaml'
 NewsMainDesc:
   $ref: './NewsMainDesc.yaml'
-Mark:
-  $ref: './Mark.yaml'
-Message:
-  $ref: './Message.yaml'
+Role:
+  $ref: './Role.yaml'
 Group:
   $ref: './Group.yaml'
 Faculty:
@@ -28,5 +33,19 @@ Audience:
   $ref: './Audience.yaml'
 Lesson: 
   $ref: './Lesson.yaml'
+
 IdMongo:
   $ref: './IdMongo.yaml'
+IdMongoArray:
+  $ref: './IdMongoArray.yaml'
+
+Message:
+  $ref: './Message/Message.yaml'
+MessagePopulated: 
+  $ref: './Message/MessagePopulated.yaml'
+LastMessage: 
+  $ref: './Message/LastMessage.yaml'
+PopulatedRoomMessages:
+  $ref: './Message/PopulatedRoomMessages.yaml'
+RoomMessage:
+  $ref: './Message/RoomMessages.yaml'

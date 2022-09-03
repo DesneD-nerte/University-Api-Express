@@ -1,0 +1,7 @@
+name: skip
+in: query
+description: Parameter skip 
+schema:
+  type : integer
+  format: int64
+  minimum: 0
