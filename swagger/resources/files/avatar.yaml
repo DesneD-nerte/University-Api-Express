@@ -1,0 +1,19 @@
+get:
+  summary: Get avatar of certain user
+  tags:
+    - File
+  parameters:
+    - name: id
+      in: path
+      description: Parameter id
+      required: true
+      schema:
+        $ref: '../../schemas/IdMongo.yaml'
+  responses:
+    '200':
+      description: An image of user
+      content:
+        image/*:
+         schema: 
+          type: string
+          format: binary

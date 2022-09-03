@@ -1,0 +1,16 @@
+get:
+  summary: Get excel template for registration users
+  tags:
+    - File
+  security: 
+    - bearerAuth: []
+  responses:
+    '200':
+      description: A file for registration
+      content:
+        application/vnd.ms-excel:
+          schema:
+            type: string
+            format: binary
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

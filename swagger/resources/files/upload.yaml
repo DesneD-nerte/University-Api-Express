@@ -1,0 +1,29 @@
+post:
+  summary: Update avatar of user
+  tags:
+    - File
+  security: 
+    - bearerAuth: []
+  requestBody: 
+    description: Current Lesson content
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            id:
+              $ref: '../../schemas/IdMongo.yaml'
+            file:
+              type: string
+              format: binary
+  responses:
+    '200':
+      description: Ok
+      content:
+        text/plain:
+          schema: 
+            type: string
+            example: avatar uploaded
+    "401": 
+      $ref: '../../responses/UnauthorizedError.yaml'

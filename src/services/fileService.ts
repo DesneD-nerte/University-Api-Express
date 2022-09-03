@@ -38,18 +38,6 @@ class FileService {
             throw new Error('Изображение отсутствует на сервере');
         }
     }
-
-    LoadLoginImages (fileName: string) {
-        const files = fs.readdirSync(path.join(__dirname, '/../images/loginPage'));
-
-        if(files.includes(`${fileName}`)) {
-            const uriImagePath = path.join(__dirname, '/../images/loginPage/', `${fileName}`);
-            
-            return uriImagePath;
-        } else {
-            throw new Error('Изображение отсутствует на сервере');
-        }
-    }
 }
 
 export default new FileService();

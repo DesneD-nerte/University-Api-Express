@@ -953,3 +953,152 @@ paths:
           description: Ok
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /api/lessons:
+    get:
+      summary: Returns all lessons
+      tags:
+        - Api
+      responses:
+        '200':
+          description: A JSON of all lessons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lesson'
+  /api/audiences:
+    get:
+      summary: Returns all audiences
+      tags:
+        - Api
+      responses:
+        '200':
+          description: A JSON of all audiences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Audience'
+  /api/roles:
+    get:
+      summary: Returns all roles
+      tags:
+        - Api
+      responses:
+        '200':
+          description: A JSON of all roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+  /api/groups:
+    get:
+      summary: Returns all groups
+      tags:
+        - Api
+      responses:
+        '200':
+          description: A JSON of all groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+  /api/departments:
+    get:
+      summary: Returns all departments
+      tags:
+        - Api
+      responses:
+        '200':
+          description: A JSON of all departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+  /api/faculties:
+    get:
+      summary: Returns all faculties
+      tags:
+        - Api
+      responses:
+        '200':
+          description: A JSON of all faculties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Faculty'
+  /files/getExcelTemplate:
+    get:
+      summary: Get excel template for registration users
+      tags:
+        - File
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A file for registration
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  '/avatar/{id}':
+    get:
+      summary: Get avatar of certain user
+      tags:
+        - File
+      parameters:
+        - name: id
+          in: path
+          description: Parameter id
+          required: true
+          schema:
+            $ref: '#/components/schemas/IdMongo'
+      responses:
+        '200':
+          description: An image of user
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+  /upload:
+    post:
+      summary: Update avatar of user
+      tags:
+        - File
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Current Lesson content
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/IdMongo'
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: avatar uploaded
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'

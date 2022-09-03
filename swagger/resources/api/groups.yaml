@@ -1,0 +1,13 @@
+get:
+  summary: Returns all groups
+  tags: 
+    - Api
+  responses:
+    '200':
+      description: A JSON of all groups
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '../../schemas/Group.yaml'

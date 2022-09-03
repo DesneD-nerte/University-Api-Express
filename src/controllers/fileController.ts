@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { UploadedFile } from "express-fileupload";
+import path from "path";
 import fileService from "../services/fileService";
 
 class FileController {
@@ -31,20 +32,9 @@ class FileController {
         }
     }
 
-    async LoadLoginImages (req: Request, res: Response, next: NextFunction) {
-        try {
-            const fileName = req.params.imageName;
-
-            const imagePath = fileService.LoadLoginImages(fileName);
-            return res.sendFile(imagePath);
-        } catch(err) {
-            next(err);
-        }
-    }
-
     async LoadExcelTemplate (req: Request, res: Response, next: NextFunction) {
         try {
-            res.download('./files/Шаблон_для_добавления_пользователей.xlsx');
+            res.download(path.join(__dirname, '..', 'files', 'Шаблон_для_добавления_пользователей.xlsx'));
         } catch(err) {
             next(err);
         }

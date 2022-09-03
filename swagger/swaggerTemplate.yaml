@@ -82,3 +82,23 @@ paths:
     $ref: './resources/messages/addRoom.yaml'
   /messages/updateVisibleAllMessages:
     $ref: './resources/messages/updateVisibleAllMessages.yaml'
+
+  /api/lessons:
+    $ref: './resources/api/lessons.yaml'
+  /api/audiences:
+    $ref: './resources/api/audiences.yaml'
+  /api/roles:
+    $ref: './resources/api/roles.yaml'
+  /api/groups:
+    $ref: './resources/api/groups.yaml'
+  /api/departments:
+    $ref: './resources/api/departments.yaml'
+  /api/faculties:
+    $ref: './resources/api/faculties.yaml'
+
+  /files/getExcelTemplate:
+    $ref: './resources/files/excel.yaml'
+  /avatar/{id}:
+    $ref: './resources/files/avatar.yaml'
+  /upload:
+    $ref: './resources/files/upload.yaml'

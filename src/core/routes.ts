@@ -38,7 +38,6 @@ const createRoutes = (app: express.Express) => {
 
 
     app.get('/files/getExcelTemplate', authMiddleware, fileController.LoadExcelTemplate);
-    app.get('/images/:imageName', fileController.LoadLoginImages);
     app.get('/avatar/:id', fileController.LoadImage);
     app.post('/upload', authMiddleware, fileController.SaveImage);
 

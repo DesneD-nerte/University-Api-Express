@@ -1,0 +1,13 @@
+get:
+  summary: Returns all departments
+  tags: 
+    - Api
+  responses:
+    '200':
+      description: A JSON of all departments
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '../../schemas/Department.yaml'

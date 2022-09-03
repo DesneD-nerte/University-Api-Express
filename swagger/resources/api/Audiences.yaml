@@ -1,0 +1,11 @@
+get:
+  summary: Returns all audiences
+  tags: 
+    - Api
+  responses:
+    '200':
+      description: A JSON of all audiences
+      content:
+        application/json:
+          schema: 
+            $ref: '../../schemas/Audience.yaml'
