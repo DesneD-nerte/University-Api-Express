@@ -11,14 +11,6 @@ import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
 const swaggerDocument = YAML.load('./openapi.yaml');
 
-require('./models/Faculty');
-require('./models/Department');
-require('./models/Group');
-require('./models/Audience');
-require('./models/CurrentLesson');
-require('./models/Lesson');
-
-
 const app = express();
 const httpServer = require('http').createServer(app);
 const io = createSocket(httpServer);
