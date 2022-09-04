@@ -9,7 +9,8 @@
     "dev": "ts-node src/app.ts",
     "build": "npx cross-env NODE_ENV=production tsc",
     "production": "node dist/app.js",
-    "swagger": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile openapi.yaml --type yaml"
+    "swagger": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile openapi.yaml --type yaml",
+    "swagger-build": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile dist/openapi.yaml --type yaml"
   },
   "keywords": [],
   "author": "",
