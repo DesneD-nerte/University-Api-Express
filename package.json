@@ -1,6 +1,6 @@
 {
-  "name": "FirstMern",
-  "version": "1.0.0",
+  "name": "University-Api",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,15 +8,14 @@
     "start ts-node": "npx ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
     "build": "npx cross-env NODE_ENV=production tsc",
-    "production": "node dist/app.js",
-    "swagger": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile openapi.yaml --type yaml",
-    "swagger-build": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile dist/openapi.yaml --type yaml"
+    "build-webpack": "npx webpack",
+    "production": "node dist/app.bundle.js",
+    "swagger": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile openapi.yaml --type yaml"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express-fileupload": "^1.2.2",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "concurrently": "^7.0.0",
@@ -35,6 +34,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@types/express-fileupload": "^1.2.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.12",
@@ -45,8 +45,10 @@
     "@types/yamljs": "^0.2.31",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.23.0",
+    "html-webpack-plugin": "^5.5.0",
     "nodemon": "^2.0.15",
     "swagger-cli": "^4.0.4",
     "ts-loader": "^9.3.1",
