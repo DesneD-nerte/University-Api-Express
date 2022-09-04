@@ -1,8 +1,8 @@
-import { Schema, model } from 'mongoose';
-import { ILesson } from '../types/modelsTypes';
+import { Schema, model } from "mongoose";
+import { ILesson } from "../types/modelsTypes";
 
 const Lesson = new Schema<ILesson>({
-    name: {type: String, unique: true, required: true}
+	name: {type: String, unique: true, required: true}
 });
 
-export default model<ILesson>('Lesson', Lesson);
+export default model<ILesson>("Lesson", Lesson);

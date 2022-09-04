@@ -1,9 +1,9 @@
 export class UserFilterDto {
-    limit: number = 10;
-    page: number = 0;
+	limit = 10;
+	page = 0;
 
-    constructor(limit: number, page: number) {
-        this.limit = limit;
-        this.page = page;
-    }
+	constructor(limit: number, page: number) {
+		this.limit = limit;
+		this.page = page;
+	}
 }

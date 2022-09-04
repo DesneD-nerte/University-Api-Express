@@ -4,23 +4,23 @@ import newsRepository from "../repositories/newsRepository";
 import { INews } from "../types/modelsTypes";
 
 class NewsService {
-    async GetNews(query: GetNewsDto) {
-        const massiveNews = await newsRepository.GetNews(query);
+	async GetNews(query: GetNewsDto) {
+		const massiveNews = await newsRepository.GetNews(query);
 
-        return massiveNews;
-    }
+		return massiveNews;
+	}
 
-    async PostNewNews (data: INews) {
-        const newCreatedNews = await News.create(data);
+	async PostNewNews (data: INews) {
+		const newCreatedNews = await News.create(data);
 
-        return newCreatedNews;
-    }
+		return newCreatedNews;
+	}
 
-    async DeleteNews(idNewsArray: string[]) {
-        const deleteResult = await newsRepository.DeleteNews(idNewsArray);
+	async DeleteNews(idNewsArray: string[]) {
+		const deleteResult = await newsRepository.DeleteNews(idNewsArray);
         
-        return deleteResult;
-    }
+		return deleteResult;
+	}
 }
 
 export default new NewsService();

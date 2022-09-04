@@ -1,43 +1,43 @@
 import { UploadedFile } from "express-fileupload";
 import path from "path";
 import userService from "./userService";
-import config from '../config/config';
+import config from "../config/config";
 import fs from "fs";
 
 class FileService {
-    async SaveImage (id: string, sampleFile: UploadedFile) {
-        const idUserImage = id + '.jpeg';
-        const uploadPath = path.join(__dirname, '/../images/usersAvatar/', idUserImage);
+	async SaveImage (id: string, sampleFile: UploadedFile) {
+		const idUserImage = id + ".jpeg";
+		const uploadPath = path.join(__dirname, "/../images/usersAvatar/", idUserImage);
 
-        // Use the mv() method to place the file somewhere on your server
-        sampleFile.mv(uploadPath, function(err: Error) {
-            if (err) {
-                throw new Error("Ошибка размещения изображения на сервере");
-            }
-        });
+		// Use the mv() method to place the file somewhere on your server
+		sampleFile.mv(uploadPath, function(err: Error) {
+			if (err) {
+				throw new Error("Ошибка размещения изображения на сервере");
+			}
+		});
        
 
-        const currentUser = await userService.GetUserById({id: id});
-        if (currentUser && currentUser.imageUri === undefined) {
-            currentUser.imageUri = `${config.host}/avatar/${id}`;
+		const currentUser = await userService.GetUserById({id: id});
+		if (currentUser && currentUser.imageUri === undefined) {
+			currentUser.imageUri = `${config.host}/avatar/${id}`;
 
-            currentUser.save();
-        }
+			currentUser.save();
+		}
 
-        return currentUser;
-    }
+		return currentUser;
+	}
 
-    LoadImage (id: string) {
-        const files = fs.readdirSync(path.join(__dirname, '/../images/usersAvatar'));
+	LoadImage (id: string) {
+		const files = fs.readdirSync(path.join(__dirname, "/../images/usersAvatar"));
 
-        if(files.includes(`${id}.jpeg`)) {
-            const uriImagePath = path.join(__dirname, '/../images/usersAvatar/', `${id}.jpeg`);
+		if(files.includes(`${id}.jpeg`)) {
+			const uriImagePath = path.join(__dirname, "/../images/usersAvatar/", `${id}.jpeg`);
             
-            return uriImagePath; 
-        } else {
-            throw new Error('Изображение отсутствует на сервере');
-        }
-    }
+			return uriImagePath; 
+		} else {
+			throw new Error("Изображение отсутствует на сервере");
+		}
+	}
 }
 
 export default new FileService();

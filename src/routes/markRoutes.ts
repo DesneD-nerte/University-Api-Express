@@ -1,12 +1,12 @@
 import markController from "../controllers/markController";
+import { Router } from "express";
 
-const {Router} = require('express');
 const router = Router();
 
 //  /marks
-router.get('/', markController.GetMarks);
-router.post('/savenewcurrentlesson', markController.SaveNewCurrentLesson);
-router.post('/savenewcurrentlessonsarray', markController.SaveNewArrayCurrentLessons);
-router.put('/updatecurrentlesson', markController.UpdateCurrentLesson);
+router.get("/", markController.GetMarks);
+router.post("/savenewcurrentlesson", markController.SaveNewCurrentLesson);
+router.post("/savenewcurrentlessonsarray", markController.SaveNewArrayCurrentLessons);
+router.put("/updatecurrentlesson", markController.UpdateCurrentLesson);
 
-export default router
+export default router;

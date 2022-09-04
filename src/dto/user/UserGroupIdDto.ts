@@ -1,7 +1,7 @@
 export class UserGroupIdDto {
-    groupId: string;
+	groupId: string;
 
-    constructor(groupId: string) {
-        this.groupId = groupId;
-    }
+	constructor(groupId: string) {
+		this.groupId = groupId;
+	}
 }

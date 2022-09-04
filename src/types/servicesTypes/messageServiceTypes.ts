@@ -1,4 +1,4 @@
-import { IMessage } from "../mainTypes"
+import { IMessage } from "../mainTypes";
 
 export interface IQueryMessage {
     myId: string,

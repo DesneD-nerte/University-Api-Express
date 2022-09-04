@@ -1,9 +1,9 @@
 import UnitedAdditionalController from "../../controllers/additionalController.ts/UnitedAdditionalController";
+import { Router } from "express";
 
-const {Router} = require('express');
 const router = Router();
 
 //  /api/lessons
-router.get('/', UnitedAdditionalController.GetLessons)
+router.get("/", UnitedAdditionalController.GetLessons);
 
-export default router
+export default router;
