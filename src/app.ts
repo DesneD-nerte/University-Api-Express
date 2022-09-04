@@ -31,7 +31,7 @@ app.use(express.json());
 createRoutes(app);
 
 app.use(compression());
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use("/app-prefix/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorMiddleware);
 
