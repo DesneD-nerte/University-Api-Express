@@ -8,7 +8,7 @@
     "start ts-node": "npx ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
     "build": "npx cross-env NODE_ENV=production tsc",
-    "build-webpack": "npx webpack",
+    "build-webpack": "npx webpack --env production",
     "production": "node dist/app.bundle.js",
     "swagger": "npx swagger-cli bundle swagger/swaggerTemplate.yaml --outfile openapi.yaml --type yaml"
   },
