@@ -7,6 +7,7 @@ import createSocket from "./core/socket";
 import config from "./config/config";
 import errorMiddleware from "./middlewares/errorMiddleware";
 import createRoutes from "./core/routes";
+import * as path from "path";
 
 import compression from "compression";
 import swaggerUI from "swagger-ui-express";
@@ -23,7 +24,7 @@ app.use(cors({
 
 app.use(fileUpload({}));
 
-app.use("/images", express.static(__dirname + "/images/loginPage"));
+app.use("/images", express.static(path.join(__dirname, "images", "loginPage")));
 
 app.use(express.json());
 
