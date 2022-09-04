@@ -49,6 +49,9 @@
     "eslint": "^8.23.0",
     "nodemon": "^2.0.15",
     "swagger-cli": "^4.0.4",
-    "ts-node": "^10.4.0"
+    "ts-loader": "^9.3.1",
+    "ts-node": "^10.4.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   }
 }
