@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import userService from "../services/userService";
 import { IJwtPayload } from "../types/servicesTypes/jwtTypes";
-import { UserGroupIdDto } from "../dto/user/userGroupIdDto";
-import { UserFilterDto } from "../dto/user/userFilterDto";
+import { UserGroupIdDto } from "../dto/user/UserGroupIdDto";
+import { UserFilterDto } from "../dto/user/UserFilterDto";
 import { UserIdDto } from "../dto/user/userIdDto";
 
 class UserController {

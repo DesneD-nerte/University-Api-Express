@@ -1,8 +1,8 @@
 import userRepository from "../repositories/userRepository";
 import { IJwtPayloadData } from "../types/servicesTypes/jwtTypes";
 import { UserIdDto } from "../dto/user/userIdDto";
-import { UserGroupIdDto } from "../dto/user/userGroupIdDto";
-import { UserFilterDto } from "../dto/user/userFilterDto";
+import { UserGroupIdDto } from "../dto/user/UserGroupIdDto";
+import { UserFilterDto } from "../dto/user/UserFilterDto";
 import mongooseService from "./mongooseService";
 import ApiError from "../exceptions/apiError";
 
