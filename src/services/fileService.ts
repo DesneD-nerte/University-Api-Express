@@ -8,13 +8,8 @@ class FileService {
 	//Need use something like Google Cloud Storage for serving dynamic files 
 	SaveImage (id: string, sampleFile: UploadedFile) {
 		const idUserImage = id + ".jpeg";
-		let uploadPath: string;
+		let uploadPath = path.resolve(__dirname, "../images/usersAvatar", idUserImage);
 
-		if(process.env.NODE_ENV === "production") {
-			uploadPath = path.join(__dirname, "images/usersAvatar", idUserImage);
-		} else {
-			uploadPath = path.join(__dirname, "..", "images/usersAvatar", idUserImage);
-		}
 		// Use the mv() method to place the file somewhere on your server
 		const filePromise = new Promise((resolve,reject) => {
 			sampleFile.mv(uploadPath, function(err: Error) {

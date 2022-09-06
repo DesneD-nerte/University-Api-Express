@@ -26,7 +26,6 @@ class FileController {
 			const idUser = req.params.id;
 
 			const uriImagePath = await fileService.LoadImage(idUser);
-			console.log(uriImagePath);
 			res.sendFile(uriImagePath);
 		} catch(err) {
 			next(err);
@@ -35,7 +34,7 @@ class FileController {
 
 	async LoadExcelTemplate (req: Request, res: Response, next: NextFunction) {
 		try {
-			res.download(path.join(__dirname, "..", "files", "Шаблон_для_добавления_пользователей.xlsx"));
+			res.download(path.resolve(__dirname, "../files/Шаблон_для_добавления_пользователей.xlsx"));
 		} catch(err) {
 			next(err);
 		}
