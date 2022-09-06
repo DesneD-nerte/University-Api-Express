@@ -13,7 +13,7 @@ class FileController {
 
 			const id = req.body.id;
 			const sampleFile = req.files.file as UploadedFile;
-			const updatedImageUser = await fileService.SaveImage(id, sampleFile);
+			await fileService.SaveImage(id, sampleFile);
 
 			res.send("File uploaded!");
 		} catch(err) {
@@ -21,11 +21,11 @@ class FileController {
 		}
 	}
 
-	LoadImage (req: Request, res: Response, next: NextFunction) {
+	async LoadImage (req: Request, res: Response, next: NextFunction) {
 		try {
 			const idUser = req.params.id;
 
-			const uriImagePath = fileService.LoadImage(idUser);
+			const uriImagePath = await fileService.LoadImage(idUser);
 			res.sendFile(uriImagePath);
 		} catch(err) {
 			next(err);

@@ -5,35 +5,52 @@ import config from "../config/config";
 import fs from "fs";
 
 class FileService {
-	async SaveImage (id: string, sampleFile: UploadedFile) {
+	//Need use something like Google Cloud Storage for serving dynamic files 
+	SaveImage (id: string, sampleFile: UploadedFile) {
 		const idUserImage = id + ".jpeg";
-		const uploadPath = path.join(__dirname, "/../images/usersAvatar/", idUserImage);
+		let uploadPath: string;
 
-		// Use the mv() method to place the file somewhere on your server
-		sampleFile.mv(uploadPath, function(err: Error) {
-			if (err) {
-				throw new Error("Ошибка размещения изображения на сервере");
-			}
-		});
-       
-
-		const currentUser = await userService.GetUserById({id: id});
-		if (currentUser && currentUser.imageUri === undefined) {
-			currentUser.imageUri = `${config.host}/avatar/${id}`;
-
-			currentUser.save();
+		if(process.env.NODE_ENV === "production") {
+			uploadPath = path.join(__dirname, "images/usersAvatar", idUserImage);
+		} else {
+			uploadPath = path.join(__dirname, "..", "images/usersAvatar", idUserImage);
 		}
+		// Use the mv() method to place the file somewhere on your server
+		const filePromise = new Promise((resolve,reject) => {
+			sampleFile.mv(uploadPath, function(err: Error) {
+				if (err) {
+					reject("Ошибка размещения изображения на сервере");
+				} else {
+					resolve("Ok");
+				}
+			});
+		});
+		return filePromise
+			.then(async () => {
+				const currentUser = await userService.GetUserById({id: id});
+				if (currentUser && currentUser.imageUri === undefined) {
+					currentUser.imageUri = `${config.host}/avatar/${id}`;
 
-		return currentUser;
+					await currentUser.save();
+				}
+			})
+			.catch(err => {
+				throw new Error(err);
+			})
 	}
 
-	LoadImage (id: string) {
-		const files = fs.readdirSync(path.join(__dirname, "/../images/usersAvatar"));
+	async LoadImage (id: string) {
+		let files;
+		const prodPath = path.join(__dirname, "images/usersAvatar");
+		const developPath = path.join(__dirname, "..", "images/usersAvatar");
+		if(process.env.NODE_ENV === "production") {
+			files = await fs.promises.readdir(prodPath);
+		} else {
+			files = await fs.promises.readdir(developPath);
+		}
 
 		if(files.includes(`${id}.jpeg`)) {
-			const uriImagePath = path.join(__dirname, "/../images/usersAvatar/", `${id}.jpeg`);
-            
-			return uriImagePath; 
+			return process.env.NODE_ENV === "production" ? path.join(prodPath, `${id}.jpeg`) :  path.join(developPath, `${id}.jpeg`);
 		} else {
 			throw new Error("Изображение отсутствует на сервере");
 		}

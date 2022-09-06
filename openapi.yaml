@@ -6,7 +6,7 @@ info:
 servers:
   - url: 'http://localhost:5000'
     description: Development server
-  - url: 'http://api.stu-training.ru'
+  - url: 'https://api.stu-training.ru'
     description: production server
 components:
   securitySchemes:
