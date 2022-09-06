@@ -41,16 +41,17 @@ class FileService {
 
 	async LoadImage (id: string) {
 		let files;
-		const prodPath = path.join(__dirname, "images/usersAvatar");
-		const developPath = path.join(__dirname, "..", "images/usersAvatar");
-		if(process.env.NODE_ENV === "production") {
-			files = await fs.promises.readdir(prodPath);
-		} else {
+		// const prodPath = path.join(__dirname, "images/usersAvatar");
+		const developPath = path.resolve(__dirname, "../images/usersAvatar");
+		// if(process.env.NODE_ENV === "production") {
+			// files = await fs.promises.readdir(prodPath);
+		// } else {
 			files = await fs.promises.readdir(developPath);
-		}
+		// }
 
 		if(files.includes(`${id}.jpeg`)) {
-			return process.env.NODE_ENV === "production" ? path.join(prodPath, `${id}.jpeg`) :  path.join(developPath, `${id}.jpeg`);
+			// return process.env.NODE_ENV === "production" ? path.join(prodPath, `${id}.jpeg`) :  path.join(developPath, `${id}.jpeg`);
+			return path.resolve(__dirname, `../images/usersAvatar/${id}.jpeg`);
 		} else {
 			throw new Error("Изображение отсутствует на сервере");
 		}

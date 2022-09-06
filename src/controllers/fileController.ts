@@ -26,6 +26,7 @@ class FileController {
 			const idUser = req.params.id;
 
 			const uriImagePath = await fileService.LoadImage(idUser);
+			console.log(uriImagePath);
 			res.sendFile(uriImagePath);
 		} catch(err) {
 			next(err);
