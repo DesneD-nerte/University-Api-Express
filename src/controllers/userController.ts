@@ -6,7 +6,7 @@ import { UserFilterDto } from "../dto/user/UserFilterDto";
 import { UserIdDto } from "../dto/user/userIdDto";
 
 class UserController {
-	async GetMyData (req: Request<any, any, IJwtPayload, any>, res: Response, next: NextFunction) {
+	async GetMyData(req: Request<any, any, IJwtPayload, any>, res: Response, next: NextFunction) {
 		try {
 			const dataTokenUser = req.body.user;
 			const myData = await userService.GetMyData(dataTokenUser);
@@ -38,7 +38,7 @@ class UserController {
 			next(err);
 		}
 	}
-    
+
 	async GetUserById(req: Request<any, any, any, UserIdDto>, res: Response, next: NextFunction) {
 		try {
 			const userIdDto = req.query;

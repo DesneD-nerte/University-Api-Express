@@ -4,16 +4,17 @@ import ApiError from "../exceptions/apiError";
 import authService from "../services/authService";
 
 class AuthControllers {
-	async Registration (req: Request, res: Response, next: NextFunction) {//roles приходит как ["STUDENT", "TEACHER"]
+	async Registration(req: Request, res: Response, next: NextFunction) {
+		//roles приходит как ["STUDENT", "TEACHER"]
 		try {
 			const errors = validationResult(req);
 
-			if(!errors.isEmpty()) {
+			if (!errors.isEmpty()) {
 				return next(ApiError.BadRequest("Неправильно заполнены данные", errors));
 			}
 			const user = await authService.Registration(req.body);
-            
-			return res.json({user});
+
+			return res.json({ user });
 		} catch (err) {
 			return next(err);
 		}
@@ -22,7 +23,7 @@ class AuthControllers {
 	async Login(req: Request, res: Response, next: NextFunction) {
 		try {
 			const user = await authService.Login(req.body);
-            
+
 			return res.json(user);
 		} catch (err) {
 			return next(err);

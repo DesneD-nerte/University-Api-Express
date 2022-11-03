@@ -9,7 +9,7 @@ import ApiError from "../exceptions/apiError";
 class UserService {
 	async GetMyData(user: IJwtPayloadData) {
 		const myProfile = await userRepository.GetMyData(user._id);
-        
+
 		return myProfile;
 	}
 
@@ -28,15 +28,15 @@ class UserService {
 
 		return arrayStudents;
 	}
-    
+
 	async GetUserById(userIdDto: UserIdDto) {
 		try {
 			const _id = mongooseService.ToObjectId(userIdDto.id);
 			const user = await userRepository.GetUserById(_id);
 
 			return user;
-		} catch(e) {
-			if(e instanceof Error) {
+		} catch (e) {
+			if (e instanceof Error) {
 				throw ApiError.BadRequest("Ошибка при поиске пользователя по Id", [e.message]);
 			}
 		}

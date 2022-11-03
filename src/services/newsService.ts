@@ -10,7 +10,7 @@ class NewsService {
 		return massiveNews;
 	}
 
-	async PostNewNews (data: INews) {
+	async PostNewNews(data: INews) {
 		const newCreatedNews = await News.create(data);
 
 		return newCreatedNews;
@@ -18,7 +18,7 @@ class NewsService {
 
 	async DeleteNews(idNewsArray: string[]) {
 		const deleteResult = await newsRepository.DeleteNews(idNewsArray);
-        
+
 		return deleteResult;
 	}
 }

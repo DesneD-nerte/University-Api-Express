@@ -5,14 +5,14 @@ import config from "../config/config";
 import fs from "fs";
 
 class FileService {
-	//Need use something like Google Cloud Storage for serving dynamic files 
-	SaveImage (id: string, sampleFile: UploadedFile) {
+	//Need use something like Google Cloud Storage for serving dynamic files
+	SaveImage(id: string, sampleFile: UploadedFile) {
 		const idUserImage = id + ".jpeg";
-		let uploadPath = path.resolve(__dirname, "../images/usersAvatar", idUserImage);
+		const uploadPath = path.resolve(__dirname, "../images/usersAvatar", idUserImage);
 
 		// Use the mv() method to place the file somewhere on your server
-		const filePromise = new Promise((resolve,reject) => {
-			sampleFile.mv(uploadPath, function(err: Error) {
+		const filePromise = new Promise((resolve, reject) => {
+			sampleFile.mv(uploadPath, function (err: Error) {
 				if (err) {
 					reject("Ошибка размещения изображения на сервере");
 				} else {
@@ -22,23 +22,23 @@ class FileService {
 		});
 		return filePromise
 			.then(async () => {
-				const currentUser = await userService.GetUserById({id: id});
+				const currentUser = await userService.GetUserById({ id: id });
 				if (currentUser && currentUser.imageUri === undefined) {
 					currentUser.imageUri = `${config.host}/avatar/${id}`;
 
 					await currentUser.save();
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				throw new Error(err);
-			})
+			});
 	}
 
-	async LoadImage (id: string) {
+	async LoadImage(id: string) {
 		const developPath = path.resolve(__dirname, "../images/usersAvatar");
 		const files = await fs.promises.readdir(developPath);
 
-		if(files.includes(`${id}.jpeg`)) {
+		if (files.includes(`${id}.jpeg`)) {
 			return path.resolve(__dirname, `../images/usersAvatar/${id}.jpeg`);
 		} else {
 			throw new Error("Изображение отсутствует на сервере");

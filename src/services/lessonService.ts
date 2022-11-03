@@ -4,27 +4,27 @@ import CurrentLesson from "../models/CurrentLesson";
 import lessonRepository from "../repositories/lessonRepository";
 
 class LessonService {
-	async GetCurrentLessons () {
+	async GetCurrentLessons() {
 		const lessons = await lessonRepository.GetCurrentLessons();
 
 		return lessons;
 	}
 
-	async SaveNewCurrentLesson (createCurrentLessonDto: CreateCurrentLessonDto) {
+	async SaveNewCurrentLesson(createCurrentLessonDto: CreateCurrentLessonDto) {
 		const currentLesson = new CurrentLesson({
 			name: createCurrentLessonDto.lessonNameId,
 			teachers: createCurrentLessonDto.teacherId,
 			classroom: createCurrentLessonDto.classRoomId,
 			beginDate: createCurrentLessonDto.startDate,
-			endDate: createCurrentLessonDto.endDate, 
-			group: createCurrentLessonDto.groupId
+			endDate: createCurrentLessonDto.endDate,
+			group: createCurrentLessonDto.groupId,
 		});
 
 		// return await currentLesson.save();
 		return await lessonRepository.SaveNewCurrentLesson(currentLesson);
 	}
 
-	async SaveNewArrayCurrentLessons (arrayCreateCurrentLessonDto: Array<CreateCurrentLessonDto>) {
+	async SaveNewArrayCurrentLessons(arrayCreateCurrentLessonDto: Array<CreateCurrentLessonDto>) {
 		const arrayCurrentLessons = [];
 
 		for (const oneCurrentLesson of arrayCreateCurrentLessonDto) {
@@ -34,7 +34,7 @@ class LessonService {
 				classroom: oneCurrentLesson.classRoomId,
 				beginDate: oneCurrentLesson.startDate,
 				endDate: oneCurrentLesson.endDate,
-				group: oneCurrentLesson.groupId
+				group: oneCurrentLesson.groupId,
 			});
 
 			arrayCurrentLessons.push(currentLesson);
@@ -45,8 +45,7 @@ class LessonService {
 		return addedCurrentLessons;
 	}
 
-	async UpdateCurrentLesson (updateCurrentLessonDto: UpdateCurrentLessonDto) {
-
+	async UpdateCurrentLesson(updateCurrentLessonDto: UpdateCurrentLessonDto) {
 		const newCurrentLessons = new CurrentLesson({
 			_id: updateCurrentLessonDto._id,
 			name: updateCurrentLessonDto.lessonNameId,
@@ -54,11 +53,11 @@ class LessonService {
 			classroom: updateCurrentLessonDto.classRoomId,
 			beginDate: updateCurrentLessonDto.startDate,
 			endDate: updateCurrentLessonDto.endDate,
-			group: updateCurrentLessonDto.groupId
+			group: updateCurrentLessonDto.groupId,
 		});
 
 		const updatedCurrentLesson = await lessonRepository.UpdateCurrentLesson(newCurrentLessons);
-        
+
 		return updatedCurrentLesson;
 	}
 }

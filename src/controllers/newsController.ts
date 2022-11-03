@@ -3,10 +3,19 @@ import { DeleteArrayNewsDto } from "../dto/news/deleteArrayNewsDto";
 import { GetNewsDto } from "../dto/news/getNewsDto";
 import News from "../models/News";
 import newsService from "../services/newsService";
-import { IBareRequestParams, IBareResponseBody, IBareRequestBody, IBareRequestQuery } from "../types/servicesTypes/types";
+import {
+	IBareRequestParams,
+	IBareResponseBody,
+	IBareRequestBody,
+	IBareRequestQuery,
+} from "../types/servicesTypes/types";
 
 class NewsController {
-	async GetNews(req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, GetNewsDto>, res: Response, next: NextFunction) {
+	async GetNews(
+		req: Request<IBareRequestParams, IBareResponseBody, IBareRequestBody, GetNewsDto>,
+		res: Response,
+		next: NextFunction
+	) {
 		try {
 			const massiveNews = await newsService.GetNews(req.query);
 			const range = await News.count();
@@ -18,7 +27,7 @@ class NewsController {
 		}
 	}
 
-	async PostNewNews (req: Request, res: Response, next: NextFunction) {
+	async PostNewNews(req: Request, res: Response, next: NextFunction) {
 		try {
 			const newCreatedNews = await newsService.PostNewNews(req.body.data);
 
@@ -28,7 +37,11 @@ class NewsController {
 		}
 	}
 
-	async DeleteNews(req: Request<IBareRequestParams, IBareResponseBody, DeleteArrayNewsDto, IBareRequestQuery>, res: Response, next: NextFunction) {
+	async DeleteNews(
+		req: Request<IBareRequestParams, IBareResponseBody, DeleteArrayNewsDto, IBareRequestQuery>,
+		res: Response,
+		next: NextFunction
+	) {
 		try {
 			const result = await newsService.DeleteNews(req.body.arrayIdNews);
 

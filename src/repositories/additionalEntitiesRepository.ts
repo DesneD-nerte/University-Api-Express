@@ -6,12 +6,9 @@ class AdditionalEntitiesRepository {
 		return modelRole.aggregate([
 			{
 				$match: {
-					$or: [
-						{name: {$in: value}},
-						{value: {$in: value}},
-					]
-				}
-			}
+					$or: [{ name: { $in: value } }, { value: { $in: value } }],
+				},
+			},
 		]);
 	}
 }

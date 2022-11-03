@@ -9,7 +9,15 @@ export class CurrentLessonDto {
 	classRoom: IAudience;
 	group: IGroup;
 
-	constructor(_id: string, name: ILesson, teachers: string[], beginDate: Date, endDate: Date, classRoom: IAudience, group: IGroup) {
+	constructor(
+		_id: string,
+		name: ILesson,
+		teachers: string[],
+		beginDate: Date,
+		endDate: Date,
+		classRoom: IAudience,
+		group: IGroup
+	) {
 		this._id = _id;
 		this.name = name;
 		this.teachers = teachers;

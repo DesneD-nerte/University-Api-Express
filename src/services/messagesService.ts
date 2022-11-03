@@ -1,28 +1,34 @@
 import messagesRepository from "../repositories/messagesRepository";
 import ApiError from "../exceptions/apiError";
-import { IQueryMessage, IQueryMyId, IBodyAddMessage, IBodyAddRoom, IBodyUpdateVisibleMessages } from "../types/servicesTypes/messageServiceTypes";
+import {
+	IQueryMessage,
+	IQueryMyId,
+	IBodyAddMessage,
+	IBodyAddRoom,
+	IBodyUpdateVisibleMessages,
+} from "../types/servicesTypes/messageServiceTypes";
 import mongooseService from "./mongooseService";
 
 class MessagesService {
-	async GetMessages (query: IQueryMessage) {
+	async GetMessages(query: IQueryMessage) {
 		try {
 			const myId = mongooseService.ToObjectId(query.myId);
 			const id = mongooseService.ToObjectId(query.id);
 
 			let skip = 0;
-			if(query.skip) {
+			if (query.skip) {
 				skip = Number.parseInt(query.skip.toString());
 			}
 			const myChatMessages = await messagesRepository.GetMessages(myId, id, skip);
 
 			return myChatMessages[0];
-		} catch(e) {
+		} catch (e) {
 			return ApiError.BadRequest("Ошибка при получении сообщений пользователей", e);
 		}
 	}
 
 	//Облегченная версия получения сообщений (без развертывания объектов)
-	async CheckExistingChatRoomMessages (query: IQueryMessage) {
+	async CheckExistingChatRoomMessages(query: IQueryMessage) {
 		try {
 			const myId = mongooseService.ToObjectId(query.myId);
 			const id = mongooseService.ToObjectId(query.id);
@@ -41,14 +47,14 @@ class MessagesService {
 			const myLastMessages = await messagesRepository.GetLastMessage(myId);
 
 			for (const oneInstance of myLastMessages) {
-				let otherId; 
+				let otherId;
 
 				for (const oneUser of oneInstance.users) {
-					if(oneUser._id.toString() !== myId.toString()) {
+					if (oneUser._id.toString() !== myId.toString()) {
 						otherId = mongooseService.ToObjectId(oneUser._id);
 						const countBadge = await messagesRepository.GetCountBadge(myId, otherId);
 
-						if(countBadge.length !== 0) {
+						if (countBadge.length !== 0) {
 							oneInstance.countBadge = countBadge[0].count;
 						} else {
 							oneInstance.countBadge = 0;
@@ -60,7 +66,7 @@ class MessagesService {
 			}
 
 			return myLastMessages;
-		} catch(e) {
+		} catch (e) {
 			return ApiError.BadRequest("Ошибка при получении сообщений для главного окна");
 		}
 	}
@@ -72,17 +78,17 @@ class MessagesService {
 			const message = body.message;
 
 			const addedMessage = await messagesRepository.AddMessage(myId, id, message);
-            
+
 			const query: IQueryMessage = {
 				myId: body.myId,
 				id: body.id,
-				skip: 0
+				skip: 0,
 			};
 
 			const lastNewMessage = await this.GetMessages(query);
-            
+
 			return lastNewMessage.messages.pop();
-		} catch(e) {
+		} catch (e) {
 			return ApiError.BadRequest("Ошибка при добавлении нового сообщения");
 		}
 	}
@@ -95,7 +101,7 @@ class MessagesService {
 			const addedRoom = await messagesRepository.AddRoom(firstUser, secondUser);
 
 			return addedRoom;
-		} catch(e) {
+		} catch (e) {
 			return ApiError.BadRequest("Ошибка при добавлении новой комнаты");
 		}
 	}
@@ -105,12 +111,12 @@ class MessagesService {
 			const objectId = mongooseService.ToObjectId(body.id);
 			const objectRoomId = mongooseService.ToObjectId(body.roomId);
 
-			const arrayObjectIdMessages = body.messages.map(oneMessage => {
+			const arrayObjectIdMessages = body.messages.map((oneMessage) => {
 				return mongooseService.ToObjectId(oneMessage._id as string);
 			});
 
 			await messagesRepository.UpdateVisibleMessages(objectId, objectRoomId, arrayObjectIdMessages);
-		} catch(e) {
+		} catch (e) {
 			return ApiError.BadRequest("Ошибка при обновлении счетчика просмотров сообщений");
 		}
 	}

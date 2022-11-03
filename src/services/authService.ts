@@ -22,13 +22,14 @@ import { IGeneratedProperties } from "../types/servicesTypes/authServicesTypes";
 import userRepository from "../repositories/userRepository";
 
 class AuthService {
-	async Registration (createUserDto: CreateUserDto) {//roles приходит как ["STUDENT", "TEACHER"]
+	async Registration(createUserDto: CreateUserDto) {
+		//roles приходит как ["STUDENT", "TEACHER"]
 
 		const { username, password, name, email, roles } = createUserDto;
 
 		const condidate = await User.findOne({ username });
-        
-		if(condidate) {
+
+		if (condidate) {
 			throw ApiError.BadRequest("Пользователь с таким именем уже есть");
 		}
 
@@ -41,7 +42,7 @@ class AuthService {
 			password: hashPassword,
 			email: email,
 			name: name,
-			roles: userRolesDocs
+			roles: userRolesDocs,
 		});
 
 		await user.save();
@@ -53,20 +54,31 @@ class AuthService {
 		const { username, password } = data;
 
 		const user = await authRepository.Login(username, password);
-		if(!user) {
+		if (!user) {
 			throw ApiError.BadRequest("Пользователь отсутствует");
 		}
-        
+
 		const validPassword = bcryptjs.compareSync(password, user.password);
-		if(validPassword === false) {
+		if (validPassword === false) {
 			throw ApiError.BadRequest("Введен неверный логин или пароль");
 		}
 
 		const token = this.generateAccessToken(user._id, user.username, user.roles);
 
-		const {_id, roles, email, name, faculties, groups, departments, imageUri} = user;
+		const { _id, roles, email, name, faculties, groups, departments, imageUri } = user;
 
-		return new LoginUserResponseDto(token, _id, username, roles, email, name, faculties, groups, departments, imageUri);
+		return new LoginUserResponseDto(
+			token,
+			_id,
+			username,
+			roles,
+			email,
+			name,
+			faculties,
+			groups,
+			departments,
+			imageUri
+		);
 	}
 
 	async RegistrationArray(body: Array<CreateManyUsersDto>) {
@@ -76,16 +88,16 @@ class AuthService {
 
 		for (const oneUser of arrayUsers) {
 			const existingUser = await userRepository.GetUserByEmail(oneUser.email);
-           
-			if(existingUser) {
+
+			if (existingUser) {
 				const userClientResponse: HydratedDocument<IUser> = new User({
 					username: "—",
-					name: oneUser.name, 
-					password: "—", 
-					email: "Пользователь уже зарегистрирован"
+					name: oneUser.name,
+					password: "—",
+					email: "Пользователь уже зарегистрирован",
 				});
 				arrayUsersClientResponse.push(userClientResponse);
-                
+
 				continue;
 			}
 
@@ -100,15 +112,25 @@ class AuthService {
 		return arrayUsersClientResponse;
 	}
 
-	private async getUserProperties (oneUser: CreateManyUsersDto): Promise<IGeneratedProperties> {
+	private async getUserProperties(oneUser: CreateManyUsersDto): Promise<IGeneratedProperties> {
 		const generatedUsername = await authGenerator.GenerateLogin(oneUser.name);
-		const generatedPassword = authGenerator.GeneratePassword(8);////////////Длина пароля
+		const generatedPassword = authGenerator.GeneratePassword(8); ////////////Длина пароля
 		const hashPassword = bcryptjs.hashSync(generatedPassword, 7);
 
-		const userRolesDocs: Array<HydratedDocument<IRole>> = await additionalEntitiesRepository.GetDocModel(Role, oneUser.roles);
-		const userFacultiesDocs: Array<HydratedDocument<IFaculty>> = await additionalEntitiesRepository.GetDocModel(Faculty, oneUser.faculties);
-		const userGroupsDocs: Array<HydratedDocument<IGroup>> = await additionalEntitiesRepository.GetDocModel(Group, oneUser.groups);
-		const userDepartmentsDocs: Array<HydratedDocument<IDepartment>> = await additionalEntitiesRepository.GetDocModel(Department, oneUser.departments);
+		const userRolesDocs: Array<HydratedDocument<IRole>> = await additionalEntitiesRepository.GetDocModel(
+			Role,
+			oneUser.roles
+		);
+		const userFacultiesDocs: Array<HydratedDocument<IFaculty>> = await additionalEntitiesRepository.GetDocModel(
+			Faculty,
+			oneUser.faculties
+		);
+		const userGroupsDocs: Array<HydratedDocument<IGroup>> = await additionalEntitiesRepository.GetDocModel(
+			Group,
+			oneUser.groups
+		);
+		const userDepartmentsDocs: Array<HydratedDocument<IDepartment>> =
+			await additionalEntitiesRepository.GetDocModel(Department, oneUser.departments);
 
 		return {
 			generatedUsername,
@@ -121,28 +143,29 @@ class AuthService {
 		};
 	}
 
-	private async createUsers (oneUser: CreateManyUsersDto) {
+	private async createUsers(oneUser: CreateManyUsersDto) {
 		const generatedProperties = await this.getUserProperties(oneUser);
 
 		const user = await new User({
 			username: generatedProperties.generatedUsername,
-			name: oneUser.name, 
+			name: oneUser.name,
 			password: generatedProperties.hashPassword,
-			roles: generatedProperties.userRolesDocs, 
-			email: oneUser.email, 
+			roles: generatedProperties.userRolesDocs,
+			email: oneUser.email,
 			faculties: generatedProperties.userFacultiesDocs,
 			departments: generatedProperties.userDepartmentsDocs,
-			groups: generatedProperties.userGroupsDocs
+			groups: generatedProperties.userGroupsDocs,
 		});
 
-		const userClientResponse = await new User({username: generatedProperties.generatedUsername,
+		const userClientResponse = await new User({
+			username: generatedProperties.generatedUsername,
 			name: oneUser.name,
 			password: generatedProperties.generatedPassword,
 			roles: generatedProperties.userRolesDocs,
 			email: oneUser.email,
 			faculties: generatedProperties.userFacultiesDocs,
 			departments: generatedProperties.userDepartmentsDocs,
-			groups: generatedProperties.userGroupsDocs
+			groups: generatedProperties.userGroupsDocs,
 		}).populate(["roles", "faculties", "groups", "departments"]);
 
 		return { user, userClientResponse };
@@ -152,10 +175,10 @@ class AuthService {
 		const payload = {
 			_id: id,
 			username: username,
-			roles: roles
+			roles: roles,
 		};
-    
-		return jwt.sign(payload, config.secret, {algorithm: "HS512", expiresIn: "24h"});
+
+		return jwt.sign(payload, config.secret, { algorithm: "HS512", expiresIn: "24h" });
 	};
 }
 

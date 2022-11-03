@@ -1,69 +1,65 @@
 import { Schema } from "mongoose";
 
 export interface ICurrentLesson {
-    _id: Schema.Types.ObjectId,
-    name: Schema.Types.ObjectId,
-    teachers: Schema.Types.ObjectId,
-    beginDate: Date,
-    endDate: Date,
-    classroom: Schema.Types.ObjectId,
-    group: Schema.Types.ObjectId
+	_id: Schema.Types.ObjectId;
+	name: Schema.Types.ObjectId;
+	teachers: Schema.Types.ObjectId;
+	beginDate: Date;
+	endDate: Date;
+	classroom: Schema.Types.ObjectId;
+	group: Schema.Types.ObjectId;
 }
 
 export interface IUser {
-    username: string,
-    password: string,
-    roles: Array<Schema.Types.ObjectId>,
-    name: string,
-    email: string,
-    imageUri: string,
-    faculties: Array<Schema.Types.ObjectId>,
-    departments: Array<Schema.Types.ObjectId>,
-    groups: Array<Schema.Types.ObjectId>
+	username: string;
+	password: string;
+	roles: Array<Schema.Types.ObjectId>;
+	name: string;
+	email: string;
+	imageUri: string;
+	faculties: Array<Schema.Types.ObjectId>;
+	departments: Array<Schema.Types.ObjectId>;
+	groups: Array<Schema.Types.ObjectId>;
 }
 
-
-
 export interface IMark {
-    allCurrentLessons: IAllCurrentLessonsMark[],
-    lesson: Schema.Types.ObjectId,
-    user: Schema.Types.ObjectId
+	allCurrentLessons: IAllCurrentLessonsMark[];
+	lesson: Schema.Types.ObjectId;
+	user: Schema.Types.ObjectId;
 }
 
 export interface IAllCurrentLessonsMark {
-    currentLesson: Schema.Types.ObjectId,
-    mark: string
+	currentLesson: Schema.Types.ObjectId;
+	mark: string;
 }
 
-
-
 export interface INews {
-    name: string,
-    content: string,
-    createdAt: Date,
+	name: string;
+	content: string;
+	createdAt: Date;
 }
 
 export interface IRole {
-    value: string
+	value: string;
 }
 
 export interface IAudience {
-    name: string
+	name: string;
 }
 
 export interface IDepartment {
-    name: string,
-    room: string
+	name: string;
+	room: string;
 }
 
 export interface IFaculty {
-    name: string
+	name: string;
 }
 
 export interface IGroup {
-    name: string
+	name: string;
 }
 
 export interface ILesson {
-    name: string
+	name: string;
 }

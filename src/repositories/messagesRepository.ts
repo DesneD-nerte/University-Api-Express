@@ -4,87 +4,79 @@ import User from "../models/User";
 import { IMessage } from "../types/mainTypes";
 
 class MessagesRepository {
-
 	async GetMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, skip: number) {
 		return await Chat.aggregate([
 			{
 				$match: {
-					$and: [
-						{users: myId},
-						{users: id}
-					]
-				}
+					$and: [{ users: myId }, { users: id }],
+				},
 			},
-			{    
+			{
 				$lookup: {
 					from: "users",
 					localField: "users",
 					foreignField: "_id",
-					as: "users"
-				}
+					as: "users",
+				},
 			},
 			{
 				$unwind: {
-					path: "$messages"
-				}
+					path: "$messages",
+				},
 			},
 			{
 				$lookup: {
 					from: "users",
 					localField: "messages.user",
 					foreignField: "_id",
-					as: "messages.user"
-				}
+					as: "messages.user",
+				},
 			},
 			{
 				$unwind: {
-					path: "$messages.user"
-				}
+					path: "$messages.user",
+				},
 			},
 			{
 				$sort: {
-					"messages._id": -1
-				}
+					"messages._id": -1,
+				},
 			},
 			{
-				$skip: skip
+				$skip: skip,
 			},
 			{
-				$limit: 20
+				$limit: 20,
 			},
 			{
 				$sort: {
-					"messages._id": 1
-				}
+					"messages._id": 1,
+				},
 			},
 			{
 				$group: {
 					_id: "$_id",
 					root: { $mergeObjects: "$$ROOT" },
-					messages: { $push: "$messages" }
-				}
+					messages: { $push: "$messages" },
+				},
 			},
 			{
 				$replaceRoot: {
-					newRoot: { $mergeObjects: ["$root", "$$ROOT"] }
-				}
+					newRoot: { $mergeObjects: ["$root", "$$ROOT"] },
+				},
 			},
 			{
-				$project: { root: 0 }
-			}
-		]
-		);
+				$project: { root: 0 },
+			},
+		]);
 	}
 
 	async CheckExistingChatRoomMessages(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId) {
 		return await Chat.aggregate([
 			{
 				$match: {
-					$and: [
-						{users: myId},
-						{users: id}
-					]
-				}
+					$and: [{ users: myId }, { users: id }],
+				},
 			},
 		]);
 	}
@@ -92,22 +84,22 @@ class MessagesRepository {
 	async GetCountBadge(myId: mongoose.Types.ObjectId, other: mongoose.Types.ObjectId) {
 		return await Chat.aggregate([
 			{
-				$unwind: "$messages"
+				$unwind: "$messages",
 			},
 			{
 				$match: {
-					"users": {$in: [myId]}, //Пользователь который запрашивает
-					"messages.user": other  //Другой пользователь
+					users: { $in: [myId] }, //Пользователь который запрашивает
+					"messages.user": other, //Другой пользователь
 				},
 			},
 			{
-				$sortByCount: "$messages.isVisible"
+				$sortByCount: "$messages.isVisible",
 			},
 			{
 				$match: {
-					"_id": false
-				}
-			}
+					_id: false,
+				},
+			},
 		]);
 	}
 
@@ -115,69 +107,80 @@ class MessagesRepository {
 		return await Chat.aggregate([
 			{
 				$match: {
-					"users": myId
-				}
+					users: myId,
+				},
 			},
 			{
 				$project: {
-					"users": 1,
-					"lastMessage": {$slice: ["$messages", -1]}
-				}
+					users: 1,
+					lastMessage: { $slice: ["$messages", -1] },
+				},
 			},
 			{
 				$lookup: {
 					from: "users",
 					localField: "users",
 					foreignField: "_id",
-					as: "users"
-				}
+					as: "users",
+				},
 			},
 			{
 				$unwind: {
-					path: "$lastMessage"
-				}
-			}, 
+					path: "$lastMessage",
+				},
+			},
 			{
 				$lookup: {
 					from: "users",
 					localField: "lastMessage.user",
 					foreignField: "_id",
-					as: "lastMessage.user"
-				}
+					as: "lastMessage.user",
+				},
 			},
 			{
 				$unwind: {
-					path: "$lastMessage.user"
-				}
-			}
+					path: "$lastMessage.user",
+				},
+			},
 		]);
 	}
 
 	async AddMessage(myId: mongoose.Types.ObjectId, id: mongoose.Types.ObjectId, message: IMessage) {
-
-		return await Chat.findOneAndUpdate({
-			users: {$all: [new mongoose.Types.ObjectId(myId), new mongoose.Types.ObjectId(id)]}},
-		{
-			$push: {messages: {content: message.content, createdAt: new Date (message.createdAt), user: new User(message.user), isVisible: message.isVisible}},
-		},
-		{
-			new: true
-		}
+		return await Chat.findOneAndUpdate(
+			{
+				users: { $all: [new mongoose.Types.ObjectId(myId), new mongoose.Types.ObjectId(id)] },
+			},
+			{
+				$push: {
+					messages: {
+						content: message.content,
+						createdAt: new Date(message.createdAt),
+						user: new User(message.user),
+						isVisible: message.isVisible,
+					},
+				},
+			},
+			{
+				new: true,
+			}
 		);
 	}
 
-	async AddRoom (firstUserId: mongoose.Types.ObjectId, secondUserId: mongoose.Types.ObjectId) {
-		const addedRoom = await new Chat({users: [firstUserId, secondUserId], messages: []})
-			.save();
+	async AddRoom(firstUserId: mongoose.Types.ObjectId, secondUserId: mongoose.Types.ObjectId) {
+		const addedRoom = await new Chat({ users: [firstUserId, secondUserId], messages: [] }).save();
 
 		return addedRoom;
 	}
 
-	async UpdateVisibleMessages(id: mongoose.Types.ObjectId, roomId: mongoose.Types.ObjectId, arrayIdMessages: mongoose.Types.ObjectId[]) {
+	async UpdateVisibleMessages(
+		id: mongoose.Types.ObjectId,
+		roomId: mongoose.Types.ObjectId,
+		arrayIdMessages: mongoose.Types.ObjectId[]
+	) {
 		await Chat.updateOne(
-			{_id: roomId},
-			{$set: {"messages.$[oneMessage].isVisible": true}},
-			{arrayFilters: [{"oneMessage.user": id, "oneMessage._id": {$in: [...arrayIdMessages]}}]}
+			{ _id: roomId },
+			{ $set: { "messages.$[oneMessage].isVisible": true } },
+			{ arrayFilters: [{ "oneMessage.user": id, "oneMessage._id": { $in: [...arrayIdMessages] } }] }
 		);
 	}
 }

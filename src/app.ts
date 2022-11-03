@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import http from "http"; 
+import http from "http";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import createSocket from "./core/socket";
@@ -18,9 +18,11 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = createSocket(httpServer);
 
-app.use(cors({
-	exposedHeaders: "range"
-}));
+app.use(
+	cors({
+		exposedHeaders: "range",
+	})
+);
 
 app.use(fileUpload({}));
 
@@ -35,12 +37,12 @@ app.use("/api-docs/", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorMiddleware);
 
-const start = async () => { 
+const start = async () => {
 	try {
 		await mongoose.connect(config.connectionString);
 		httpServer.listen(config.port, () => console.log(`server started on ${config.port} port`));
-	} catch(err) {
-		if(err instanceof Error) {
+	} catch (err) {
+		if (err instanceof Error) {
 			console.log(err.message);
 		}
 	}

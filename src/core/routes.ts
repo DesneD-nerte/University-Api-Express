@@ -19,7 +19,6 @@ import fileController from "../controllers/fileController";
 import userController from "../controllers/userController";
 
 const createRoutes = (app: express.Express) => {
-
 	app.use("/api/lessons", lessonRoutes);
 	app.use("/api/audiences", audienceRoutes);
 	app.use("/api/roles", roleRoutes);
@@ -36,11 +35,9 @@ const createRoutes = (app: express.Express) => {
 	app.use("/messages", authMiddleware, messageRoutes);
 	app.use("/news", authMiddleware, newsRoutes);
 
-
 	app.get("/files/getExcelTemplate", authMiddleware, fileController.LoadExcelTemplate);
 	app.get("/avatar/:id", fileController.LoadImage);
 	app.post("/upload", authMiddleware, fileController.SaveImage);
-
 };
 
 export default createRoutes;

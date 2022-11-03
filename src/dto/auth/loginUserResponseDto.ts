@@ -12,8 +12,18 @@ export class LoginUserResponseDto {
 	departments: IDepartment[];
 	imageUri: string;
 
-	constructor(token: string, _id: string, username: string,roles: any, email: string, name: string,
-		faculties: any, groups: any, departments: any, imageUri: string) {
+	constructor(
+		token: string,
+		_id: string,
+		username: string,
+		roles: any,
+		email: string,
+		name: string,
+		faculties: any,
+		groups: any,
+		departments: any,
+		imageUri: string
+	) {
 		this.token = token;
 		this._id = _id;
 		this.username = username;
@@ -24,6 +34,5 @@ export class LoginUserResponseDto {
 		this.groups = groups;
 		this.departments = departments;
 		this.imageUri = imageUri;
-
 	}
 }
